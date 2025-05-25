@@ -106,3 +106,7 @@ export const convertToAPIDateFormat = (date: Dayjs) => {
 export const parseToDayjs = (date: string) => {
   return dayjs(date, 'YYYY-MM-DD');
 };
+
+export type TextLengthValue = (typeof TextLength)[keyof typeof TextLength];
+export const isValidLength = (text: string, length: TextLengthValue) =>
+  text.length <= length;

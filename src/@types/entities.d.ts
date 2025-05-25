@@ -7,3 +7,10 @@ declare interface Pokemon {
   abilities: Ability[];
   types: Type[];
 }
+declare interface Agent {
+  id: number;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}

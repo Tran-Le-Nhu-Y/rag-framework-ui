@@ -1,7 +1,7 @@
 import { initReactI18next } from 'react-i18next/initReactI18next';
 import i18next from 'i18next';
 
-import standardVi from '../locales/vi/standard.json';
+import standardVi from '../locale/vi/standard.json';
 
 export const defaultNS = 'standard';
 export const resources = {

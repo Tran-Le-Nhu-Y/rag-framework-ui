@@ -6,14 +6,14 @@ import './App.css';
 
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { RootLayout } from './layout';
-import { Homepage } from './page';
+import { AgentManagementPage } from './page';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<RootLayout />}>
-          <Route index element={<Homepage />} />
+          <Route index element={<AgentManagementPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

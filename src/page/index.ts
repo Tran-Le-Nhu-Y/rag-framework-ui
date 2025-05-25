@@ -1,3 +1,9 @@
-import Homepage from './Homepage';
+import AgentManagementPage from './AgentManagement/AgentManagement';
+import TrainingDataManagementPage from './TrainingDataManagement/TrainingDataManagement';
+import TrainingMonitoringPage from './TrainingMonitoring';
 
-export { Homepage };
+export {
+  AgentManagementPage,
+  TrainingDataManagementPage,
+  TrainingMonitoringPage,
+};
