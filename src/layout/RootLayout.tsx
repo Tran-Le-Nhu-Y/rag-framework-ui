@@ -224,11 +224,28 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('trainingMonitoring')} disablePadding>
+          <ListItem key={t('recognitionModelManagement')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 2}
               onClick={(event) => {
                 handleListItemClick(event, 2);
+                navigate('/recognition-model-management');
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('recognitionModelManagement')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('trainingMonitoring')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 3}
+              onClick={(event) => {
+                handleListItemClick(event, 3);
                 navigate('/trainting-monitoring');
               }}
             >

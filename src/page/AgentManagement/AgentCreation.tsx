@@ -80,7 +80,9 @@ export default function AgentCreationDialog({
               multiline
               rows={5}
             />
-            <Typography variant="body1">{t('addConfigFile')}:</Typography>
+            <Typography variant="body1">
+              {t('recognitionModelConfigFile')}:
+            </Typography>
             <DragAndDropForm
               onFilesChange={onFilesChange}
               acceptedFileTypes={[

@@ -14,6 +14,7 @@
   "exit": "Thoát",
   "save": "Lưu",
   "enter": "Nhập",
+  "export": "export",
   "hyperTextMedium": "Nhập tối đa 100 ký tự",
   "hyperTextLong": "Nhập tối đa 150 ký tự",
   "hyperTextVeryLong": "Nhập tối đa 255 ký tự",
@@ -31,8 +32,8 @@
   "createAgent": "Tạo Agent",
   "updateAgent": "Cập nhật Agent",
   "deleteAgent": "Xóa Agent",
-  "addConfigFile": "Thêm tập tin cấu hình",
   "configFile": "Tập tin cấu hình",
+  "recognitionModelConfigFile": "Tập tin cấu hình mô hình nhận diện",
 
   "training": "Huấn luyện",
   "trainingData": "Dữ liệu huấn luyện",
@@ -45,5 +46,14 @@
   "updateTrainingData": "Cập nhật bộ dữ liệu",
   "addTrainingDataFile": "Thêm tập tin dữ liệu huấn luyện",
   "trainingDataFile": "Tập tin dữ liệu huấn luyện",
-  "justTextDataFile": "Chỉ nhận tập tin dữ liệu dạng văn bản"
+  "justTextDataFile": "Chỉ nhận tập tin dữ liệu dạng văn bản",
+
+  "recognitionModelManagement": "Quản lý mô hình nhận diện",
+  "recognitionModelList": "Danh sách mô hình nhận diện",
+  "createRecognitionModel": "Tạo mô hình nhận diện",
+  "updateRecognitionModel": "Cập nhật mô hình nhận diện",
+  "deleteRecognitionModel": "Xóa mô hình nhận diện",
+  "recognitionModelName": "Tên mô hình nhận diện",
+  "recognitionModelDescription": "Mô tả mô hình nhận diện",
+  "recognitionModelDetailInformation": "Thông tin chi tiết mô hình nhận diện"
 }

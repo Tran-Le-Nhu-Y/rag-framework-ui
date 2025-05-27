@@ -5,12 +5,12 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import AgentCreationDialog from './AgentCreation';
 import { useState } from 'react';
-import AgentUpdateDialog from './AgentUpdate';
-import AgentDetailDialog from './AgentDetail';
+import RecognitionModelCreationDialog from './RecognitionModelCreation';
+import RecognitionModelDetailDialog from './RecognitionModelDetail';
+import RecognitionModelUpdateDialog from './RecognitionModelUpdate';
 
-const AgentManagementPage = () => {
+const RecognitionModelManagementPage = () => {
   const { t } = useTranslation();
   const [openCreateAgentDialog, setOpenCreateAgentDialog] = useState(false);
   const [openUpdateAgentDialog, setOpenUpdateAgentDialog] = useState(false);
@@ -19,8 +19,8 @@ const AgentManagementPage = () => {
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: 'id', headerName: 'ID', width: 100 },
     {
-      field: 'agentName',
-      headerName: t('agentName'),
+      field: 'recognitionModelName',
+      headerName: t('recognitionModelName'),
       width: 250,
       editable: true,
     },
@@ -80,13 +80,48 @@ const AgentManagementPage = () => {
   ];
 
   const rows = [
-    { id: 1, agentName: 'A', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 2, agentName: 'B', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 3, agentName: 'C', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 4, agentName: 'D', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 5, agentName: 'E', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 6, agentName: 'F', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 7, agentName: 'G', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
+    {
+      id: 1,
+      recognitionModelName: 'A',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
+    {
+      id: 2,
+      recognitionModelName: 'B',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
+    {
+      id: 3,
+      recognitionModelName: 'C',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
+    {
+      id: 4,
+      recognitionModelName: 'D',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
+    {
+      id: 5,
+      recognitionModelName: 'E',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
+    {
+      id: 6,
+      recognitionModelName: 'F',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
+    {
+      id: 7,
+      recognitionModelName: 'G',
+      createdAt: '2024-05-01',
+      updatedAt: '2024-05-01',
+    },
   ];
 
   const handleCreateAgent = (data: { name: string; description: string }) => {
@@ -120,19 +155,19 @@ const AgentManagementPage = () => {
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
-      <h1>{t('agentList')}</h1>
+      <h1>{t('recognitionModelList')}</h1>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
           onClick={() => setOpenCreateAgentDialog(true)}
         >
-          {t('createAgent')}
+          {t('createRecognitionModel')}
         </Button>
       </Box>
       <Box sx={{ height: 400, width: '90%' }}>
         <DataGridTable rows={rows} columns={columns} />
       </Box>
-      <AgentCreationDialog
+      <RecognitionModelCreationDialog
         open={openCreateAgentDialog}
         onCancel={() => setOpenCreateAgentDialog(false)}
         onConfirm={handleCreateAgent}
@@ -140,7 +175,7 @@ const AgentManagementPage = () => {
           console.log('Handle file uploads');
         }}
       />
-      <AgentUpdateDialog
+      <RecognitionModelUpdateDialog
         open={openUpdateAgentDialog}
         onCancel={() => setOpenUpdateAgentDialog(false)}
         onConfirm={handleUpdateAgent}
@@ -148,7 +183,7 @@ const AgentManagementPage = () => {
           console.log('Handle file uploads');
         }}
       />
-      <AgentDetailDialog
+      <RecognitionModelDetailDialog
         open={openAgentDetailDialog}
         onExit={() => setOpenAgentDetailDialog(false)}
         onExport={handleExport}
@@ -157,4 +192,4 @@ const AgentManagementPage = () => {
   );
 };
 
-export default AgentManagementPage;
+export default RecognitionModelManagementPage;

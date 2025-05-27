@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { isValidLength, TextLength } from '../../util';
 import { DragAndDropForm } from '../../component';
 
-export default function AgentUpdateDialog({
+export default function RecognitionModelUpdateDialog({
   open,
   agentName = '',
   agentDescription = '',
@@ -40,7 +40,7 @@ export default function AgentUpdateDialog({
   return (
     <Dialog open={open} onClose={onCancel} fullWidth>
       <DialogTitle sx={{ textAlign: 'center' }}>
-        <Typography variant="h4">{t('updateAgent')}</Typography>
+        <Typography variant="h4">{t('updateRecognitionModel')}</Typography>
       </DialogTitle>
       <DialogContent>
         <Stack

@@ -13,34 +13,34 @@ import { useEffect, useState } from 'react';
 import { isValidLength, TextLength } from '../../util';
 import { DragAndDropForm } from '../../component';
 
-export default function AgentUpdateDialog({
+export default function RecognitionModelCreationDialog({
   open,
-  agentName = '',
-  agentDescription = '',
+  recognitionModelName = '',
+  recognitionModelDescription = '',
   onFilesChange,
   onConfirm,
   onCancel,
 }: {
   open: boolean;
-  agentName?: string;
-  agentDescription?: string;
+  recognitionModelName?: string;
+  recognitionModelDescription?: string;
   onFilesChange: () => void;
   onConfirm: (data: { name: string; description: string }) => void;
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
-  const [name, setName] = useState(agentName);
-  const [description, setDescription] = useState(agentDescription);
+  const [name, setName] = useState(recognitionModelName);
+  const [description, setDescription] = useState(recognitionModelDescription);
 
   useEffect(() => {
-    setName(agentName);
-    setDescription(agentDescription);
-  }, [agentName, agentDescription]);
+    setName(recognitionModelName);
+    setDescription(recognitionModelDescription);
+  }, [recognitionModelName, recognitionModelDescription]);
 
   return (
     <Dialog open={open} onClose={onCancel} fullWidth>
       <DialogTitle sx={{ textAlign: 'center' }}>
-        <Typography variant="h4">{t('updateAgent')}</Typography>
+        <Typography variant="h4">{t('createRecognitionModel')}</Typography>
       </DialogTitle>
       <DialogContent>
         <Stack
@@ -54,22 +54,24 @@ export default function AgentUpdateDialog({
               fullWidth
               size="small"
               helperText={t('hyperTextMedium')}
-              label={t('agentName')}
+              label={t('recognitionModelName')}
               value={name}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isValidLength(newValue, TextLength.MEDIUM))
                   setName(newValue);
               }}
-              placeholder={`${t('enter')} ${t('agentName').toLowerCase()}...`}
+              placeholder={`${t('enter')} ${t(
+                'recognitionModelName'
+              ).toLowerCase()}...`}
             />
 
             <TextField
               type="text"
               placeholder={`${t('enter')} ${t(
-                'agentDescription'
+                'recognitionModelDescription'
               ).toLowerCase()}...`}
-              label={t('agentDescription')}
+              label={t('recognitionModelDescription')}
               value={description}
               helperText={t('hyperTextVeryLong')}
               onChange={(e) => {
@@ -99,7 +101,7 @@ export default function AgentUpdateDialog({
                 color="primary"
                 onClick={onConfirm.bind(null, { name, description })}
               >
-                {t('save')}
+                {t('confirm')}
               </Button>
               <Button variant="outlined" color="info" onClick={onCancel}>
                 {t('cancel')}

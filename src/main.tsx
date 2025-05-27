@@ -13,9 +13,13 @@ import {
   RouterProvider,
 } from 'react-router';
 import RootLayout from './layout/RootLayout.tsx';
-import AgentManagementPage from './page/AgentManagement/AgentManagement.tsx';
-import TrainingDataManagementPage from './page/TrainingDataManagement/TrainingDataManagement.tsx';
-import TrainingMonitoringPage from './page/TrainingMonitoring.tsx';
+
+import {
+  AgentManagementPage,
+  RecognitionModelManagementPage,
+  TrainingDataManagementPage,
+  TrainingMonitoringPage,
+} from './page/index.ts';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +29,10 @@ const router = createBrowserRouter(
       <Route
         path="training-data-management"
         element={<TrainingDataManagementPage />}
+      />
+      <Route
+        path="recognition-model-management"
+        element={<RecognitionModelManagementPage />}
       />
       <Route path="trainting-monitoring" element={<TrainingMonitoringPage />} />
     </Route>

@@ -10,16 +10,16 @@ import {
 import { useTranslation } from 'react-i18next';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
-export default function AgentDetailDialog({
+export default function RecognitionModelDetailDialog({
   open,
-  agentName = '',
-  agentDescription = '',
+  recognitionModelName = '',
+  recognitionModelDescription = '',
   onExit,
   onExport,
 }: {
   open: boolean;
-  agentName?: string;
-  agentDescription?: string;
+  recognitionModelName?: string;
+  recognitionModelDescription?: string;
   onExit: () => void;
   onExport: () => void;
 }) {
@@ -28,7 +28,9 @@ export default function AgentDetailDialog({
   return (
     <Dialog open={open} onClose={onExit} fullWidth>
       <DialogTitle sx={{ textAlign: 'center' }}>
-        <Typography variant="h4">{t('agentDetailInformation')}</Typography>
+        <Typography variant="h4">
+          {t('recognitionModelDetailInformation')}
+        </Typography>
       </DialogTitle>
       <DialogContent>
         <Stack
@@ -40,18 +42,18 @@ export default function AgentDetailDialog({
           <Stack spacing={2} width="100%">
             <Stack direction={'row'} alignItems="center" spacing={2}>
               <Typography variant="body1" fontWeight={'bold'}>
-                {t('agentName')}:
+                {t('recognitionModelName')}:
               </Typography>
               <Typography variant="body1" fontWeight={500}>
-                {agentName || 'N/A'}
+                {recognitionModelName || 'N/A'}
               </Typography>
             </Stack>
             <Stack direction={'row'} alignItems="center" spacing={2}>
               <Typography variant="body1" fontWeight={'bold'}>
-                {t('agentDescription')}:
+                {t('recognitionModelDescription')}:
               </Typography>
               <Typography variant="body1" fontWeight={500}>
-                {agentDescription || 'N/A'}
+                {recognitionModelDescription || 'N/A'}
               </Typography>
             </Stack>
 
