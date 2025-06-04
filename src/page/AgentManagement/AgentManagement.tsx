@@ -5,14 +5,14 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import AgentCreationDialog from './AgentCreation';
 import { useState } from 'react';
 import AgentUpdateDialog from './AgentUpdate';
 import AgentDetailDialog from './AgentDetail';
+import { useNavigate } from 'react-router';
 
 const AgentManagementPage = () => {
   const { t } = useTranslation();
-  const [openCreateAgentDialog, setOpenCreateAgentDialog] = useState(false);
+  const navigate = useNavigate();
   const [openUpdateAgentDialog, setOpenUpdateAgentDialog] = useState(false);
   const [openAgentDetailDialog, setOpenAgentDetailDialog] = useState(false);
 
@@ -89,11 +89,6 @@ const AgentManagementPage = () => {
     { id: 7, agentName: 'G', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
   ];
 
-  const handleCreateAgent = (data: { name: string; description: string }) => {
-    console.log('Created agent:', data);
-    setOpenCreateAgentDialog(false);
-    // TODO: Gọi API lưu hoặc cập nhật danh sách agent
-  };
   const handleUpdateAgent = (data: { name: string; description: string }) => {
     console.log('Updated agent:', data);
     setOpenUpdateAgentDialog(false);
@@ -122,24 +117,14 @@ const AgentManagementPage = () => {
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
       <h1>{t('agentList')}</h1>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
-        <Button
-          variant="contained"
-          onClick={() => setOpenCreateAgentDialog(true)}
-        >
+        <Button variant="contained" onClick={() => navigate('/agent-creation')}>
           {t('createAgent')}
         </Button>
       </Box>
       <Box sx={{ height: 400, width: '90%' }}>
         <DataGridTable rows={rows} columns={columns} />
       </Box>
-      <AgentCreationDialog
-        open={openCreateAgentDialog}
-        onCancel={() => setOpenCreateAgentDialog(false)}
-        onConfirm={handleCreateAgent}
-        onFilesChange={() => {
-          console.log('Handle file uploads');
-        }}
-      />
+
       <AgentUpdateDialog
         open={openUpdateAgentDialog}
         onCancel={() => setOpenUpdateAgentDialog(false)}

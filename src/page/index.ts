@@ -1,11 +1,11 @@
 import AgentManagementPage from './AgentManagement/AgentManagement';
-import TrainingDataManagementPage from './TrainingDataManagement/TrainingDataManagement';
-import TrainingMonitoringPage from './TrainingMonitoring';
 import RecognitionModelManagementPage from './RecognitionModelManagement/RecognitionModelManagement';
+import AgentCreationPage from './AgentCreation/AgentCreation';
+import RecognitionModelCreationPage from './RecognitionModelCreation/RecognitionModelCreation';
 
 export {
   AgentManagementPage,
-  TrainingDataManagementPage,
   RecognitionModelManagementPage,
-  TrainingMonitoringPage,
+  AgentCreationPage,
+  RecognitionModelCreationPage,
 };

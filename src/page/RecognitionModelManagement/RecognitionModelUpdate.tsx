@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { isValidLength, TextLength } from '../../util';
-import { DragAndDropForm } from '../../component';
+import { DragAndDropForm, SelectForm } from '../../component';
 
 export default function RecognitionModelUpdateDialog({
   open,
@@ -78,11 +78,10 @@ export default function RecognitionModelUpdateDialog({
                   setDescription(newValue);
               }}
               multiline
-              rows={5}
+              rows={4}
             />
-            <Typography variant="body1">
-              {t('recognitionModelConfigFile')}:
-            </Typography>
+            <SelectForm label={t('selectModelType')} dataList={[]} />
+            <Typography variant="body1">{t('configFile')}:</Typography>
             <DragAndDropForm
               onFilesChange={onFilesChange}
               acceptedFileTypes={[

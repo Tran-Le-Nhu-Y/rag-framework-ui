@@ -11,13 +11,12 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { isValidLength, TextLength } from '../../util';
-import { DragAndDropForm } from '../../component';
+import { SelectForm } from '../../component';
 
 export default function AgentUpdateDialog({
   open,
   agentName = '',
   agentDescription = '',
-  onFilesChange,
   onConfirm,
   onCancel,
 }: {
@@ -80,18 +79,8 @@ export default function AgentUpdateDialog({
               multiline
               rows={5}
             />
-            <Typography variant="body1">
-              {t('recognitionModelConfigFile')}:
-            </Typography>
-            <DragAndDropForm
-              onFilesChange={onFilesChange}
-              acceptedFileTypes={[
-                'text/plain',
-                'application/json',
-                '.csv',
-                'application/pdf',
-              ]}
-            />
+            <Typography variant="body1">{t('recognitionModel')}:</Typography>
+            <SelectForm label={t('selectRecognitionModel')} dataList={[]} />
 
             <Box mt={3} display="flex" justifyContent="center" gap={2}>
               <Button

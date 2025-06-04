@@ -56,7 +56,7 @@ export default function AgentDetailDialog({
             </Stack>
 
             <Typography variant="body1" fontWeight={'bold'}>
-              {t('recognitionModelConfigFile')}:
+              {t('recognitionModel')}:
             </Typography>
 
             <Box mt={3} display="flex" justifyContent="center" gap={2}>

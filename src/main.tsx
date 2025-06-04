@@ -15,26 +15,25 @@ import {
 import RootLayout from './layout/RootLayout.tsx';
 
 import {
+  AgentCreationPage,
   AgentManagementPage,
+  RecognitionModelCreationPage,
   RecognitionModelManagementPage,
-  TrainingDataManagementPage,
-  TrainingMonitoringPage,
 } from './page/index.ts';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<AgentManagementPage />} />
-
-      <Route
-        path="training-data-management"
-        element={<TrainingDataManagementPage />}
-      />
+      <Route path="agent-creation" element={<AgentCreationPage />} />
       <Route
         path="recognition-model-management"
         element={<RecognitionModelManagementPage />}
       />
-      <Route path="trainting-monitoring" element={<TrainingMonitoringPage />} />
+      <Route
+        path="recognition-model-creation"
+        element={<RecognitionModelCreationPage />}
+      />
     </Route>
   )
 );

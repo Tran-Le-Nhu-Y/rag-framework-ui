@@ -6,13 +6,13 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import RecognitionModelCreationDialog from './RecognitionModelCreation';
 import RecognitionModelDetailDialog from './RecognitionModelDetail';
 import RecognitionModelUpdateDialog from './RecognitionModelUpdate';
+import { useNavigate } from 'react-router';
 
 const RecognitionModelManagementPage = () => {
   const { t } = useTranslation();
-  const [openCreateAgentDialog, setOpenCreateAgentDialog] = useState(false);
+  const navigate = useNavigate();
   const [openUpdateAgentDialog, setOpenUpdateAgentDialog] = useState(false);
   const [openAgentDetailDialog, setOpenAgentDetailDialog] = useState(false);
 
@@ -124,11 +124,6 @@ const RecognitionModelManagementPage = () => {
     },
   ];
 
-  const handleCreateAgent = (data: { name: string; description: string }) => {
-    console.log('Created agent:', data);
-    setOpenCreateAgentDialog(false);
-    // TODO: Gọi API lưu hoặc cập nhật danh sách agent
-  };
   const handleUpdateAgent = (data: { name: string; description: string }) => {
     console.log('Updated agent:', data);
     setOpenUpdateAgentDialog(false);
@@ -159,7 +154,7 @@ const RecognitionModelManagementPage = () => {
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={() => setOpenCreateAgentDialog(true)}
+          onClick={() => navigate('/recognition-model-creation')}
         >
           {t('createRecognitionModel')}
         </Button>
@@ -167,14 +162,7 @@ const RecognitionModelManagementPage = () => {
       <Box sx={{ height: 400, width: '90%' }}>
         <DataGridTable rows={rows} columns={columns} />
       </Box>
-      <RecognitionModelCreationDialog
-        open={openCreateAgentDialog}
-        onCancel={() => setOpenCreateAgentDialog(false)}
-        onConfirm={handleCreateAgent}
-        onFilesChange={() => {
-          console.log('Handle file uploads');
-        }}
-      />
+
       <RecognitionModelUpdateDialog
         open={openUpdateAgentDialog}
         onCancel={() => setOpenUpdateAgentDialog(false)}

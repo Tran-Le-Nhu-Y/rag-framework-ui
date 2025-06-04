@@ -14,12 +14,14 @@ export default function RecognitionModelDetailDialog({
   open,
   recognitionModelName = '',
   recognitionModelDescription = '',
+  recognitionModelType = '',
   onExit,
   onExport,
 }: {
   open: boolean;
   recognitionModelName?: string;
   recognitionModelDescription?: string;
+  recognitionModelType?: string;
   onExit: () => void;
   onExport: () => void;
 }) {
@@ -56,9 +58,16 @@ export default function RecognitionModelDetailDialog({
                 {recognitionModelDescription || 'N/A'}
               </Typography>
             </Stack>
-
+            <Stack direction={'row'} alignItems="center" spacing={2}>
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('recognitionModelType')}:
+              </Typography>
+              <Typography variant="body1" fontWeight={500}>
+                {recognitionModelType || 'N/A'}
+              </Typography>
+            </Stack>
             <Typography variant="body1" fontWeight={'bold'}>
-              {t('recognitionModelConfigFile')}:
+              {t('configFile')}:
             </Typography>
 
             <Box mt={3} display="flex" justifyContent="center" gap={2}>

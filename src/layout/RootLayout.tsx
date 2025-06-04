@@ -207,23 +207,6 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('trainingDataManagement')} disablePadding>
-            <ListItemButton
-              selected={selectedIndex === 1}
-              onClick={(event) => {
-                handleListItemClick(event, 1);
-                navigate('/training-data-management');
-              }}
-            >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={t('trainingDataManagement')} />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
           <ListItem key={t('recognitionModelManagement')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 2}
@@ -240,22 +223,6 @@ const RootLayout = () => {
           </ListItem>
         </List>
         <Divider />
-        <List>
-          <ListItem key={t('trainingMonitoring')} disablePadding>
-            <ListItemButton
-              selected={selectedIndex === 3}
-              onClick={(event) => {
-                handleListItemClick(event, 3);
-                navigate('/trainting-monitoring');
-              }}
-            >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={t('trainingMonitoring')} />
-            </ListItemButton>
-          </ListItem>
-        </List>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
