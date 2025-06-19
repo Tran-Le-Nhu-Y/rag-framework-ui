@@ -14,7 +14,7 @@ import {
 import { AttachFile, ErrorOutline } from '@mui/icons-material';
 import { ClearIcon } from '@mui/x-date-pickers';
 import { getFileSize } from '../util';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -39,6 +39,7 @@ export interface FileAttachment {
 export interface InputFileUploadProps {
   onFilesChange: (files: File[]) => void;
   acceptedFileTypes: string[];
+  resetSignal?: boolean;
 }
 
 const FILE_MAX_BYTES = 128 * 1000 * 1000; // 128MB
@@ -46,6 +47,7 @@ const FILE_MAX_BYTES = 128 * 1000 * 1000; // 128MB
 export const InputFileUpload: React.FC<InputFileUploadProps> = ({
   onFilesChange,
   acceptedFileTypes,
+  resetSignal,
 }) => {
   const [files, setFiles] = useState<FileAttachment[]>([]);
 
@@ -88,6 +90,13 @@ export const InputFileUpload: React.FC<InputFileUploadProps> = ({
     setFiles(newFiles);
     onFilesChange(newFiles.map((f) => f.file));
   };
+
+  useEffect(() => {
+    if (resetSignal) {
+      setFiles([]);
+    }
+  }, [resetSignal]);
+
   return (
     <Box display={'flex'}>
       {files.length === 0 && (
