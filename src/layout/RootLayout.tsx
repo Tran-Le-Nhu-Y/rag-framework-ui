@@ -23,7 +23,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { Stack } from '@mui/material';
 
 const drawerWidth = 240;
@@ -93,7 +93,25 @@ const RootLayout = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const location = useLocation();
+  const getSelectedIndexFromPath = (pathname: string) => {
+    if (pathname === '/' || pathname === '/agent-creation') return 0;
+    if (
+      pathname === '/recognition-model-management' ||
+      pathname === '/recognition-model-creation'
+    )
+      return 1;
+    if (pathname === '/use-guide') return 2;
+    return 0; // fallback
+  };
+  React.useEffect(() => {
+    setSelectedIndex(getSelectedIndexFromPath(location.pathname));
+  }, [location.pathname]);
+
+  const [selectedIndex, setSelectedIndex] = React.useState(() =>
+    getSelectedIndexFromPath(location.pathname)
+  );
 
   const handleListItemClick = (
     _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -209,9 +227,9 @@ const RootLayout = () => {
         <List>
           <ListItem key={t('recognitionModelManagement')} disablePadding>
             <ListItemButton
-              selected={selectedIndex === 2}
+              selected={selectedIndex === 1}
               onClick={(event) => {
-                handleListItemClick(event, 2);
+                handleListItemClick(event, 1);
                 navigate('/recognition-model-management');
               }}
             >
@@ -219,6 +237,23 @@ const RootLayout = () => {
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={t('recognitionModelManagement')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('useGuide')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 2}
+              onClick={(event) => {
+                handleListItemClick(event, 2);
+                navigate('/use-guide');
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('useGuide')} />
             </ListItemButton>
           </ListItem>
         </List>

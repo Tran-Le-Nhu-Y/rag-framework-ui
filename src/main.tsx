@@ -19,6 +19,7 @@ import {
   AgentManagementPage,
   RecognitionModelCreationPage,
   RecognitionModelManagementPage,
+  UseGuidePage,
 } from './page/index.ts';
 
 const router = createBrowserRouter(
@@ -34,6 +35,7 @@ const router = createBrowserRouter(
         path="recognition-model-creation"
         element={<RecognitionModelCreationPage />}
       />
+      <Route path="use-guide" element={<UseGuidePage />} />
     </Route>
   )
 );

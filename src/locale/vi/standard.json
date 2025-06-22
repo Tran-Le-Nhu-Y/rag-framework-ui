@@ -26,7 +26,11 @@
   "fieldName": "Tên trường",
   "fieldContent": "Nội dung",
   "configFile": "Tập tin cấu hình",
+
   "guide": "Hướng dẫn",
+  "useGuide": "Hướng dẫn sử dụng",
+  "agentCreationGuide": "Hướng dẫn tạo Agent",
+  "fileConfigCreationGuide": "Hướng dẫn tạo tập tin cấu hình",
 
   "agentManagement": "Quản lý AI Agent",
   "trainingDataManagement": "Quản lý dữ liệu huấn luyện",
