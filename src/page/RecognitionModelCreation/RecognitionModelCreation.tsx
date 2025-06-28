@@ -105,7 +105,7 @@ export default function RecognitionModelCreationPage() {
           </Typography>
           <InputFileUpload
             onFilesChange={() => {}}
-            acceptedFileTypes={['.pt', '.pth', '.pdf']}
+            acceptedFileTypes={['.pt', '.pth']}
           />
         </Box>
 
@@ -118,7 +118,7 @@ export default function RecognitionModelCreationPage() {
           </Button>
           <InputFileUpload
             onFilesChange={() => {}}
-            acceptedFileTypes={['.pt', '.pth', '.pdf']}
+            acceptedFileTypes={['.json']}
           />
           <IconButton color="primary" onClick={handleOpenHelpDialog}>
             <HelpOutlineIcon />

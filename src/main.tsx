@@ -17,6 +17,8 @@ import RootLayout from './layout/RootLayout.tsx';
 import {
   AgentCreationPage,
   AgentManagementPage,
+  PromptCreationPage,
+  PromptManagementPage,
   RecognitionModelCreationPage,
   RecognitionModelManagementPage,
   UseGuidePage,
@@ -35,6 +37,8 @@ const router = createBrowserRouter(
         path="recognition-model-creation"
         element={<RecognitionModelCreationPage />}
       />
+      <Route path="prompt-config" element={<PromptManagementPage />} />
+      <Route path="prompt-creation" element={<PromptCreationPage />} />
       <Route path="use-guide" element={<UseGuidePage />} />
     </Route>
   )

@@ -7,7 +7,7 @@ import type { Data } from '../../component/SelectForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-export default function AgentCreationPage() {
+export default function AgentUpdatePage() {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -136,7 +136,7 @@ export default function AgentCreationPage() {
   return (
     <Stack spacing={1}>
       <Typography sx={{ textAlign: 'center' }} variant="h4">
-        {t('createAgent')}
+        {t('updateAgent')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">

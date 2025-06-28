@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { isValidLength, TextLength } from '../../util';
 import { SelectForm } from '../../component';
 
-export default function AgentUpdateDialog({
+export default function PromptUpdateDialog({
   open,
   agentName = '',
   agentDescription = '',

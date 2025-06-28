@@ -6,14 +6,12 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import AgentUpdateDialog from './AgentUpdate';
 import AgentDetailDialog from './AgentDetail';
 import { useNavigate } from 'react-router';
 
 const AgentManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openUpdateAgentDialog, setOpenUpdateAgentDialog] = useState(false);
   const [openAgentDetailDialog, setOpenAgentDetailDialog] = useState(false);
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
@@ -64,7 +62,7 @@ const AgentManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => setOpenUpdateAgentDialog(true)}
+          onClick={() => {}}
         />,
         <GridActionsCellItem
           icon={
@@ -89,11 +87,11 @@ const AgentManagementPage = () => {
     { id: 7, agentName: 'G', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
   ];
 
-  const handleUpdateAgent = (data: { name: string; description: string }) => {
-    console.log('Updated agent:', data);
-    setOpenUpdateAgentDialog(false);
-    // TODO: Gọi API lưu hoặc cập nhật danh sách agent
-  };
+  //   const handleUpdateAgent = (data: { name: string; description: string }) => {
+  //     console.log('Updated agent:', data);
+  //     setOpenUpdateAgentDialog(false);
+  //     // TODO: Gọi API lưu hoặc cập nhật danh sách agent
+  //   };
   const handleExport = () => {
     const content = {
       name: 'agentName',
@@ -125,14 +123,6 @@ const AgentManagementPage = () => {
         <DataGridTable rows={rows} columns={columns} />
       </Box>
 
-      <AgentUpdateDialog
-        open={openUpdateAgentDialog}
-        onCancel={() => setOpenUpdateAgentDialog(false)}
-        onConfirm={handleUpdateAgent}
-        onFilesChange={() => {
-          console.log('Handle file uploads');
-        }}
-      />
       <AgentDetailDialog
         open={openAgentDetailDialog}
         onExit={() => setOpenAgentDetailDialog(false)}

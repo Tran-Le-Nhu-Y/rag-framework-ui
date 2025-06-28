@@ -102,7 +102,8 @@ const RootLayout = () => {
       pathname === '/recognition-model-creation'
     )
       return 1;
-    if (pathname === '/use-guide') return 2;
+    if (pathname === '/prompt-config') return 2;
+    if (pathname === '/use-guide') return 3;
     return 0; // fallback
   };
   React.useEffect(() => {
@@ -242,11 +243,28 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('useGuide')} disablePadding>
+          <ListItem key={t('promptConfig')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 2}
               onClick={(event) => {
                 handleListItemClick(event, 2);
+                navigate('/prompt-config');
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('promptConfig')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('useGuide')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 3}
+              onClick={(event) => {
+                handleListItemClick(event, 3);
                 navigate('/use-guide');
               }}
             >

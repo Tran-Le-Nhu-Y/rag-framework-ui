@@ -52,6 +52,7 @@ export default function UseGuidePage() {
         >
           <Tab label={t('agentCreationGuide')} {...a11yProps(0)} />
           <Tab label={t('fileConfigCreationGuide')} {...a11yProps(1)} />
+          <Tab label={t('promptStructure')} {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}></CustomTabPanel>
