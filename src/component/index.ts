@@ -5,8 +5,15 @@ import {
   type DragAndDropFormProps,
 } from './DragAndDropForm';
 import SelectForm from './SelectForm';
-
 import { InputFileUpload } from './InputFileUpload';
+import RemoteConnectionDialog from './RemoteConnectionDialog';
 
-export { DataGridTable, DragAndDropForm, SelectForm, InputFileUpload };
 export type { FileAttachment, DragAndDropFormProps };
+
+export {
+  DataGridTable,
+  DragAndDropForm,
+  SelectForm,
+  InputFileUpload,
+  RemoteConnectionDialog,
+};

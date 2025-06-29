@@ -5,14 +5,12 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import AgentDetailDialog from './AgentDetail';
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { useNavigate } from 'react-router';
 
 const AgentManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openAgentDetailDialog, setOpenAgentDetailDialog] = useState(false);
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: 'id', headerName: 'ID', width: 100 },
@@ -46,13 +44,22 @@ const AgentManagementPage = () => {
       getActions: () => [
         <GridActionsCellItem
           icon={
+            <Tooltip title={t('export')}>
+              <SimCardDownloadIcon color="primary" />
+            </Tooltip>
+          }
+          label={t('export')}
+          onClick={() => {}}
+        />,
+        <GridActionsCellItem
+          icon={
             <Tooltip title={t('see')}>
               <RemoveRedEyeIcon />
             </Tooltip>
           }
           color="primary"
           label={t('see')}
-          onClick={() => setOpenAgentDetailDialog(true)}
+          onClick={() => navigate('/agent-detail')}
         />,
         <GridActionsCellItem
           icon={
@@ -62,7 +69,7 @@ const AgentManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => {}}
+          onClick={() => navigate('/agent-update')}
         />,
         <GridActionsCellItem
           icon={
@@ -92,24 +99,24 @@ const AgentManagementPage = () => {
   //     setOpenUpdateAgentDialog(false);
   //     // TODO: Gọi API lưu hoặc cập nhật danh sách agent
   //   };
-  const handleExport = () => {
-    const content = {
-      name: 'agentName',
-      description: 'agentDescription',
-    };
-    const blob = new Blob([JSON.stringify(content, null, 2)], {
-      type: 'application/json',
-    });
+  //   const handleExport = () => {
+  //     const content = {
+  //       name: 'agentName',
+  //       description: 'agentDescription',
+  //     };
+  //     const blob = new Blob([JSON.stringify(content, null, 2)], {
+  //       type: 'application/json',
+  //     });
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${'agent'}-config.json`; // Đặt tên file
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = `${'agent'}-config.json`; // Đặt tên file
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
@@ -122,12 +129,6 @@ const AgentManagementPage = () => {
       <Box sx={{ height: 400, width: '90%' }}>
         <DataGridTable rows={rows} columns={columns} />
       </Box>
-
-      <AgentDetailDialog
-        open={openAgentDetailDialog}
-        onExit={() => setOpenAgentDetailDialog(false)}
-        onExport={handleExport}
-      />
     </Stack>
   );
 };

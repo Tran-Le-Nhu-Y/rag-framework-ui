@@ -16,9 +16,12 @@ import RootLayout from './layout/RootLayout.tsx';
 
 import {
   AgentCreationPage,
+  AgentDetailPage,
   AgentManagementPage,
+  AgentUpdatePage,
   PromptCreationPage,
   PromptManagementPage,
+  PromptUpdatePage,
   RecognitionModelCreationPage,
   RecognitionModelManagementPage,
   UseGuidePage,
@@ -29,6 +32,8 @@ const router = createBrowserRouter(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<AgentManagementPage />} />
       <Route path="agent-creation" element={<AgentCreationPage />} />
+      <Route path="agent-update" element={<AgentUpdatePage />} />
+      <Route path="agent-detail" element={<AgentDetailPage />} />
       <Route
         path="recognition-model-management"
         element={<RecognitionModelManagementPage />}
@@ -39,6 +44,7 @@ const router = createBrowserRouter(
       />
       <Route path="prompt-config" element={<PromptManagementPage />} />
       <Route path="prompt-creation" element={<PromptCreationPage />} />
+      <Route path="prompt-update" element={<PromptUpdatePage />} />
       <Route path="use-guide" element={<UseGuidePage />} />
     </Route>
   )

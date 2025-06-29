@@ -68,7 +68,7 @@ const PromptManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => setOpenUpdatePromptDialog(true)}
+          onClick={() => navigate('/prompt-update')}
         />,
         <GridActionsCellItem
           icon={

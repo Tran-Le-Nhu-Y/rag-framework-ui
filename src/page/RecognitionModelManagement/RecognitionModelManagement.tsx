@@ -9,6 +9,7 @@ import { useState } from 'react';
 import RecognitionModelDetailDialog from './RecognitionModelDetail';
 import RecognitionModelUpdateDialog from './RecognitionModelUpdate';
 import { useNavigate } from 'react-router';
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
 const RecognitionModelManagementPage = () => {
   const { t } = useTranslation();
@@ -22,6 +23,13 @@ const RecognitionModelManagementPage = () => {
       field: 'recognitionModelName',
       headerName: t('recognitionModelName'),
       width: 250,
+      editable: true,
+    },
+    {
+      field: 'status',
+      headerName: t('status'),
+      type: 'string',
+      width: 150,
       editable: true,
     },
 
@@ -46,6 +54,15 @@ const RecognitionModelManagementPage = () => {
       type: 'actions',
       width: 250,
       getActions: () => [
+        <GridActionsCellItem
+          icon={
+            <Tooltip title={t('export')}>
+              <SimCardDownloadIcon color="primary" />
+            </Tooltip>
+          }
+          label={t('export')}
+          onClick={() => {}}
+        />,
         <GridActionsCellItem
           icon={
             <Tooltip title={t('see')}>

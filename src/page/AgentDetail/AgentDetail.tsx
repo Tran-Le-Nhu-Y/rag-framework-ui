@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useNavigate } from 'react-router';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
 export default function AgentCreationPage() {
   const { t } = useTranslation();
@@ -168,7 +169,7 @@ export default function AgentCreationPage() {
   return (
     <Stack spacing={1}>
       <Typography sx={{ textAlign: 'center' }} variant="h4">
-        {t('createAgent')}
+        {t('agentDetailInformation')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">
@@ -598,7 +599,7 @@ export default function AgentCreationPage() {
                     if (vectorDB.accessMethod === 'remote') setDialogOpen(true);
                   }}
                 >
-                  <Tooltip title={t('seeRemoteConnectionInfo')}>
+                  <Tooltip title={t('see')}>
                     <RemoveRedEyeIcon />
                   </Tooltip>
                 </Button>
@@ -625,16 +626,23 @@ export default function AgentCreationPage() {
           </Box>
 
           <Box display="flex" justifyContent="center" gap={2}>
-            <Button variant="contained" color="primary" onClick={() => {}}>
-              {t('confirm')}
-            </Button>
-            <Button
-              variant="outlined"
-              color="info"
-              onClick={() => navigate(-1)}
-            >
-              {t('cancel')}
-            </Button>
+            <Box mt={3} display="flex" justifyContent="center" gap={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {}}
+                startIcon={<SimCardDownloadIcon />}
+              >
+                {t('export')}
+              </Button>
+              <Button
+                variant="outlined"
+                color="info"
+                onClick={() => navigate(-1)}
+              >
+                {t('exit')}
+              </Button>
+            </Box>
           </Box>
         </Stack>
       </Stack>

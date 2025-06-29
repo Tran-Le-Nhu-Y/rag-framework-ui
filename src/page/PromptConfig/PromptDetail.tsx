@@ -8,18 +8,18 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
 export default function PromptDetailDialog({
   open,
-  agentName = '',
-  agentDescription = '',
+  promptName = '',
+  promptDescription = '',
+  promptContent = '',
   onExit,
-  onExport,
 }: {
   open: boolean;
-  agentName?: string;
-  agentDescription?: string;
+  promptName?: string;
+  promptDescription?: string;
+  promptContent?: string;
   onExit: () => void;
   onExport: () => void;
 }) {
@@ -40,34 +40,30 @@ export default function PromptDetailDialog({
           <Stack spacing={2} width="100%">
             <Stack direction={'row'} alignItems="center" spacing={2}>
               <Typography variant="body1" fontWeight={'bold'}>
-                {t('agentName')}:
+                {t('promptName')}:
               </Typography>
               <Typography variant="body1" fontWeight={500}>
-                {agentName || 'N/A'}
+                {promptName || 'N/A'}
               </Typography>
             </Stack>
             <Stack direction={'row'} alignItems="center" spacing={2}>
               <Typography variant="body1" fontWeight={'bold'}>
-                {t('agentDescription')}:
+                {t('promptDescription')}:
               </Typography>
               <Typography variant="body1" fontWeight={500}>
-                {agentDescription || 'N/A'}
+                {promptDescription || 'N/A'}
+              </Typography>
+            </Stack>
+            <Stack direction={'row'} alignItems="center" spacing={2}>
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('promptContent')}:
+              </Typography>
+              <Typography variant="body1" fontWeight={500}>
+                {promptContent || 'N/A'}
               </Typography>
             </Stack>
 
-            <Typography variant="body1" fontWeight={'bold'}>
-              {t('recognitionModel')}:
-            </Typography>
-
             <Box mt={3} display="flex" justifyContent="center" gap={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={onExport}
-                startIcon={<SimCardDownloadIcon />}
-              >
-                {t('export')}
-              </Button>
               <Button variant="outlined" color="info" onClick={onExit}>
                 {t('exit')}
               </Button>

@@ -6,16 +6,19 @@ import { InputFileUpload, SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { useNavigate } from 'react-router';
 
 export default function AgentUpdatePage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [recognitionModel, setRecognitionModel] = useState('');
-  const [provider, setProvider] = useState('');
-  const [filteredContent, setFilteredContent] = useState('');
-  const [filteredMode, setFilteredMode] = useState('');
-  const [llm, setLlm] = useState('');
+  const [recognitionModel, setRecognitionModel] = useState<string>('');
+  const [prompt, setPrompt] = useState<string[]>([]);
+  const [provider, setProvider] = useState<string>('');
+  const [filteredContent, setFilteredContent] = useState<string[]>([]);
+  const [filteredMode, setFilteredMode] = useState<string>('');
+  const [llm, setLlm] = useState<string>('');
   //   const [vectorStoreName, setVectorStoreName] = useState('');
   //   const [searchToolName, setSearchToolName] = useState('');
   //   const [accessMethod, setAccessMethod] = useState('');
@@ -50,6 +53,10 @@ export default function AgentUpdatePage() {
   const recognitionModels: Data[] = [
     { label: 'White spot detector', value: 'white-spot' },
     { label: 'Color classifier', value: 'color-classifier' },
+  ];
+  const prompts: Data[] = [
+    { label: 'Test 1', value: 'Test 1' },
+    { label: 'Test 2', value: 'Test 2' },
   ];
   const accessMethods: Data[] = [
     { label: 'Persistent', value: 'persistent' },
@@ -141,64 +148,64 @@ export default function AgentUpdatePage() {
 
       <Stack justifyContent={'center'} alignItems="center">
         <Stack spacing={4} width="100%">
-          <Stack spacing={1}>
-            <TextField
-              size="small"
-              helperText={t('hyperTextMedium')}
-              label={t('agentName')}
-              value={name}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.MEDIUM))
-                  setName(newValue);
-              }}
-              placeholder={`${t('enter')} ${t('agentName').toLowerCase()}...`}
-            />
+          <Stack spacing={2} direction={'row'} width="100%">
+            <Stack width="100%">
+              <TextField
+                size="small"
+                helperText={t('hyperTextMedium')}
+                label={t('agentName')}
+                value={name}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (isValidLength(newValue, TextLength.MEDIUM))
+                    setName(newValue);
+                }}
+                placeholder={`${t('enter')} ${t('agentName').toLowerCase()}...`}
+              />
 
-            <TextField
-              type="text"
-              placeholder={`${t('enter')} ${t(
-                'agentDescription'
-              ).toLowerCase()}...`}
-              label={t('agentDescription')}
-              value={description}
-              helperText={t('hyperTextVeryLong')}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.MEDIUM))
-                  setDescription(newValue);
-              }}
-              multiline
-              rows={2}
-            />
-            <TextField
-              type="text"
-              placeholder={`${t('enter')} ${t(
-                'promptConfig'
-              ).toLowerCase()}...`}
-              label={t('promptConfig')}
-              value={description}
-              helperText={t('hyperTextVeryLong')}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.MEDIUM))
-                  setDescription(newValue);
-              }}
-              multiline
-              rows={3}
-            />
-            <SelectForm
-              label={t('selectRecognitionModel')}
-              dataList={recognitionModels}
-              value={
-                recognitionModels.find(
-                  (item) => item.value === recognitionModel
-                ) || null
-              }
-              onChange={(selected) => {
-                setRecognitionModel(selected?.value || '');
-              }}
-            />
+              <TextField
+                type="text"
+                placeholder={`${t('enter')} ${t(
+                  'agentDescription'
+                ).toLowerCase()}...`}
+                label={t('agentDescription')}
+                value={description}
+                helperText={t('hyperTextVeryLong')}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (isValidLength(newValue, TextLength.MEDIUM))
+                    setDescription(newValue);
+                }}
+                multiline
+                rows={2}
+              />
+            </Stack>
+            <Stack width="100%" spacing={3}>
+              <SelectForm
+                label={t('selectPrompt')}
+                multiple={true}
+                dataList={prompts}
+                value={prompts.filter((item) => prompt.includes(item.value))}
+                onChange={(selected) =>
+                  setPrompt(
+                    Array.isArray(selected)
+                      ? selected.map((item) => item.value)
+                      : []
+                  )
+                }
+              />
+              <SelectForm
+                multiple={false}
+                label={t('selectRecognitionModel')}
+                dataList={recognitionModels}
+                value={recognitionModels.filter((item) =>
+                  recognitionModel.includes(item.value)
+                )}
+                onChange={(selected) => {
+                  setRecognitionModel((selected as Data | null)?.value || '');
+                }}
+              />
+            </Stack>
           </Stack>
 
           <Box
@@ -233,7 +240,7 @@ export default function AgentUpdatePage() {
                     providerList.find((item) => item.value === provider) || null
                   }
                   onChange={(selected) => {
-                    setProvider(selected?.value || '');
+                    setProvider((selected as Data | null)?.value || '');
                     setLlm('');
                   }}
                 />
@@ -247,7 +254,9 @@ export default function AgentUpdatePage() {
                         (item) => item.value === llm
                       ) || null
                     }
-                    onChange={(selected) => setLlm(selected?.value || '')}
+                    onChange={(selected) =>
+                      setLlm((selected as Data | null)?.value || '')
+                    }
                   />
                 )}
               </Stack>
@@ -255,14 +264,16 @@ export default function AgentUpdatePage() {
                 <SelectForm
                   label={t('filteredContent')}
                   dataList={filteredContentList}
-                  value={
-                    filteredContentList.find(
-                      (item) => item.value === filteredContent
-                    ) || null
+                  value={filteredContentList.filter((item) =>
+                    filteredContent.includes(item.value)
+                  )}
+                  onChange={(selected) =>
+                    setFilteredContent(
+                      Array.isArray(selected)
+                        ? selected.map((item) => item.value)
+                        : []
+                    )
                   }
-                  onChange={(selected) => {
-                    setFilteredContent(selected?.value || '');
-                  }}
                 />
                 <SelectForm
                   label={t('filteredMode')}
@@ -273,7 +284,7 @@ export default function AgentUpdatePage() {
                     ) || null
                   }
                   onChange={(selected) => {
-                    setFilteredMode(selected?.value || '');
+                    setFilteredMode((selected as Data | null)?.value || '');
                   }}
                 />
               </Stack>
@@ -364,7 +375,7 @@ export default function AgentUpdatePage() {
                   ) || null
                 }
                 onChange={(selected) => {
-                  setRecognitionModel(selected?.value || '');
+                  setRecognitionModel((selected as Data | null)?.value || '');
                 }}
               />
               <SelectForm
@@ -376,7 +387,7 @@ export default function AgentUpdatePage() {
                   ) || null
                 }
                 onChange={(selected) => {
-                  setRecognitionModel(selected?.value || '');
+                  setRecognitionModel((selected as Data | null)?.value || '');
                 }}
               />
             </Stack>
@@ -437,7 +448,7 @@ export default function AgentUpdatePage() {
                     handleUpdateTool(
                       tool.id,
                       'provider',
-                      selected?.value || ''
+                      (selected as Data | null)?.value || ''
                     );
                   }}
                 />
@@ -530,7 +541,7 @@ export default function AgentUpdatePage() {
                     handleUpdateVectorStore(
                       vectorDB.id,
                       'provider',
-                      selected?.value || ''
+                      (selected as Data | null)?.value || ''
                     );
                   }}
                 />
@@ -546,7 +557,7 @@ export default function AgentUpdatePage() {
                     handleUpdateVectorStore(
                       vectorDB.id,
                       'accessMethod',
-                      selected?.value || ''
+                      (selected as Data | null)?.value || ''
                     );
                   }}
                 />
@@ -574,7 +585,11 @@ export default function AgentUpdatePage() {
             <Button variant="contained" color="primary" onClick={() => {}}>
               {t('confirm')}
             </Button>
-            <Button variant="outlined" color="info" onClick={() => {}}>
+            <Button
+              variant="outlined"
+              color="info"
+              onClick={() => navigate(-1)}
+            >
               {t('cancel')}
             </Button>
           </Box>

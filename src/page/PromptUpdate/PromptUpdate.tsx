@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { isValidLength, TextLength } from '../../util';
 import { useNavigate } from 'react-router';
 
-export default function PromptCreationPage() {
+export default function PromptUpdatePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -14,7 +14,7 @@ export default function PromptCreationPage() {
   return (
     <Stack spacing={1}>
       <Typography sx={{ textAlign: 'center' }} variant="h4">
-        {t('createPrompt')}
+        {t('updatePrompt')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">
