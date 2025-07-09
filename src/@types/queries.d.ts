@@ -4,3 +4,8 @@ declare interface GetAllAgentQuery {
   pageNumber?: number?;
   pageSize?: number?;
 }
+
+declare interface GetPromptsQuery {
+  offset?: number?;
+  limit?: number?;
+}

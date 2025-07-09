@@ -7,13 +7,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
-import PromptUpdateDialog from './PromptUpdate';
 import PromptDetailDialog from './PromptDetail';
 
 const PromptManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [openUpdatePromptDialog, setOpenUpdatePromptDialog] = useState(false);
+  //   const [openUpdatePromptDialog, setOpenUpdatePromptDialog] = useState(false);
   const [openPromptDetailDialog, setOpenPromptDetailDialog] = useState(false);
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
@@ -174,14 +173,14 @@ const PromptManagementPage = () => {
         <DataGridTable rows={rows} columns={columns} />
       </Box>
 
-      <PromptUpdateDialog
+      {/* <PromptUpdateDialog
         open={openUpdatePromptDialog}
         onCancel={() => setOpenUpdatePromptDialog(false)}
         onConfirm={() => {}}
         onFilesChange={() => {
           console.log('Handle file uploads');
         }}
-      />
+      /> */}
       <PromptDetailDialog
         open={openPromptDetailDialog}
         onExit={() => setOpenPromptDetailDialog(false)}
