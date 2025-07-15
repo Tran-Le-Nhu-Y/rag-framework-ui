@@ -6,7 +6,7 @@ declare interface Agent {
   updatedAt: string;
 }
 declare interface Prompt {
-  id: number;
-  suggestQuestionsPrompt: string;
-  respondPrompt: string;
+  id: string;
+  suggest_questions_prompt: string;
+  respond_prompt: string;
 }

@@ -11,8 +11,8 @@ interface DataGridTableProps {
 const DataGridTable: React.FC<DataGridTableProps> = ({
   rows,
   columns,
-  height = 400,
-  pageSize = 5,
+  height = 480,
+  pageSize = 7,
 }) => {
   return (
     <Box sx={{ height: height, width: '100%' }}>

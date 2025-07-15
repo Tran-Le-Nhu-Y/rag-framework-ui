@@ -102,7 +102,8 @@ const RootLayout = () => {
       pathname === '/recognition-model-creation'
     )
       return 1;
-    if (pathname === '/prompt-config') return 2;
+    if (pathname === '/prompt-management' || pathname === '/prompt-creation')
+      return 2;
     if (pathname === '/use-guide') return 3;
     return 0; // fallback
   };
@@ -243,18 +244,18 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('promptConfig')} disablePadding>
+          <ListItem key={t('promptManagement')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 2}
               onClick={(event) => {
                 handleListItemClick(event, 2);
-                navigate('/prompt-config');
+                navigate('/prompt-management');
               }}
             >
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={t('promptConfig')} />
+              <ListItemText primary={t('promptManagement')} />
             </ListItemButton>
           </ListItem>
         </List>

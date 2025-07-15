@@ -1,8 +1,8 @@
 function toEntity(response: PromptResponse): Prompt {
   const prompt: Prompt = {
     id: response.id,
-    suggestQuestionsPrompt: response.suggestQuestionsPrompt,
-    respondPrompt: response.respondPrompt,
+    suggest_questions_prompt: response.suggest_questions_prompt,
+    respond_prompt: response.respond_prompt,
   };
   return prompt;
 }

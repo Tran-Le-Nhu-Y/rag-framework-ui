@@ -60,26 +60,37 @@ export const promptApi = createApi({
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.status;
       },
-      transformResponse(rawResult: PagingWrapper<PromptResponse>) {
-        const content = rawResult.content.map(toEntity);
+      transformResponse(
+        rawResult: PagingWrapper<PromptResponse>
+      ): PagingWrapper<Prompt> {
+        const content = rawResult.content;
+        if (!content || content.length === 0) {
+          return {
+            ...rawResult,
+            content: [],
+          };
+        }
+        // Map each PromptResponse to Prompt entity
+        const mappedContent: Prompt[] = content.map(toEntity);
+
         return {
           ...rawResult,
-          content,
+          content: mappedContent,
         };
       },
     }),
 
     createPrompt: builder.mutation<string, CreatePromptRequest>({
-      query: ({ suggestQuestionsPrompt, respondPrompt }) => ({
+      query: (data: CreatePromptRequest) => ({
         url: `/${EXTENSION_URL}/create`,
         method: 'POST',
-        params: {
-          suggest_questions_prompt: suggestQuestionsPrompt,
-          respond_prompt: respondPrompt,
+        body: {
+          suggest_questions_prompt: data.suggestQuestionsPrompt,
+          respond_prompt: data.respondPrompt,
         },
       }),
       invalidatesTags() {
-        return [{ type: 'PagingPrompt' } as const, { type: 'Prompt' } as const];
+        return [{ type: 'Prompt' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {

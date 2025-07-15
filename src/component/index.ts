@@ -7,6 +7,7 @@ import {
 import SelectForm from './SelectForm';
 import { InputFileUpload } from './InputFileUpload';
 import RemoteConnectionDialog from './RemoteConnectionDialog';
+import AppSnackbar from './AppSnackbar';
 
 export type { FileAttachment, DragAndDropFormProps };
 
@@ -16,4 +17,5 @@ export {
   SelectForm,
   InputFileUpload,
   RemoteConnectionDialog,
+  AppSnackbar,
 };
