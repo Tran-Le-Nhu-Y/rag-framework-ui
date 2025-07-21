@@ -16,11 +16,35 @@ export const TextLength = {
   EXTREME_LONG: 60000,
 };
 
-export const PathHolder = {
+export const PathHolders = {
   ROOT: '/',
+  AGENT_ID: 'agentId',
+  PROMPT_ID: 'promptId',
+  //   MODULE_ID = 'moduleId',
+  //   MODULE_VERSION_ID = 'moduleVersionId',
+  //   SOFTWARE_DOCUMENT_ID = 'softwareDocumentId',
+  //   MODULE_DOCUMENT_ID = 'moduleDocumentId',
+  //   CUSTOMER_ID = 'customerId',
+  //   DEPLOYMENT_PROCESS_ID = 'processId',
+  //   DEPLOYMENT_PHASE_ID = 'phaseId',
+  //   DEPLOYMENT_PHASE_TYPE_ID = 'phaseTypeId',
+  //   // TEMPLATE_SOFTWARE_EXPIRATION_ID = 'softwareExpirationId',
+  //   // TEMPLATE_SOFTWARE_EXPIRATION_ID = 'softwareExpirationId',
+  //   // TEMPLATE_COMPLETE_DEPLOYMENT_ID = 'completeDeploymentId',
+  //   SOFTWARE_LICENSE_ID = 'softwareLicenseId',
 };
+const AGENT = '/agent';
+const PROMPT = '/prompt';
+export const RoutePaths = {
+  AGENT,
+  CREATE_AGENT: `${AGENT}/create`,
+  UPDATE_AGENT: `${AGENT}/:${PathHolders.AGENT_ID}/update`,
+  AGENT_DETAIL: `${AGENT}/:${PathHolders.AGENT_ID}/detail`,
 
-export const Path = {};
+  PROMPT,
+  CREATE_PROMPT: `${PROMPT}/create`,
+  UPDATE_PROMPT: `${PROMPT}/:${PathHolders.PROMPT_ID}/update`,
+};
 
 export const HideDuration = {
   FAST: 3000,

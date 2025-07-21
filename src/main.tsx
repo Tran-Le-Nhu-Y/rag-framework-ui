@@ -26,14 +26,16 @@ import {
   RecognitionModelManagementPage,
   UseGuidePage,
 } from './page/index.ts';
+import { RoutePaths } from './util/index.ts';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<AgentManagementPage />} />
-      <Route path="agent-creation" element={<AgentCreationPage />} />
-      <Route path="agent-update" element={<AgentUpdatePage />} />
-      <Route path="agent-detail" element={<AgentDetailPage />} />
+      <Route path={RoutePaths.AGENT} element={<AgentManagementPage />} />
+      <Route path={RoutePaths.CREATE_AGENT} element={<AgentCreationPage />} />
+      <Route path={RoutePaths.UPDATE_AGENT} element={<AgentUpdatePage />} />
+      <Route path={RoutePaths.AGENT_DETAIL} element={<AgentDetailPage />} />
       <Route
         path="recognition-model-management"
         element={<RecognitionModelManagementPage />}
@@ -42,9 +44,11 @@ const router = createBrowserRouter(
         path="recognition-model-creation"
         element={<RecognitionModelCreationPage />}
       />
-      <Route path="prompt-management" element={<PromptManagementPage />} />
-      <Route path="prompt-creation" element={<PromptCreationPage />} />
-      <Route path="prompt-update" element={<PromptUpdatePage />} />
+      <Route path={RoutePaths.PROMPT} element={<PromptManagementPage />} />
+      <Route path={RoutePaths.CREATE_PROMPT} element={<PromptCreationPage />} />
+      <Route path={RoutePaths.UPDATE_PROMPT} element={<PromptUpdatePage />} />
+      {/* <Route path="prompt-creation" element={<PromptCreationPage />} />
+      <Route path="prompt-update" element={<PromptUpdatePage />} /> */}
       <Route path="use-guide" element={<UseGuidePage />} />
     </Route>
   )

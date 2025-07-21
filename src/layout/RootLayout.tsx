@@ -25,6 +25,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { Stack } from '@mui/material';
+import { RoutePaths } from '../util';
 
 const drawerWidth = 240;
 
@@ -215,7 +216,7 @@ const RootLayout = () => {
               selected={selectedIndex === 0}
               onClick={(event) => {
                 handleListItemClick(event, 0);
-                navigate('/');
+                navigate(RoutePaths.AGENT);
               }}
             >
               <ListItemIcon>
@@ -249,7 +250,7 @@ const RootLayout = () => {
               selected={selectedIndex === 2}
               onClick={(event) => {
                 handleListItemClick(event, 2);
-                navigate('/prompt-management');
+                navigate(RoutePaths.PROMPT);
               }}
             >
               <ListItemIcon>

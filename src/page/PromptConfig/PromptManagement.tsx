@@ -1,5 +1,10 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import { AppSnackbar, DataGridTable } from '../../component';
+import {
+  AppSnackbar,
+  ConfirmDialog,
+  DataGridTable,
+  Loading,
+} from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
@@ -8,8 +13,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import PromptDetailDialog from './PromptDetail';
-import { useGetPrompts } from '../../service';
-import { HideDuration, SnackbarSeverity } from '../../util';
+import { useDeletePrompt, useGetPrompts } from '../../service';
+import {
+  HideDuration,
+  PathHolders,
+  RoutePaths,
+  SnackbarSeverity,
+} from '../../util';
 
 const PromptManagementPage = () => {
   const { t } = useTranslation();
@@ -19,6 +29,8 @@ const PromptManagementPage = () => {
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
   const [openPromptDetailDialog, setOpenPromptDetailDialog] = useState(false);
+  const [promptIdToDelete, setPromptIdToDelete] = useState<string | null>(null);
+  const [viewedPrompt, setViewedPrompt] = useState<Prompt | null>(null);
 
   // Fetch all prompts
   const [promptsQuery] = useState<GetPromptsQuery>({
@@ -56,7 +68,6 @@ const PromptManagementPage = () => {
       type: 'string',
       width: 350,
       editable: true,
-      align: 'center',
       headerAlign: 'center',
     },
 
@@ -66,7 +77,6 @@ const PromptManagementPage = () => {
       type: 'string',
       width: 500,
       editable: true,
-      align: 'center',
       headerAlign: 'center',
     },
     {
@@ -74,7 +84,7 @@ const PromptManagementPage = () => {
       headerName: t('actions'),
       type: 'actions',
       width: 250,
-      getActions: () => [
+      getActions: (params) => [
         <GridActionsCellItem
           icon={
             <Tooltip title={t('see')}>
@@ -83,7 +93,14 @@ const PromptManagementPage = () => {
           }
           color="primary"
           label={t('see')}
-          onClick={() => setOpenPromptDetailDialog(true)}
+          onClick={() => {
+            setViewedPrompt({
+              id: params.row.id,
+              suggest_questions_prompt: params.row.suggest_questions_prompt,
+              respond_prompt: params.row.respond_prompt,
+            });
+            setOpenPromptDetailDialog(true);
+          }}
         />,
         <GridActionsCellItem
           icon={
@@ -93,7 +110,14 @@ const PromptManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => navigate('/prompt-update')}
+          onClick={() =>
+            navigate(
+              RoutePaths.UPDATE_PROMPT.replace(
+                `:${PathHolders.PROMPT_ID}`,
+                params.row.id
+              )
+            )
+          }
         />,
         <GridActionsCellItem
           icon={
@@ -102,35 +126,30 @@ const PromptManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => {}}
+          onClick={() => handleDeletePrompt(params.row.id)}
         />,
       ],
     },
   ];
 
-  //   const handleUpdateAgent = (data: { name: string; description: string }) => {
-  //     console.log('Updated agent:', data);
-  //     setOpenUpdateAgentDialog(false);
-  //     // TODO: Gọi API lưu hoặc cập nhật danh sách agent
-  //   };
-  //   const handleExport = () => {
-  //     const content = {
-  //       name: 'agentName',
-  //       description: 'agentDescription',
-  //     };
-  //     const blob = new Blob([JSON.stringify(content, null, 2)], {
-  //       type: 'application/json',
-  //     });
+  //delete prompt
+  const [deletePromptTrigger, deletePrompt] = useDeletePrompt();
+  useEffect(() => {
+    if (deletePrompt.isError) {
+      setSnackbarMessage(t('deletePromptFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+    if (deletePrompt.isSuccess) {
+      setSnackbarMessage(t('deletePromptSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+    }
+  }, [deletePrompt.isError, deletePrompt.isSuccess, t]);
 
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = `${'agent'}-config.json`; // Đặt tên file
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //     URL.revokeObjectURL(url);
-  //   };
+  const handleDeletePrompt = (promptId: string) => {
+    setPromptIdToDelete(promptId);
+  };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
@@ -141,23 +160,41 @@ const PromptManagementPage = () => {
         autoHideDuration={HideDuration.FAST}
         onClose={() => setSnackbarOpen(false)}
       />
+      {promptIdToDelete && (
+        <ConfirmDialog
+          open={true}
+          onClose={() => setPromptIdToDelete(null)}
+          title={t('confirmPromptDeleteTitle')}
+          message={t('deletePromptConfirm')}
+          confirmText={t('confirm')}
+          cancelText={t('cancel')}
+          onDelete={async () => {
+            await deletePromptTrigger(promptIdToDelete);
+            setPromptIdToDelete(null);
+          }}
+        />
+      )}
       <Typography variant="h4">{t('promptList')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={() => navigate('/prompt-creation')}
+          onClick={() => navigate(RoutePaths.CREATE_PROMPT)}
         >
           {t('createPrompt')}
         </Button>
       </Box>
-      <Box sx={{ height: 500, width: '90%' }}>
-        <DataGridTable rows={rows} columns={columns} />
-      </Box>
+      {prompts.isLoading || prompts.isFetching || deletePrompt.isLoading ? (
+        <Loading />
+      ) : (
+        <Box sx={{ height: 500, width: '90%' }}>
+          <DataGridTable rows={rows} columns={columns} />
+        </Box>
+      )}
 
       <PromptDetailDialog
         open={openPromptDetailDialog}
         onExit={() => setOpenPromptDetailDialog(false)}
-        onExport={() => {}}
+        prompt={viewedPrompt}
       />
     </Stack>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   HideDuration,
   isValidLength,
+  RoutePaths,
   SnackbarSeverity,
   TextLength,
 } from '../../util';
@@ -30,7 +31,7 @@ export default function PromptCreationPage() {
       setSnackbarMessage(t('createPromptSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
-      navigate('/prompt-management');
+      navigate(RoutePaths.PROMPT);
     }
   }, [createPrompt.isError, createPrompt.isSuccess, navigate, t]);
 
@@ -40,15 +41,11 @@ export default function PromptCreationPage() {
         suggestQuestionsPrompt: suggestQuestions,
         respondPrompt: respond,
       };
-      console.log('Creating prompt:', newPrompt);
 
-      const result = await createPromptTrigger(newPrompt).unwrap();
-      console.log('Create result:', result);
-
-      //   await createPromptTrigger(newPrompt);
+      await createPromptTrigger(newPrompt);
       setSuggestQuestions('');
       setRespond('');
-      navigate('/prompt-management');
+      navigate(RoutePaths.PROMPT);
 
       setSnackbarMessage(t('createPromptSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
@@ -124,7 +121,7 @@ export default function PromptCreationPage() {
             <Button
               variant="outlined"
               color="info"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(RoutePaths.PROMPT)}
             >
               {t('cancel')}
             </Button>
