@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { useNavigate } from 'react-router';
+import { RoutePaths } from '../../util';
 
 const AgentManagementPage = () => {
   const { t } = useTranslation();
@@ -59,7 +60,7 @@ const AgentManagementPage = () => {
           }
           color="primary"
           label={t('see')}
-          onClick={() => navigate('/agent-detail')}
+          onClick={() => navigate(RoutePaths.AGENT_DETAIL)}
         />,
         <GridActionsCellItem
           icon={
@@ -69,7 +70,7 @@ const AgentManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => navigate('/agent-update')}
+          onClick={() => navigate(RoutePaths.UPDATE_AGENT)}
         />,
         <GridActionsCellItem
           icon={
@@ -122,7 +123,10 @@ const AgentManagementPage = () => {
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
       <h1>{t('agentList')}</h1>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
-        <Button variant="contained" onClick={() => navigate('/agent-creation')}>
+        <Button
+          variant="contained"
+          onClick={() => navigate(RoutePaths.CREATE_AGENT)}
+        >
           {t('createAgent')}
         </Button>
       </Box>

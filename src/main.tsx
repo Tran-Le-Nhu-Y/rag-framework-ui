@@ -19,6 +19,8 @@ import {
   AgentDetailPage,
   AgentManagementPage,
   AgentUpdatePage,
+  ChatModelCreationPage,
+  ChatModelManagementPage,
   PromptCreationPage,
   PromptManagementPage,
   PromptUpdatePage,
@@ -36,6 +38,16 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.CREATE_AGENT} element={<AgentCreationPage />} />
       <Route path={RoutePaths.UPDATE_AGENT} element={<AgentUpdatePage />} />
       <Route path={RoutePaths.AGENT_DETAIL} element={<AgentDetailPage />} />
+
+      <Route
+        path={RoutePaths.CHATMODEL}
+        element={<ChatModelManagementPage />}
+      />
+      <Route
+        path={RoutePaths.CREATE_CHATMODEL}
+        element={<ChatModelCreationPage />}
+      />
+
       <Route
         path="recognition-model-management"
         element={<RecognitionModelManagementPage />}
@@ -44,6 +56,7 @@ const router = createBrowserRouter(
         path="recognition-model-creation"
         element={<RecognitionModelCreationPage />}
       />
+
       <Route path={RoutePaths.PROMPT} element={<PromptManagementPage />} />
       <Route path={RoutePaths.CREATE_PROMPT} element={<PromptCreationPage />} />
       <Route path={RoutePaths.UPDATE_PROMPT} element={<PromptUpdatePage />} />

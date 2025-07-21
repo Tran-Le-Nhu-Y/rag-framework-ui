@@ -35,6 +35,7 @@ export const PathHolders = {
 };
 const AGENT = '/agent';
 const PROMPT = '/prompt';
+const CHATMODEL = '/chat-model';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -44,6 +45,9 @@ export const RoutePaths = {
   PROMPT,
   CREATE_PROMPT: `${PROMPT}/create`,
   UPDATE_PROMPT: `${PROMPT}/:${PathHolders.PROMPT_ID}/update`,
+
+  CHATMODEL,
+  CREATE_CHATMODEL: `${CHATMODEL}/create`,
 };
 
 export const HideDuration = {
