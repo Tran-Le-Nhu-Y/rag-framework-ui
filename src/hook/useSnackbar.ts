@@ -1,12 +1,14 @@
 import { createContext, useContext } from 'react';
 import { type SnackbarSeverity } from '../util';
 
+interface SnackbarShowProps {
+  message?: string;
+  severity?: SnackbarSeverity;
+  duration?: number;
+}
+
 interface SnackbarProps {
-  show: (props: {
-    message?: string;
-    severity?: SnackbarSeverity;
-    duration?: number;
-  }) => void;
+  show: (props: SnackbarShowProps) => void;
   close: () => void;
 }
 
@@ -20,4 +22,4 @@ const useSnackbar = () => {
 };
 
 export { useSnackbar, SnackbarContext };
-export type { SnackbarProps };
+export type { SnackbarProps, SnackbarShowProps };

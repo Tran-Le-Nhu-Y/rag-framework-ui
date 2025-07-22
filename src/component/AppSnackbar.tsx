@@ -1,8 +1,8 @@
 // component/AppSnackbar.tsx
 import { Alert, Snackbar } from '@mui/material';
-import React, { useState, type PropsWithChildren } from 'react';
+import React, { useCallback, useState, type PropsWithChildren } from 'react';
 import type { SnackbarSeverity } from '../util';
-import { SnackbarContext } from '../hook/useSnackbar';
+import { SnackbarContext, type SnackbarShowProps } from '../hook/useSnackbar';
 
 interface AppSnackbarState {
   open: boolean;
@@ -16,29 +16,21 @@ const AppSnackbar: React.FC<PropsWithChildren> = ({ children }) => {
     open: false,
   });
 
+  const show = useCallback(
+    (props: SnackbarShowProps) => setState({ open: true, ...props }),
+    []
+  );
+  const close = useCallback(() => setState({ open: false }), []);
+
   return (
-    <SnackbarContext
-      value={{
-        show: (props) => {
-          setState({ open: true, ...props });
-        },
-        close: () => {
-          setState({ open: false });
-        },
-      }}
-    >
+    <SnackbarContext value={{ show, close }}>
       <Snackbar
         open={state.open}
-        autoHideDuration={Number(state.duration ?? 3000)}
+        autoHideDuration={state.duration ?? 3000}
+        onClose={close}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
-        <Alert
-          onClose={() => {
-            setState({ open: false });
-          }}
-          severity={state.severity}
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={close} severity={state.severity} sx={{ width: '100%' }}>
           {state.message ?? ''}
         </Alert>
       </Snackbar>
