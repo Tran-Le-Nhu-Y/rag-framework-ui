@@ -33,22 +33,12 @@ export const PathHolders = {
   AGENT_ID: 'agentId',
   PROMPT_ID: 'promptId',
   CHAT_MODEL_ID: 'chatModelId',
-  //   MODULE_ID = 'moduleId',
-  //   MODULE_VERSION_ID = 'moduleVersionId',
-  //   SOFTWARE_DOCUMENT_ID = 'softwareDocumentId',
-  //   MODULE_DOCUMENT_ID = 'moduleDocumentId',
-  //   CUSTOMER_ID = 'customerId',
-  //   DEPLOYMENT_PROCESS_ID = 'processId',
-  //   DEPLOYMENT_PHASE_ID = 'phaseId',
-  //   DEPLOYMENT_PHASE_TYPE_ID = 'phaseTypeId',
-  //   // TEMPLATE_SOFTWARE_EXPIRATION_ID = 'softwareExpirationId',
-  //   // TEMPLATE_SOFTWARE_EXPIRATION_ID = 'softwareExpirationId',
-  //   // TEMPLATE_COMPLETE_DEPLOYMENT_ID = 'completeDeploymentId',
-  //   SOFTWARE_LICENSE_ID = 'softwareLicenseId',
+  EMBEDDING_MODEL_ID: 'embeddingModelId',
 };
 const AGENT = '/agent';
 const PROMPT = '/prompt';
 const CHATMODEL = '/chat-model';
+const EMBEDDINGS = '/embedding';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -62,6 +52,10 @@ export const RoutePaths = {
   CHATMODEL,
   CREATE_CHATMODEL: `${CHATMODEL}/create`,
   UPDATE_CHATMODEL: `${CHATMODEL}/:${PathHolders.CHAT_MODEL_ID}/update`,
+
+  EMBEDDINGS,
+  CREATE_EMBEDDINGS: `${EMBEDDINGS}/create`,
+  UPDATE_EMBEDDINGS: `${EMBEDDINGS}/:${PathHolders.EMBEDDING_MODEL_ID}/update`,
 };
 
 export const HideDuration = {

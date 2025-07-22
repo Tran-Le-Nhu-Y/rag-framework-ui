@@ -22,6 +22,8 @@ import {
   ChatModelCreationPage,
   ChatModelManagementPage,
   ChatModelUpdatePage,
+  EmbeddingCreationPage,
+  EmbeddingsManagementPage,
   PromptCreationPage,
   PromptManagementPage,
   PromptUpdatePage,
@@ -30,6 +32,7 @@ import {
   UseGuidePage,
 } from './page/index.ts';
 import { RoutePaths } from './util/index.ts';
+import EmbeddingUpdatePage from './page/EmbeddingUpdate/EmbeddingUpdate.tsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +54,19 @@ const router = createBrowserRouter(
       <Route
         path={RoutePaths.UPDATE_CHATMODEL}
         element={<ChatModelUpdatePage />}
+      />
+
+      <Route
+        path={RoutePaths.EMBEDDINGS}
+        element={<EmbeddingsManagementPage />}
+      />
+      <Route
+        path={RoutePaths.CREATE_EMBEDDINGS}
+        element={<EmbeddingCreationPage />}
+      />
+      <Route
+        path={RoutePaths.UPDATE_EMBEDDINGS}
+        element={<EmbeddingUpdatePage />}
       />
 
       <Route

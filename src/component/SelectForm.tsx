@@ -50,24 +50,7 @@ export default function SelectForm({
       value={value ?? (multiple ? [] : null)}
       onChange={(_, newValue) => onChange?.(newValue)}
       loading={loading}
-      renderInput={(params) => (
-        // <TextField
-        //   {...params}
-        //   label={label}
-        //   InputProps={{
-        //     ...params.InputProps,
-        //     endAdornment: (
-        //       <>
-        //         {loading ? (
-        //           <CircularProgress color="inherit" size={20} />
-        //         ) : null}
-        //         {params.InputProps.endAdornment}
-        //       </>
-        //     ),
-        //   }}
-        // />
-        <TextField {...params} label={label} />
-      )}
+      renderInput={(params) => <TextField {...params} label={label} />}
     />
   );
 }

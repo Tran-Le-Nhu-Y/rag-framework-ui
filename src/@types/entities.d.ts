@@ -13,24 +13,21 @@ declare interface Prompt {
 
 declare type EmbeddingType = 'google_genai' | 'hugging_face';
 declare type Embeddings = HuggingFaceEmbeddings | GoogleGenAIEmbeddings;
-declare type GoogleGenAIEmbeddingsTaskType =
-  | 'task_type_unspecified'
-  | 'retrieval_query'
-  | 'retrieval_document'
-  | 'semantic_similarity'
-  | 'classification'
-  | 'clustering';
 
-declare interface HuggingFaceEmbeddings {
+declare interface BaseEmbeddings {
   id: string;
   name: string;
   model_name: string;
   type: EmbeddingType;
 }
 
+declare interface HuggingFaceEmbeddings extends BaseEmbeddings {
+  type: 'hugging_face';
+}
 // declare interface HuggingFaceEmbeddings extends BaseEmbeddings {}
-declare interface GoogleGenAIEmbeddings extends HuggingFaceEmbeddings {
-  task_type: GoogleGenAIEmbeddingsTaskType;
+declare interface GoogleGenAIEmbeddings extends BaseEmbeddings {
+  task_type?: string | null;
+  type: 'google_genai';
 }
 
 declare interface OutputClass {

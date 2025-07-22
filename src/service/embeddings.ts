@@ -86,18 +86,18 @@ export const embeddingsApi = createApi({
     }),
     updateEmbeddingModel: builder.mutation<void, UpdateEmbeddingRequest>({
       query: (data: UpdateEmbeddingRequest) => ({
-        url: `/${EXTENSION_URL}/${data.embeddingId}/update`,
+        url: `/${EXTENSION_URL}/${data.id}/update`,
         method: 'PUT',
         // body: data,
         body: {
           // Gửi toàn bộ data, trừ `chatModelId`
           ...data,
-          embeddingId: undefined,
+          id: undefined,
         },
       }),
       invalidatesTags(_result, _error, arg) {
-        const { embeddingId } = arg;
-        return [{ type: 'Embeddings', id: embeddingId } as const];
+        const { id } = arg;
+        return [{ type: 'Embeddings', id: id } as const];
       },
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.status;
