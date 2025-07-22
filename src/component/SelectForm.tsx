@@ -9,6 +9,7 @@ export interface Data {
 }
 
 type Props = {
+  readOnly?: boolean;
   label?: string;
   value?: Data | Data[] | null;
   dataList: Data[];
@@ -19,6 +20,7 @@ type Props = {
 
 export default function SelectForm({
   label,
+  readOnly,
   value = null,
   dataList,
   onChange,
@@ -38,6 +40,7 @@ export default function SelectForm({
 
   return (
     <Autocomplete
+      readOnly={readOnly}
       multiple={multiple}
       sx={{ width: '100%' }}
       size="small"

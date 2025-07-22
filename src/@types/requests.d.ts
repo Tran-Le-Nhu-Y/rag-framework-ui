@@ -11,7 +11,6 @@ declare interface UpdatePromptRequest {
 
 declare interface CreateChatModelRequest {
   model_name: string;
-  provider: string;
   temperature: number;
   top_k?: number | null;
   top_p?: number | null;
@@ -27,7 +26,7 @@ declare interface CreateChatModelRequest {
   max_tokens?: number;
   max_retries?: number;
   timeout?: number | null;
-  safety_settings?: Record<string, string> | null;
+  safety_settings?: Record<HarmCategory, HarmBlockThreshold> | null;
 }
 declare interface UpdateChatModelRequest extends CreateChatModelRequest {
   chatModelId: string;

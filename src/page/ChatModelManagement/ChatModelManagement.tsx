@@ -104,29 +104,26 @@ const ChatModelManagementPage = () => {
       ],
     },
   ];
-  const [rows, setRows] = useState<ChatModel[]>([]);
   const [chatModelQuery] = useState<GetChatModelsQuery>({
     offset: 0,
     limit: 40,
   });
   const chatModel = useGetChatModels(chatModelQuery);
   useEffect(() => {
-    if (chatModel.data?.content) {
-      setRows(chatModel.data.content);
-    }
     if (chatModel.isError) {
       showSnackbar({
-        message: t('promptsLoadingError'),
+        message: t('chatModelLoadingError'),
         severity: SnackbarSeverity.ERROR,
       });
     }
-  }, [chatModel.data?.content, chatModel.isError, showSnackbar, t]);
+  }, [chatModel.isError, showSnackbar, t]);
 
   //delete chat model
   const [deleteChatModelTrigger] = useDeleteChatModel();
   const handleDeleteChatModel = async (chatModelId: string) => {
     try {
       await deleteChatModelTrigger(chatModelId).unwrap();
+      setChatModelIdToDelete(null);
       showSnackbar({
         message: t('deleteChatModelSuccess'),
         severity: SnackbarSeverity.SUCCESS,
@@ -152,7 +149,6 @@ const ChatModelManagementPage = () => {
           cancelText={t('cancel')}
           onDelete={async () => {
             await handleDeleteChatModel(chatModelIdToDelete);
-            setChatModelIdToDelete(null);
           }}
         />
       )}
@@ -166,7 +162,7 @@ const ChatModelManagementPage = () => {
         </Button>
       </Box>
       <Box sx={{ height: 400, width: '90%' }}>
-        <DataGridTable rows={rows} columns={columns} />
+        <DataGridTable rows={chatModel.data?.content ?? []} columns={columns} />
       </Box>
       <ChatModelDetailDialog
         open={openChatModelDetailDialog}

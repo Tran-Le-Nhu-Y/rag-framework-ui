@@ -103,6 +103,8 @@
   "safetySettingsList": "Danh sách cài đặt an toàn",
   "missingProviderType": "Thiếu nhà cung cấp",
   "provider": " Nhà cung cấp",
+  "pleaseSelectHarmCategory": "Hãy chọn lớp",
+  "pleaseSelectHarmBlockThreshold": "Hãy chọn mức độ",
 
   "createChatModel": "Tạo Chat Model",
   "createChatModelSuccess": "Tạo Chat Model thành công",
@@ -117,6 +119,8 @@
   "deleteChatModelFailed": "Xóa Chat Model thất bại",
   "deleteChatModelSuccess": "Xóa Chat Model thành công",
   "chatModelDetailInformation": "Thông tin chi tiết Chat Model",
+
+  "ollamaStopTokenHint": "Các stop token được sử dụng",
 
   "promptManagement": "Quản lý Prompt",
   "promptList": "Danh sách Prompt",
