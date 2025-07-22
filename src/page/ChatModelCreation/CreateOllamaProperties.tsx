@@ -3,13 +3,13 @@ import { t } from 'i18next';
 
 export interface OllamaChatModelAdditionalProperties {
   temperature: number;
-  baseUrl: string;
-  topK: number | null;
-  topP: number | null;
+  base_url: string;
+  top_k: number | null;
+  top_p: number | null;
   seed: number | null;
-  numCtx: number;
-  numPredict: number | null;
-  repeatPenalty: number | null;
+  num_ctx: number;
+  num_predict: number | null;
+  repeat_penalty: number | null;
   stop: string;
 }
 
@@ -32,7 +32,7 @@ const CreateOllamaProperties = ({
             min: 0,
             step: 1,
           }}
-          value={value.topK ?? ''}
+          value={value.top_k ?? ''}
           onChange={(e) => {
             let topK: number | null = null;
             try {
@@ -41,7 +41,7 @@ const CreateOllamaProperties = ({
               console.debug(error);
               topK = null;
             }
-            onChange({ ...value, topK });
+            onChange({ ...value, top_k: topK });
           }}
         />
         <TextField
@@ -54,7 +54,7 @@ const CreateOllamaProperties = ({
             max: 1,
             step: 0.1,
           }}
-          value={value.topP ?? ''}
+          value={value.top_p ?? ''}
           onChange={(e) => {
             let topP: number | null = null;
             try {
@@ -63,15 +63,15 @@ const CreateOllamaProperties = ({
               console.debug(error);
               topP = null;
             }
-            onChange({ ...value, topP });
+            onChange({ ...value, top_p: topP });
           }}
         />
       </Stack>
       <TextField
         size="small"
         label={t('baseURL')}
-        value={value.baseUrl}
-        onChange={(e) => onChange({ ...value, baseUrl: e.target.value })}
+        value={value.base_url}
+        onChange={(e) => onChange({ ...value, base_url: e.target.value })}
       />
       <Stack direction={'row'} spacing={2} width="100%">
         <TextField
@@ -118,9 +118,9 @@ const CreateOllamaProperties = ({
             min: 0,
             step: 1,
           }}
-          value={value.numCtx}
+          value={value.num_ctx}
           onChange={(e) =>
-            onChange({ ...value, numCtx: Number(e.target.value) })
+            onChange({ ...value, num_ctx: Number(e.target.value) })
           }
         />
         <TextField
@@ -132,7 +132,7 @@ const CreateOllamaProperties = ({
             min: 0,
             step: 1,
           }}
-          value={value.numPredict ?? ''}
+          value={value.num_predict ?? ''}
           onChange={(e) => {
             let numPredict: number | null = null;
             try {
@@ -141,7 +141,7 @@ const CreateOllamaProperties = ({
               console.debug(error);
               numPredict = null;
             }
-            onChange({ ...value, numPredict });
+            onChange({ ...value, num_predict: numPredict });
           }}
         />
       </Stack>
@@ -156,7 +156,7 @@ const CreateOllamaProperties = ({
             max: 2,
             step: 0.1,
           }}
-          value={value.repeatPenalty ?? ''}
+          value={value.repeat_penalty ?? ''}
           onChange={(e) => {
             let repeatPenalty: number | null = null;
             try {
@@ -165,7 +165,7 @@ const CreateOllamaProperties = ({
               console.debug(error);
               repeatPenalty = null;
             }
-            onChange({ ...value, repeatPenalty });
+            onChange({ ...value, repeat_penalty: repeatPenalty });
           }}
         />
         <Tooltip title={t('ollamaStopTokenHint')}>

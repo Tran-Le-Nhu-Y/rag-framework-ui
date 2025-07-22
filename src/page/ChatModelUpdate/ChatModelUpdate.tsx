@@ -96,9 +96,9 @@ export default function ChatModelUpdatePage() {
       setChatModel({ ...model } as Partial<OllamaChatModel> &
         Partial<GoogleGenAIChatModel>);
 
-      if (model.type === 'google_genai' && model.safetySettings) {
+      if (model.type === 'google_genai' && model.safety_settings) {
         setSafetySettingsList(
-          Object.entries(model.safetySettings).map(([category, level]) => ({
+          Object.entries(model.safety_settings).map(([category, level]) => ({
             category,
             level,
           }))
@@ -164,7 +164,7 @@ export default function ChatModelUpdatePage() {
                   size="small"
                   helperText={t('hyperTextMedium')}
                   label={t('modelName')}
-                  value={chatModel.modelName || ''}
+                  value={chatModel.model_name || ''}
                   onChange={(e) => updateModel('model_name', e.target.value)}
                   placeholder={`${t('enter')} ${t(
                     'modelName'
@@ -197,7 +197,7 @@ export default function ChatModelUpdatePage() {
                     min: 0,
                     step: 1,
                   }}
-                  value={chatModel.topK ?? ''}
+                  value={chatModel.top_k ?? ''}
                   onChange={(e) =>
                     updateModel('top_k', Number(e.target.value) || null)
                   }
@@ -212,7 +212,7 @@ export default function ChatModelUpdatePage() {
                     max: 1,
                     step: 0.1,
                   }}
-                  value={chatModel.topP ?? ''}
+                  value={chatModel.top_p ?? ''}
                   onChange={(e) =>
                     updateModel('top_p', Number(e.target.value) || null)
                   }
@@ -225,7 +225,7 @@ export default function ChatModelUpdatePage() {
                   <TextField
                     size="small"
                     label={t('baseURL')}
-                    value={chatModel.baseUrl || ''}
+                    value={chatModel.base_url || ''}
                     onChange={(e) => updateModel('base_url', e.target.value)}
                   />
                   <Stack direction={'row'} spacing={2} width="100%">
@@ -266,7 +266,7 @@ export default function ChatModelUpdatePage() {
                         min: 0,
                         step: 1,
                       }}
-                      value={chatModel.numCtx ?? 2048}
+                      value={chatModel.num_ctx ?? 2048}
                       onChange={(e) =>
                         updateModel('num_ctx', Number(e.target.value))
                       }
@@ -280,7 +280,7 @@ export default function ChatModelUpdatePage() {
                         min: 0,
                         step: 1,
                       }}
-                      value={chatModel.numPredict ?? 128}
+                      value={chatModel.num_predict ?? 128}
                       onChange={(e) =>
                         updateModel(
                           'num_predict',
@@ -300,7 +300,7 @@ export default function ChatModelUpdatePage() {
                         max: 2,
                         step: 0.1,
                       }}
-                      value={chatModel.repeatPenalty ?? 1.1}
+                      value={chatModel.repeat_penalty ?? 1.1}
                       onChange={(e) =>
                         updateModel(
                           'repeat_penalty',
@@ -349,7 +349,7 @@ export default function ChatModelUpdatePage() {
                       label={t('maxTokens')}
                       type="number"
                       inputProps={{ min: 10 }}
-                      value={chatModel.maxTokens ?? 1024}
+                      value={chatModel.max_tokens ?? 1024}
                       onChange={(e) =>
                         updateModel(
                           'max_tokens',
@@ -365,7 +365,7 @@ export default function ChatModelUpdatePage() {
                       label={t('maxRetries')}
                       type="number"
                       inputProps={{ min: 0 }}
-                      value={chatModel.maxRetries ?? 6}
+                      value={chatModel.max_retries ?? 6}
                       onChange={(e) =>
                         updateModel(
                           'max_retries',

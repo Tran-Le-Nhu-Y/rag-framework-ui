@@ -17,12 +17,12 @@ import { useSnackbar } from '../../hook';
 
 export interface GoogleGenAIChatModelAdditionalProperties {
   temperature: number;
-  topK: number | null;
-  topP: number | null;
-  maxTokens: number;
-  maxRetries: number;
+  top_k: number | null;
+  top_p: number | null;
+  max_tokens: number;
+  max_retries: number;
   timeout: number | null;
-  safetySettings: Array<{
+  safety_settings: Array<{
     category: HarmCategory;
     threshold: HarmBlockThreshold;
   }> | null;
@@ -78,7 +78,7 @@ const CreateGoogleGenAIProperties = ({
             min: 0,
             step: 1,
           }}
-          value={value.topK ?? ''}
+          value={value.top_k ?? ''}
           onChange={(e) => {
             let topK: number | null = null;
             try {
@@ -87,7 +87,7 @@ const CreateGoogleGenAIProperties = ({
               console.debug(error);
               topK = null;
             }
-            onChange({ ...value, topK });
+            onChange({ ...value, top_k: topK });
           }}
         />
         <TextField
@@ -100,7 +100,7 @@ const CreateGoogleGenAIProperties = ({
             max: 1,
             step: 0.1,
           }}
-          value={value.topP ?? ''}
+          value={value.top_p ?? ''}
           onChange={(e) => {
             let topP: number | null = null;
             try {
@@ -109,7 +109,7 @@ const CreateGoogleGenAIProperties = ({
               console.debug(error);
               topP = null;
             }
-            onChange({ ...value, topP });
+            onChange({ ...value, top_p: topP });
           }}
         />
       </Stack>
@@ -136,11 +136,11 @@ const CreateGoogleGenAIProperties = ({
           label={t('maxTokens')}
           type="number"
           inputProps={{ min: 10 }}
-          value={value.maxTokens}
+          value={value.max_tokens}
           onChange={(e) =>
             onChange({
               ...value,
-              maxTokens: Math.max(10, Number(e.target.value)),
+              max_tokens: Math.max(10, Number(e.target.value)),
             })
           }
         />
@@ -152,11 +152,11 @@ const CreateGoogleGenAIProperties = ({
           label={t('maxRetries')}
           type="number"
           inputProps={{ min: 0 }}
-          value={value.maxRetries}
+          value={value.max_retries}
           onChange={(e) =>
             onChange({
               ...value,
-              maxRetries: Math.max(0, Number(e.target.value)),
+              max_retries: Math.max(0, Number(e.target.value)),
             })
           }
         />
@@ -270,10 +270,13 @@ const CreateGoogleGenAIProperties = ({
                 }
 
                 const { category, threshold } = safetySettingHolder;
-                const currentSettings = value.safetySettings ?? [];
+                const currentSettings = value.safety_settings ?? [];
                 onChange({
                   ...value,
-                  safetySettings: [...currentSettings, { category, threshold }],
+                  safety_settings: [
+                    ...currentSettings,
+                    { category, threshold },
+                  ],
                 });
                 setSafetySettingHolder(undefined);
               }}
@@ -284,7 +287,7 @@ const CreateGoogleGenAIProperties = ({
             </IconButton>
           </Stack>
 
-          {value.safetySettings?.map((item, index) => (
+          {value.safety_settings?.map((item, index) => (
             <Stack
               key={index}
               direction="row"
@@ -315,10 +318,10 @@ const CreateGoogleGenAIProperties = ({
                 variant="outlined"
                 color="error"
                 onClick={() => {
-                  const currentSettings = value.safetySettings ?? [];
+                  const currentSettings = value.safety_settings ?? [];
                   onChange({
                     ...value,
-                    safetySettings: currentSettings.filter(
+                    safety_settings: currentSettings.filter(
                       (v) => v.category !== item.category
                     ),
                   });

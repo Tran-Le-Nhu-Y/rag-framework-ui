@@ -15,7 +15,7 @@ const OllamaDetail = ({ chatModel }: OllamaDetailProps) => {
               {t('numCtx')}:
             </Typography>
             <Typography variant="body1" fontWeight={500}>
-              {chatModel.numCtx || 'N/A'}
+              {chatModel.num_ctx || 'N/A'}
             </Typography>
           </Stack>
           <Stack direction={'row'} spacing={1}>
@@ -23,7 +23,7 @@ const OllamaDetail = ({ chatModel }: OllamaDetailProps) => {
               {t('repeatPenalty')}:
             </Typography>
             <Typography variant="body1" fontWeight={500}>
-              {chatModel.repeatPenalty || 'N/A'}
+              {chatModel.repeat_penalty || 'N/A'}
             </Typography>
           </Stack>
         </Stack>
@@ -41,7 +41,7 @@ const OllamaDetail = ({ chatModel }: OllamaDetailProps) => {
               {t('numPredict')}:
             </Typography>
             <Typography variant="body1" fontWeight={500}>
-              {chatModel.numPredict || 'N/A'}
+              {chatModel.num_predict || 'N/A'}
             </Typography>
           </Stack>
         </Stack>
@@ -51,7 +51,7 @@ const OllamaDetail = ({ chatModel }: OllamaDetailProps) => {
           {t('baseURL')}:
         </Typography>
         <Typography variant="body1" fontWeight={500}>
-          {chatModel.baseUrl || 'N/A'}
+          {chatModel.base_url || 'N/A'}
         </Typography>
       </Stack>
       <Stack direction={'row'} spacing={1}>

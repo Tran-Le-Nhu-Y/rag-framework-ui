@@ -10,11 +10,11 @@ function toEntity(response: ChatModelResponse): ChatModel {
       const chatModel: OllamaChatModel = {
         ...baseFields,
         type: 'ollama',
-        baseUrl: data.base_url ?? null,
+        base_url: data.base_url ?? null,
         seed: data.seed ?? null,
-        numCtx: data.num_ctx,
-        numPredict: data.num_predict ?? null,
-        repeatPenalty: data.repeat_penalty ?? null,
+        num_ctx: data.num_ctx,
+        num_predict: data.num_predict ?? null,
+        repeat_penalty: data.repeat_penalty ?? null,
         stop: data.stop ?? null,
       };
       return chatModel;
@@ -25,12 +25,12 @@ function toEntity(response: ChatModelResponse): ChatModel {
         ...baseFields,
         type: 'google_genai',
         temperature: data.temperature,
-        topK: data.top_k ?? null,
-        topP: data.top_p ?? null,
-        maxTokens: data.max_tokens ?? 1024,
-        maxRetries: data.max_retries ?? 6,
+        top_k: data.top_k ?? null,
+        top_p: data.top_p ?? null,
+        max_tokens: data.max_tokens ?? 1024,
+        max_retries: data.max_retries ?? 6,
         timeout: data.timeout ?? null,
-        safetySettings: data.safety_settings ?? null,
+        safety_settings: data.safety_settings ?? null,
       };
       return chatModel;
     }

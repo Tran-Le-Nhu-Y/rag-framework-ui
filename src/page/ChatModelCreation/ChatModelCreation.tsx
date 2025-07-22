@@ -41,13 +41,13 @@ export default function ChatModelCreationPage() {
   const [ollamaProps, setOllamaProps] =
     useState<OllamaChatModelAdditionalProperties>({
       temperature: 0.5,
-      baseUrl: '',
+      base_url: '',
       seed: null,
-      topK: null,
-      topP: null,
-      numCtx: 2048,
-      numPredict: 128,
-      repeatPenalty: 1.1,
+      top_k: null,
+      top_p: null,
+      num_ctx: 2048,
+      num_predict: 128,
+      repeat_penalty: 1.1,
       stop: '',
     });
 
@@ -55,12 +55,12 @@ export default function ChatModelCreationPage() {
   const [googleGenAIProps, setGoogleGenAIProps] =
     useState<GoogleGenAIChatModelAdditionalProperties>({
       temperature: 0.5,
-      topK: null,
-      topP: null,
-      maxTokens: 1024,
-      maxRetries: 6,
+      top_k: null,
+      top_p: null,
+      max_tokens: 1024,
+      max_retries: 6,
       timeout: null,
-      safetySettings: null,
+      safety_settings: null,
     });
 
   const [createChatModelTrigger, chatModel] = useCreateChatModel();
@@ -76,18 +76,12 @@ export default function ChatModelCreationPage() {
         ...base,
         type: 'ollama',
         ...ollamaProps,
-        top_k: ollamaProps.topK,
-        top_p: ollamaProps.topP,
-        base_url: ollamaProps.baseUrl,
-        num_ctx: ollamaProps.numCtx,
-        repeat_penalty: ollamaProps.repeatPenalty,
-        seed: ollamaProps.seed,
         stop: ollamaProps.stop
           ? ollamaProps.stop.split(',').map((s) => s.trim())
           : null,
       };
     } else if (type === 'google_genai') {
-      const safetySettings = googleGenAIProps.safetySettings?.reduce(
+      const safetySettings = googleGenAIProps.safety_settings?.reduce(
         (acc, curr) => {
           return { ...acc, [curr.category]: curr.threshold };
         },
@@ -96,11 +90,11 @@ export default function ChatModelCreationPage() {
       newChatModel = {
         ...base,
         type: 'google_genai',
-        top_k: googleGenAIProps.topK,
-        top_p: googleGenAIProps.topP,
+        top_k: googleGenAIProps.top_k,
+        top_p: googleGenAIProps.top_p,
         temperature: googleGenAIProps.temperature,
-        max_retries: googleGenAIProps.maxRetries,
-        max_tokens: googleGenAIProps.maxTokens,
+        max_retries: googleGenAIProps.max_retries,
+        max_tokens: googleGenAIProps.max_tokens,
         timeout: googleGenAIProps.timeout,
         safety_settings:
           safetySettings !== undefined

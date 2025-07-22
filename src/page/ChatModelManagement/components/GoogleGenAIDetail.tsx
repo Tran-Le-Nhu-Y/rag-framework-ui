@@ -20,7 +20,7 @@ const GoogleGenAIDetail = ({ chatModel }: GoogleGenAIDetailProps) => {
             {t('topK')}:
           </Typography>
           <Typography variant="body1" fontWeight={500}>
-            {chatModel.topK || 'N/A'}
+            {chatModel.top_k || 'N/A'}
           </Typography>
         </Stack>
 
@@ -38,7 +38,7 @@ const GoogleGenAIDetail = ({ chatModel }: GoogleGenAIDetailProps) => {
             {t('topP')}:
           </Typography>
           <Typography variant="body1" fontWeight={500}>
-            {chatModel.topP || 'N/A'}
+            {chatModel.top_p || 'N/A'}
           </Typography>
         </Stack>
 
@@ -47,7 +47,7 @@ const GoogleGenAIDetail = ({ chatModel }: GoogleGenAIDetailProps) => {
             {t('maxTokens')}:
           </Typography>
           <Typography variant="body1" fontWeight={500}>
-            {chatModel.maxTokens || 'N/A'}
+            {chatModel.max_tokens || 'N/A'}
           </Typography>
         </Stack>
 
@@ -56,7 +56,7 @@ const GoogleGenAIDetail = ({ chatModel }: GoogleGenAIDetailProps) => {
             {t('maxRetries')}:
           </Typography>
           <Typography variant="body1" fontWeight={500}>
-            {chatModel.maxRetries || 'N/A'}
+            {chatModel.max_retries || 'N/A'}
           </Typography>
         </Stack>
 
@@ -73,8 +73,8 @@ const GoogleGenAIDetail = ({ chatModel }: GoogleGenAIDetailProps) => {
         {t('safetySettings')}:
       </Typography>
       <Box sx={{ pl: 2 }}>
-        {chatModel.safetySettings &&
-          Object.entries(chatModel.safetySettings).map(([key, value]) => (
+        {chatModel.safety_settings &&
+          Object.entries(chatModel.safety_settings).map(([key, value]) => (
             <Box
               key={key}
               display="flex"

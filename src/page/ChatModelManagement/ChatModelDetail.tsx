@@ -41,7 +41,7 @@ export default function ChatModelDetailDialog({
                   {t('modelName')}:
                 </Typography>
                 <Typography variant="body1" fontWeight={500}>
-                  {chatModel.modelName || 'N/A'}
+                  {chatModel.model_name || 'N/A'}
                 </Typography>
               </Stack>
             </Stack>

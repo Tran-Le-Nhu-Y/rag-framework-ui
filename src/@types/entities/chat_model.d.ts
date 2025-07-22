@@ -2,27 +2,28 @@ declare type ChatModel = OllamaChatModel | GoogleGenAIChatModel;
 
 declare interface BaseChatModel {
   id: string;
-  modelName: string;
+  model_name: string;
   type: ChatModelType;
+  provider: string;
 }
 
 declare interface OllamaChatModel extends BaseChatModel {
   type: 'ollama';
-  baseUrl: string | null;
+  base_url: string | null;
   seed: number | null;
-  numCtx: number;
-  numPredict?: number | null;
-  repeatPenalty?: number | null;
+  num_ctx: number;
+  num_predict?: number | null;
+  repeat_penalty?: number | null;
   stop: string[] | null;
 }
 
 declare interface GoogleGenAIChatModel extends BaseChatModel {
   type: 'google_genai';
-  maxTokens: number;
-  maxRetries: number;
+  max_tokens: number;
+  max_retries: number;
   temperature: number;
-  topK: number | null;
-  topP: number | null;
+  top_k: number | null;
+  top_p: number | null;
   timeout?: number | null;
-  safetySettings: Record<HarmCategory, HarmBlockThreshold> | null;
+  safety_settings: Record<HarmCategory, HarmBlockThreshold> | null;
 }
