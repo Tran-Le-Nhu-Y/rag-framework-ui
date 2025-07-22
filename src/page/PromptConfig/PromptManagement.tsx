@@ -39,7 +39,6 @@ const PromptManagementPage = () => {
   });
   const prompts = useGetPrompts(promptsQuery!, {
     skip: !promptsQuery,
-    refetchOnMountOrArgChange: true,
   });
   useEffect(() => {
     if (prompts.isError) {
