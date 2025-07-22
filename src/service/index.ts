@@ -42,3 +42,12 @@ export {
   useUpdateEmbeddingModel,
   useDeleteEmbeddingModel,
 };
+
+import {
+  useCreateMCPMutation as useCreateMCP,
+  useGetMCPsQuery as useGetMCPs,
+  useGetMCPByIdQuery as useGetMCPById,
+  useDeleteMCPMutation as useDeleteMCP,
+  useUpdateMCPMutation as useUpdateMCP,
+} from './mcp';
+export { useCreateMCP, useGetMCPs, useGetMCPById, useDeleteMCP, useUpdateMCP };

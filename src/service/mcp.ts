@@ -1,24 +1,24 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
-import { toEntity } from './mapper/chat-model-mapper';
+import { toEntity } from './mapper/mcp-mapper';
 
-const EXTENSION_URL = 'api/v1/chat-model';
-export const chatModelApi = createApi({
-  reducerPath: 'chatModelApi',
+const EXTENSION_URL = 'api/v1/mcp';
+export const mcpApi = createApi({
+  reducerPath: 'mcpApi',
   baseQuery: axiosBaseQuery(ragFrameworkInstance),
-  tagTypes: ['PagingChatModel', 'ChatModel'],
+  tagTypes: ['PagingMCP', 'MCP'],
   endpoints: (builder) => ({
-    getChatModelById: builder.query<ChatModel, string>({
-      query: (chatModelId: string) => ({
-        url: `/${EXTENSION_URL}/${chatModelId}`,
+    getMCPById: builder.query<MCPPublic, string>({
+      query: (mcpId: string) => ({
+        url: `/${EXTENSION_URL}/${mcpId}`,
         method: 'GET',
       }),
       providesTags(result) {
         return result
           ? [
               {
-                type: 'ChatModel',
+                type: 'MCP',
                 id: result.id,
               } as const,
             ]
@@ -27,12 +27,12 @@ export const chatModelApi = createApi({
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.status;
       },
-      transformResponse(rawResult: ChatModelResponse) {
+      transformResponse(rawResult: MCPResponse) {
         return toEntity(rawResult);
       },
     }),
 
-    getChatModels: builder.query<PagingWrapper<ChatModel>, GetChatModelsQuery>({
+    getMCPs: builder.query<PagingWrapper<MCPPublic>, GetMCPQuery>({
       query: ({ offset = 0, limit = 100 }) => ({
         url: `/${EXTENSION_URL}/all`,
         method: 'GET',
@@ -44,15 +44,13 @@ export const chatModelApi = createApi({
 
       providesTags(result) {
         const pagingTag = {
-          type: 'PagingChatModel',
+          type: 'PagingMCP',
           id: `${result?.page_number}-${result?.total_pages}-${result?.page_size}-${result?.total_elements}`,
         } as const;
 
         return result
           ? [
-              ...result.content.map(
-                ({ id }) => ({ type: 'ChatModel', id } as const)
-              ),
+              ...result.content.map(({ id }) => ({ type: 'MCP', id } as const)),
               pagingTag,
             ]
           : [pagingTag];
@@ -61,56 +59,56 @@ export const chatModelApi = createApi({
         return baseQueryReturnValue.status;
       },
       transformResponse: (
-        response: PagingWrapper<ChatModelResponse>
-      ): PagingWrapper<ChatModel> => ({
+        response: PagingWrapper<MCPResponse>
+      ): PagingWrapper<MCPPublic> => ({
         ...response,
         content: response.content.map(toEntity),
       }),
     }),
 
-    createChatModel: builder.mutation<string, CreateChatModelRequest>({
-      query: (data: CreateChatModelRequest) => ({
+    createMCP: builder.mutation<string, CreateMCPRequest>({
+      query: (data: CreateMCPRequest) => ({
         url: `/${EXTENSION_URL}/create`,
         method: 'POST',
         body: data,
       }),
       invalidatesTags() {
-        return [{ type: 'PagingChatModel' } as const];
+        return [{ type: 'MCP' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.status;
       },
     }),
-    updateChatModel: builder.mutation<void, UpdateChatModelRequest>({
-      query: (data: UpdateChatModelRequest) => ({
-        url: `/${EXTENSION_URL}/${data.chatModelId}/update`,
+    updateMCP: builder.mutation<void, UpdateMCPRequest>({
+      query: (data: UpdateMCPRequest) => ({
+        url: `/${EXTENSION_URL}/${data.id}/update`,
         method: 'PUT',
         body: {
-          // Gửi toàn bộ data, trừ `chatModelId`
+          // Gửi toàn bộ data, trừ `ID`
           ...data,
-          chatModelId: undefined,
+          id: undefined,
         },
       }),
       invalidatesTags(_result, _error, arg) {
-        const { chatModelId } = arg;
-        return [{ type: 'ChatModel', id: chatModelId } as const];
+        const { id } = arg;
+        return [{ type: 'MCP', id: id } as const];
       },
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.status;
       },
     }),
 
-    deleteChatModel: builder.mutation<void, string>({
-      query: (chatModelId: string) => ({
-        url: `/${EXTENSION_URL}/${chatModelId}`,
+    deleteMCP: builder.mutation<void, string>({
+      query: (mcpId: string) => ({
+        url: `/${EXTENSION_URL}/${mcpId}`,
         method: 'DELETE',
       }),
       invalidatesTags(_result, _error, arg) {
-        const chatModelId = arg;
+        const mcpId = arg;
         return [
-          { type: 'ChatModel', id: chatModelId } as const,
-          { type: 'PagingChatModel' } as const,
+          { type: 'MCP', id: mcpId } as const,
+          { type: 'PagingMCP' } as const,
         ];
       },
       transformErrorResponse(baseQueryReturnValue) {
@@ -123,9 +121,9 @@ export const chatModelApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
-  useGetChatModelByIdQuery,
-  useGetChatModelsQuery,
-  useCreateChatModelMutation,
-  useUpdateChatModelMutation,
-  useDeleteChatModelMutation,
-} = chatModelApi;
+  useCreateMCPMutation,
+  useGetMCPsQuery,
+  useGetMCPByIdQuery,
+  useDeleteMCPMutation,
+  useUpdateMCPMutation,
+} = mcpApi;

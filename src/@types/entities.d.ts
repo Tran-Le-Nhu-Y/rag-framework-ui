@@ -65,3 +65,18 @@ declare interface GoogleGenAIChatModelPublic extends BaseChatModel {
   safety_settings?: Record<string, string> | null;
   type: 'google_genai';
 }
+
+declare interface MCPStreamableServer {
+  name: string;
+  url: string;
+  type: string;
+  headers?: Record<string, string> | null;
+  timeout?: number;
+  sse_reasd_timeout?: number;
+  terminate_on_close?: boolean;
+}
+
+declare interface MCPPublic {
+  id: string;
+  servers: Array<MCPStreamableServer>;
+}

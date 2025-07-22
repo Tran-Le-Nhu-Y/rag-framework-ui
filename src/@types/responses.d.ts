@@ -41,3 +41,7 @@ declare interface EmbeddingsResponse {
   type: EmbeddingType;
   task_type?: GoogleGenAIEmbeddingsTaskType;
 }
+declare interface MCPResponse {
+  id: string;
+  servers: MCPStreamableServer[];
+}

@@ -48,3 +48,12 @@ declare interface UpdateEmbeddingRequest {
   task_type?: GoogleGenAIEmbeddingsTaskType;
   type: EmbeddingType;
 }
+
+declare interface CreateMCPRequest {
+  servers: Array<MCPStreamableServer>;
+}
+
+declare interface UpdateMCPRequest {
+  id: string;
+  servers: Array<MCPStreamableServer>;
+}
