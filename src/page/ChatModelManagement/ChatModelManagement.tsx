@@ -6,7 +6,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { PathHolders, RoutePaths, SnackbarSeverity } from '../../util';
+import { PathHolders, RoutePaths } from '../../util';
 import { useEffect, useState } from 'react';
 import {
   useDeleteChatModel,
@@ -113,7 +113,7 @@ const ChatModelManagementPage = () => {
     if (chatModel.isError) {
       showSnackbar({
         message: t('chatModelLoadingError'),
-        severity: SnackbarSeverity.ERROR,
+        severity: 'error',
       });
     }
   }, [chatModel.isError, showSnackbar, t]);
@@ -126,32 +126,30 @@ const ChatModelManagementPage = () => {
       setChatModelIdToDelete(null);
       showSnackbar({
         message: t('deleteChatModelSuccess'),
-        severity: SnackbarSeverity.SUCCESS,
+        severity: 'success',
       });
     } catch (error) {
       console.warn(error);
       showSnackbar({
         message: t('deleteChatModelFailed'),
-        severity: SnackbarSeverity.ERROR,
+        severity: 'error',
       });
     }
   };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
-      {chatModelIdToDelete && (
-        <ConfirmDialog
-          open={true}
-          onClose={() => setChatModelIdToDelete(null)}
-          title={t('confirmChatModelDeleteTitle')}
-          message={t('deleteChatModelConfirm')}
-          confirmText={t('confirm')}
-          cancelText={t('cancel')}
-          onDelete={async () => {
-            await handleDeleteChatModel(chatModelIdToDelete);
-          }}
-        />
-      )}
+      <ConfirmDialog
+        open={chatModelIdToDelete !== null}
+        onClose={() => setChatModelIdToDelete(null)}
+        title={t('confirmChatModelDeleteTitle')}
+        message={t('deleteChatModelConfirm')}
+        confirmText={t('confirm')}
+        cancelText={t('cancel')}
+        onDelete={async () => {
+          await handleDeleteChatModel(chatModelIdToDelete!);
+        }}
+      />
       <Typography variant="h4">{t('chatModelList')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button

@@ -246,45 +246,42 @@ const CreateGoogleGenAIProperties = ({
               }}
             />
 
-            <Tooltip title={t('addField')}>
-              <IconButton
-                size="medium"
-                color="primary"
-                disabled={
-                  safetySettingHolder?.category === undefined ||
-                  safetySettingHolder?.threshold === undefined
-                }
-                onClick={() => {
-                  if (safetySettingHolder?.category === undefined) {
-                    showSnackbar({
-                      message: t('pleaseSelectHarmCategory'),
-                      severity: 'warning',
-                    });
-                    return;
-                  }
-                  if (safetySettingHolder?.threshold === undefined) {
-                    showSnackbar({
-                      message: t('pleaseSelectHarmBlockThreshold'),
-                      severity: 'warning',
-                    });
-                    return;
-                  }
-
-                  const { category, threshold } = safetySettingHolder;
-                  const currentSettings = value.safetySettings ?? [];
-                  onChange({
-                    ...value,
-                    safetySettings: [
-                      ...currentSettings,
-                      { category, threshold },
-                    ],
+            <IconButton
+              size="medium"
+              color="primary"
+              disabled={
+                safetySettingHolder?.category === undefined ||
+                safetySettingHolder?.threshold === undefined
+              }
+              onClick={() => {
+                if (safetySettingHolder?.category === undefined) {
+                  showSnackbar({
+                    message: t('pleaseSelectHarmCategory'),
+                    severity: 'warning',
                   });
-                  setSafetySettingHolder(undefined);
-                }}
-              >
+                  return;
+                }
+                if (safetySettingHolder?.threshold === undefined) {
+                  showSnackbar({
+                    message: t('pleaseSelectHarmBlockThreshold'),
+                    severity: 'warning',
+                  });
+                  return;
+                }
+
+                const { category, threshold } = safetySettingHolder;
+                const currentSettings = value.safetySettings ?? [];
+                onChange({
+                  ...value,
+                  safetySettings: [...currentSettings, { category, threshold }],
+                });
+                setSafetySettingHolder(undefined);
+              }}
+            >
+              <Tooltip title={t('addField')}>
                 <AddCircleIcon />
-              </IconButton>
-            </Tooltip>
+              </Tooltip>
+            </IconButton>
           </Stack>
 
           {value.safetySettings?.map((item, index) => (

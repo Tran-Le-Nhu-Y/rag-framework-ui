@@ -4,7 +4,6 @@ declare type RetrieverType = 'bm25' | 'chroma_db';
 
 // Google GenAI
 declare type HarmCategory =
-  | 'UNSPECIFIED'
   | 'DEROGATORY'
   | 'TOXICITY'
   | 'VIOLENCE'

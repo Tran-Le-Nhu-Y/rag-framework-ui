@@ -76,15 +76,36 @@ export default function ChatModelCreationPage() {
         ...base,
         type: 'ollama',
         ...ollamaProps,
+        top_k: ollamaProps.topK,
+        top_p: ollamaProps.topP,
+        base_url: ollamaProps.baseUrl,
+        num_ctx: ollamaProps.numCtx,
+        repeat_penalty: ollamaProps.repeatPenalty,
+        seed: ollamaProps.seed,
         stop: ollamaProps.stop
           ? ollamaProps.stop.split(',').map((s) => s.trim())
           : null,
       };
     } else if (type === 'google_genai') {
+      const safetySettings = googleGenAIProps.safetySettings?.reduce(
+        (acc, curr) => {
+          return { ...acc, [curr.category]: curr.threshold };
+        },
+        {}
+      );
       newChatModel = {
         ...base,
         type: 'google_genai',
-        ...googleGenAIProps,
+        top_k: googleGenAIProps.topK,
+        top_p: googleGenAIProps.topP,
+        temperature: googleGenAIProps.temperature,
+        max_retries: googleGenAIProps.maxRetries,
+        max_tokens: googleGenAIProps.maxTokens,
+        timeout: googleGenAIProps.timeout,
+        safety_settings:
+          safetySettings !== undefined
+            ? (safetySettings as Record<HarmCategory, HarmBlockThreshold>)
+            : null,
       };
     } else {
       showSnackbar({
