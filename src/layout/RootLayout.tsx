@@ -97,15 +97,15 @@ const RootLayout = () => {
 
   const location = useLocation();
   const getSelectedIndexFromPath = (pathname: string) => {
-    if (pathname === '/' || pathname === '/agent-creation') return 0;
+    if (pathname === '/' || pathname === RoutePaths.AGENT) return 0;
     if (
-      pathname === '/recognition-model-management' ||
-      pathname === '/recognition-model-creation'
+      pathname === RoutePaths.CHATMODEL ||
+      pathname === RoutePaths.CREATE_CHATMODEL
     )
       return 1;
-    if (pathname === '/prompt-management' || pathname === '/prompt-creation')
-      return 2;
-    if (pathname === '/use-guide') return 3;
+    if (pathname === RoutePaths.PROMPT || pathname === RoutePaths.CREATE_PROMPT)
+      return 3;
+    if (pathname === '/use-guide') return 4;
     return 0; // fallback
   };
   React.useEffect(() => {
@@ -228,11 +228,28 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('recognitionModelManagement')} disablePadding>
+          <ListItem key={t('chatModelManagement')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 1}
               onClick={(event) => {
                 handleListItemClick(event, 1);
+                navigate(RoutePaths.CHATMODEL);
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('chatModelManagement')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('recognitionModelManagement')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 2}
+              onClick={(event) => {
+                handleListItemClick(event, 2);
                 navigate('/recognition-model-management');
               }}
             >
@@ -247,9 +264,9 @@ const RootLayout = () => {
         <List>
           <ListItem key={t('promptManagement')} disablePadding>
             <ListItemButton
-              selected={selectedIndex === 2}
+              selected={selectedIndex === 3}
               onClick={(event) => {
-                handleListItemClick(event, 2);
+                handleListItemClick(event, 3);
                 navigate(RoutePaths.PROMPT);
               }}
             >
@@ -264,9 +281,9 @@ const RootLayout = () => {
         <List>
           <ListItem key={t('useGuide')} disablePadding>
             <ListItemButton
-              selected={selectedIndex === 3}
+              selected={selectedIndex === 4}
               onClick={(event) => {
-                handleListItemClick(event, 3);
+                handleListItemClick(event, 4);
                 navigate('/use-guide');
               }}
             >

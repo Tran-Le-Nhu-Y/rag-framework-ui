@@ -8,6 +8,10 @@ import PromptCreationPage from './PromptCreation/PromptCreation';
 import AgentUpdatePage from './AgentUpdate/AgentUpdate';
 import PromptUpdatePage from './PromptUpdate/PromptUpdate';
 import AgentDetailPage from './AgentDetail/AgentDetail';
+import ChatModelManagementPage from './ChatModelManagement/ChatModelManagement';
+import ChatModelCreationPage from './ChatModelCreation/ChatModelCreation';
+import ChatModelUpdatePage from './ChatModelUpdate/ChatModelUpdate';
+
 export {
   AgentManagementPage,
   RecognitionModelManagementPage,
@@ -19,4 +23,7 @@ export {
   AgentUpdatePage,
   PromptManagementPage,
   PromptUpdatePage,
+  ChatModelCreationPage,
+  ChatModelManagementPage,
+  ChatModelUpdatePage,
 };
