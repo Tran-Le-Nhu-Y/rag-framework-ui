@@ -11,7 +11,8 @@ import AgentDetailPage from './AgentDetail/AgentDetail';
 import ChatModelManagementPage from './ChatModelManagement/ChatModelManagement';
 import ChatModelCreationPage from './ChatModelCreation/ChatModelCreation';
 import ChatModelUpdatePage from './ChatModelUpdate/ChatModelUpdate';
-
+import EmbeddingsManagementPage from './EmbeddingsManagement/EmbeddingsManagement';
+import EmbeddingCreationPage from './EmbeddingCreation/EmbeddingCreation';
 export {
   AgentManagementPage,
   RecognitionModelManagementPage,
@@ -26,4 +27,6 @@ export {
   ChatModelCreationPage,
   ChatModelManagementPage,
   ChatModelUpdatePage,
+  EmbeddingsManagementPage,
+  EmbeddingCreationPage,
 };

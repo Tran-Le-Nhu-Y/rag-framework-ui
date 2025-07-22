@@ -41,6 +41,10 @@ declare interface CreateEmbeddingRequest {
   type: EmbeddingType;
 }
 
-declare interface UpdateEmbeddingRequest extends CreateEmbeddingRequest {
-  embeddingId: string;
+declare interface UpdateEmbeddingRequest {
+  id: string;
+  name: string;
+  model_name: string;
+  task_type?: GoogleGenAIEmbeddingsTaskType;
+  type: EmbeddingType;
 }
