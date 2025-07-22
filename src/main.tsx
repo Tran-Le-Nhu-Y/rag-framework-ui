@@ -30,6 +30,7 @@ import {
   UseGuidePage,
 } from './page/index.ts';
 import { RoutePaths } from './util/index.ts';
+import AppSnackbar from './component/AppSnackbar.tsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,15 +42,15 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.AGENT_DETAIL} element={<AgentDetailPage />} />
 
       <Route
-        path={RoutePaths.CHATMODEL}
+        path={RoutePaths.CHAT_MODEL}
         element={<ChatModelManagementPage />}
       />
       <Route
-        path={RoutePaths.CREATE_CHATMODEL}
+        path={RoutePaths.CREATE_CHAT_MODEL}
         element={<ChatModelCreationPage />}
       />
       <Route
-        path={RoutePaths.UPDATE_CHATMODEL}
+        path={RoutePaths.UPDATE_CHAT_MODEL}
         element={<ChatModelUpdatePage />}
       />
 
@@ -67,7 +68,7 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.UPDATE_PROMPT} element={<PromptUpdatePage />} />
       {/* <Route path="prompt-creation" element={<PromptCreationPage />} />
       <Route path="prompt-update" element={<PromptUpdatePage />} /> */}
-      <Route path="use-guide" element={<UseGuidePage />} />
+      <Route path={RoutePaths.USER_GUIDE} element={<UseGuidePage />} />
     </Route>
   )
 );
@@ -76,7 +77,9 @@ createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <RouterProvider router={router} />
+        <AppSnackbar>
+          <RouterProvider router={router} />
+        </AppSnackbar>
       </LocalizationProvider>
     </ThemeProvider>
   </Provider>
