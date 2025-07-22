@@ -1,10 +1,5 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import {
-  AppSnackbar,
-  ConfirmDialog,
-  DataGridTable,
-  Loading,
-} from '../../component';
+import { ConfirmDialog, DataGridTable, Loading } from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
@@ -14,20 +9,13 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import PromptDetailDialog from './PromptDetail';
 import { useDeletePrompt, useGetPrompts } from '../../service';
-import {
-  HideDuration,
-  PathHolders,
-  RoutePaths,
-  SnackbarSeverity,
-} from '../../util';
+import { PathHolders, RoutePaths, SnackbarSeverity } from '../../util';
+import { useSnackbar } from '../../hook';
 
 const PromptManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<SnackbarSeverity>('success');
+  const { show: showSnackbar } = useSnackbar();
   const [openPromptDetailDialog, setOpenPromptDetailDialog] = useState(false);
   const [promptIdToDelete, setPromptIdToDelete] = useState<string | null>(null);
   const [viewedPrompt, setViewedPrompt] = useState<Prompt | null>(null);
@@ -37,17 +25,15 @@ const PromptManagementPage = () => {
     offset: 0,
     limit: 40,
   });
-  const prompts = useGetPrompts(promptsQuery!, {
-    skip: !promptsQuery,
-    refetchOnMountOrArgChange: true,
-  });
+  const prompts = useGetPrompts(promptsQuery);
   useEffect(() => {
     if (prompts.isError) {
-      setSnackbarMessage(t('promptsLoadingError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('promptsLoadingError'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
-  }, [prompts.isError, t]);
+  }, [prompts.isError, showSnackbar, t]);
 
   const [rows, setRows] = useState<Prompt[]>([]);
   useEffect(() => {
@@ -126,7 +112,7 @@ const PromptManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeletePrompt(params.row.id)}
+          onClick={() => setPromptIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -134,32 +120,24 @@ const PromptManagementPage = () => {
 
   //delete prompt
   const [deletePromptTrigger, deletePrompt] = useDeletePrompt();
-  useEffect(() => {
-    if (deletePrompt.isError) {
-      setSnackbarMessage(t('deletePromptFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+  const handleDeletePrompt = async (promptId: string) => {
+    try {
+      await deletePromptTrigger(promptId).unwrap();
+      showSnackbar({
+        message: t('deletePromptSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
+    } catch (error) {
+      console.warn(error);
+      showSnackbar({
+        message: t('deletePromptFailed'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
-    if (deletePrompt.isSuccess) {
-      setSnackbarMessage(t('deletePromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-    }
-  }, [deletePrompt.isError, deletePrompt.isSuccess, t]);
-
-  const handleDeletePrompt = (promptId: string) => {
-    setPromptIdToDelete(promptId);
   };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
-      <AppSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        autoHideDuration={HideDuration.FAST}
-        onClose={() => setSnackbarOpen(false)}
-      />
       {promptIdToDelete && (
         <ConfirmDialog
           open={true}
@@ -169,7 +147,7 @@ const PromptManagementPage = () => {
           confirmText={t('confirm')}
           cancelText={t('cancel')}
           onDelete={async () => {
-            await deletePromptTrigger(promptIdToDelete);
+            await handleDeletePrompt(promptIdToDelete);
             setPromptIdToDelete(null);
           }}
         />

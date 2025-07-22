@@ -1,8 +1,7 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
-  HideDuration,
   isValidLength,
   RoutePaths,
   SnackbarSeverity,
@@ -10,31 +9,16 @@ import {
 } from '../../util';
 import { useNavigate } from 'react-router';
 import { useCreatePrompt } from '../../service';
-import { AppSnackbar } from '../../component';
+import { useSnackbar } from '../../hook';
 
 export default function PromptCreationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<SnackbarSeverity>('success');
+  const { show: showSnackbar } = useSnackbar();
   const [suggestQuestions, setSuggestQuestions] = useState('');
   const [respond, setRespond] = useState('');
-  const [createPromptTrigger, createPrompt] = useCreatePrompt();
-  useEffect(() => {
-    if (createPrompt.isError) {
-      setSnackbarMessage(t('createPromptError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (createPrompt.isSuccess) {
-      setSnackbarMessage(t('createPromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      navigate(RoutePaths.PROMPT);
-    }
-  }, [createPrompt.isError, createPrompt.isSuccess, navigate, t]);
 
+  const [createPromptTrigger, createPrompt] = useCreatePrompt();
   const handleCreatePromptSubmit = async () => {
     try {
       const newPrompt: CreatePromptRequest = {
@@ -42,32 +26,27 @@ export default function PromptCreationPage() {
         respondPrompt: respond,
       };
 
-      await createPromptTrigger(newPrompt);
+      await createPromptTrigger(newPrompt).unwrap();
       setSuggestQuestions('');
       setRespond('');
       navigate(RoutePaths.PROMPT);
 
-      setSnackbarMessage(t('createPromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('createPromptSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
     } catch (error) {
       console.error('Creating prompt have error:', error);
-      setSnackbarMessage(t('createPromptError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('createPromptError'),
+        severity: SnackbarSeverity.ERROR,
+      });
       return;
     }
   };
 
   return (
     <Stack spacing={1}>
-      <AppSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        autoHideDuration={HideDuration.FAST}
-        onClose={() => setSnackbarOpen(false)}
-      />
       <Typography sx={{ textAlign: 'center' }} variant="h4">
         {t('createPrompt')}
       </Typography>
@@ -114,6 +93,7 @@ export default function PromptCreationPage() {
             <Button
               variant="contained"
               color="primary"
+              loading={createPrompt.isLoading}
               onClick={() => handleCreatePromptSubmit()}
             >
               {t('confirm')}
@@ -121,6 +101,7 @@ export default function PromptCreationPage() {
             <Button
               variant="outlined"
               color="info"
+              disabled={createPrompt.isLoading}
               onClick={() => navigate(RoutePaths.PROMPT)}
             >
               {t('cancel')}

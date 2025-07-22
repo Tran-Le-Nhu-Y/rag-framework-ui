@@ -8,18 +8,14 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import {
-  HideDuration,
-  PathHolders,
-  RoutePaths,
-  SnackbarSeverity,
-} from '../../util';
-import { AppSnackbar, SelectForm } from '../../component';
+import { PathHolders, RoutePaths, SnackbarSeverity } from '../../util';
+import { SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
 import { useNavigate, useParams } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useGetChatModelById, useUpdateChatModel } from '../../service';
+import { useSnackbar } from '../../hook';
 
 const providerList: Data[] = [
   { label: 'Ollama', value: 'ollama' },
@@ -50,14 +46,11 @@ const safetyLevels = [
 export default function ChatModelUpdatePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { show: showSnackbar } = useSnackbar();
   const chatModelId = useParams()[PathHolders.CHAT_MODEL_ID];
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<SnackbarSeverity>('success');
 
   const [chatModel, setChatModel] = useState<
-    Partial<OllamaChatModelPublic> & Partial<GoogleGenAIChatModelPublic>
+    Partial<OllamaChatModel> & Partial<GoogleGenAIChatModel>
   >({});
   const [safetySettingsList, setSafetySettingsList] = useState<
     { category: string; level: string }[]
@@ -100,12 +93,12 @@ export default function ChatModelUpdatePage() {
   useEffect(() => {
     if (chatModelDetail.data) {
       const model = chatModelDetail.data;
-      setChatModel({ ...model } as Partial<OllamaChatModelPublic> &
-        Partial<GoogleGenAIChatModelPublic>);
+      setChatModel({ ...model } as Partial<OllamaChatModel> &
+        Partial<GoogleGenAIChatModel>);
 
-      if (model.type === 'google_genai' && model.safety_settings) {
+      if (model.type === 'google_genai' && model.safetySettings) {
         setSafetySettingsList(
-          Object.entries(model.safety_settings).map(([category, level]) => ({
+          Object.entries(model.safetySettings).map(([category, level]) => ({
             category,
             level,
           }))
@@ -139,29 +132,24 @@ export default function ChatModelUpdatePage() {
 
     try {
       await updateChatModelTrigger(payload);
-      setSnackbarMessage(t('updateChatModelSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('updateChatModelSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
       setTimeout(() => {
-        navigate(RoutePaths.CHATMODEL);
+        navigate(RoutePaths.CHAT_MODEL);
       }, 1000);
     } catch {
-      setSnackbarMessage(t('updateChatModelFail'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('updateChatModelFail'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
   };
   if (chatModelDetail.isLoading) return <Typography>Loading...</Typography>;
 
   return (
     <Stack spacing={1}>
-      <AppSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        autoHideDuration={HideDuration.FAST}
-        onClose={() => setSnackbarOpen(false)}
-      />
       <Typography sx={{ textAlign: 'center' }} variant="h4">
         {t('createChatModel')}
       </Typography>
@@ -176,7 +164,7 @@ export default function ChatModelUpdatePage() {
                   size="small"
                   helperText={t('hyperTextMedium')}
                   label={t('modelName')}
-                  value={chatModel.model_name || ''}
+                  value={chatModel.modelName || ''}
                   onChange={(e) => updateModel('model_name', e.target.value)}
                   placeholder={`${t('enter')} ${t(
                     'modelName'
@@ -209,7 +197,7 @@ export default function ChatModelUpdatePage() {
                     min: 0,
                     step: 1,
                   }}
-                  value={chatModel.top_k ?? ''}
+                  value={chatModel.topK ?? ''}
                   onChange={(e) =>
                     updateModel('top_k', Number(e.target.value) || null)
                   }
@@ -224,7 +212,7 @@ export default function ChatModelUpdatePage() {
                     max: 1,
                     step: 0.1,
                   }}
-                  value={chatModel.top_p ?? ''}
+                  value={chatModel.topP ?? ''}
                   onChange={(e) =>
                     updateModel('top_p', Number(e.target.value) || null)
                   }
@@ -237,7 +225,7 @@ export default function ChatModelUpdatePage() {
                   <TextField
                     size="small"
                     label={t('baseURL')}
-                    value={chatModel.base_url || ''}
+                    value={chatModel.baseUrl || ''}
                     onChange={(e) => updateModel('base_url', e.target.value)}
                   />
                   <Stack direction={'row'} spacing={2} width="100%">
@@ -278,7 +266,7 @@ export default function ChatModelUpdatePage() {
                         min: 0,
                         step: 1,
                       }}
-                      value={chatModel.num_ctx ?? 2048}
+                      value={chatModel.numCtx ?? 2048}
                       onChange={(e) =>
                         updateModel('num_ctx', Number(e.target.value))
                       }
@@ -292,7 +280,7 @@ export default function ChatModelUpdatePage() {
                         min: 0,
                         step: 1,
                       }}
-                      value={chatModel.num_predict ?? 128}
+                      value={chatModel.numPredict ?? 128}
                       onChange={(e) =>
                         updateModel(
                           'num_predict',
@@ -312,7 +300,7 @@ export default function ChatModelUpdatePage() {
                         max: 2,
                         step: 0.1,
                       }}
-                      value={chatModel.repeat_penalty ?? 1.1}
+                      value={chatModel.repeatPenalty ?? 1.1}
                       onChange={(e) =>
                         updateModel(
                           'repeat_penalty',
@@ -361,7 +349,7 @@ export default function ChatModelUpdatePage() {
                       label={t('maxTokens')}
                       type="number"
                       inputProps={{ min: 10 }}
-                      value={chatModel.max_tokens ?? 1024}
+                      value={chatModel.maxTokens ?? 1024}
                       onChange={(e) =>
                         updateModel(
                           'max_tokens',
@@ -377,7 +365,7 @@ export default function ChatModelUpdatePage() {
                       label={t('maxRetries')}
                       type="number"
                       inputProps={{ min: 0 }}
-                      value={chatModel.max_retries ?? 6}
+                      value={chatModel.maxRetries ?? 6}
                       onChange={(e) =>
                         updateModel(
                           'max_retries',

@@ -2,7 +2,6 @@ import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import {
-  HideDuration,
   isValidLength,
   PathHolders,
   RoutePaths,
@@ -10,28 +9,26 @@ import {
   TextLength,
 } from '../../util';
 import { useNavigate, useParams } from 'react-router';
-import { AppSnackbar } from '../../component';
 import { useGetPromptById, useUpdatePrompt } from '../../service';
+import { useSnackbar } from '../../hook';
 
 export default function PromptUpdatePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const promptId = useParams()[PathHolders.PROMPT_ID];
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<SnackbarSeverity>('success');
+  const { show: showSnackbar } = useSnackbar();
   const [suggestQuestions, setSuggestQuestions] = useState('');
   const [respond, setRespond] = useState('');
 
   const prompt = useGetPromptById(promptId!, { skip: !promptId });
   useEffect(() => {
     if (prompt.isError) {
-      setSnackbarMessage(t('promptLoadingError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('promptLoadingError'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
-  }, [prompt.isError, t]);
+  }, [prompt.isError, showSnackbar, t]);
 
   const [updatePromptTrigger] = useUpdatePrompt();
   useEffect(() => {
@@ -48,14 +45,16 @@ export default function PromptUpdatePage() {
     if (!promptId) return;
 
     if (!data.suggestQuestionsPrompt.trim()) {
-      setSnackbarMessage(t('suggestQuestionsPromptRequired'));
-      setSnackbarSeverity(SnackbarSeverity.WARNING);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('suggestQuestionsPromptRequired'),
+        severity: SnackbarSeverity.WARNING,
+      });
       return;
     } else if (!data.respondPrompt.trim()) {
-      setSnackbarMessage(t('respondPromptRequired'));
-      setSnackbarSeverity(SnackbarSeverity.WARNING);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('respondPromptRequired'),
+        severity: SnackbarSeverity.WARNING,
+      });
       return;
     }
     try {
@@ -65,29 +64,24 @@ export default function PromptUpdatePage() {
         respondPrompt: data.respondPrompt,
       });
 
-      setSnackbarMessage(t('updatePromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('updatePromptSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
       setTimeout(() => {
         navigate(RoutePaths.PROMPT);
       }, 1000);
     } catch (error) {
-      setSnackbarMessage(t('updatePromptFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-      console.error(error);
+      showSnackbar({
+        message: t('updatePromptFailed'),
+        severity: SnackbarSeverity.ERROR,
+      });
+      console.warn(error);
     }
   };
 
   return (
     <Stack spacing={1}>
-      <AppSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        autoHideDuration={HideDuration.FAST}
-        onClose={() => setSnackbarOpen(false)}
-      />
       <Typography sx={{ textAlign: 'center' }} variant="h4">
         {t('updatePrompt')}
       </Typography>

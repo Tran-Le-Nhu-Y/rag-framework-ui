@@ -1,39 +1,42 @@
 function toEntity(response: ChatModelResponse): ChatModel {
   const baseFields = {
     id: response.id,
-    model_name: response.model_name,
-    provider: response.provider,
-    temperature: response.temperature,
-    top_k: response.top_k ?? null,
-    top_p: response.top_p ?? null,
-    type: response.type,
+    modelName: response.model_name,
   };
 
-  if (response.type === 'ollama') {
-    const chatModel: OllamaChatModelPublic = {
-      ...baseFields,
-      base_url: response.base_url ?? null,
-      seed: response.seed ?? null,
-      num_ctx: response.num_ctx,
-      num_predict: response.num_predict ?? null,
-      repeat_penalty: response.repeat_penalty ?? null,
-      stop: response.stop ?? null,
-      type: 'ollama',
-    };
-    return chatModel;
-  } else if (response.type === 'google_genai') {
-    const chatModel: GoogleGenAIChatModelPublic = {
-      ...baseFields,
-      max_tokens: response.max_tokens ?? 1024,
-      max_retries: response.max_retries ?? 6,
-      timeout: response.timeout ?? null,
-      safety_settings: response.safety_settings ?? null,
-      type: 'google_genai',
-    };
-    return chatModel;
+  switch (response.type) {
+    case 'ollama': {
+      const data = response as OllamaChatModelResponse;
+      const chatModel: OllamaChatModel = {
+        ...baseFields,
+        type: 'ollama',
+        baseUrl: data.base_url ?? null,
+        seed: data.seed ?? null,
+        numCtx: data.num_ctx,
+        numPredict: data.num_predict ?? null,
+        repeatPenalty: data.repeat_penalty ?? null,
+        stop: data.stop ?? null,
+      };
+      return chatModel;
+    }
+    case 'google_genai': {
+      const data = response as GoogleGenAIChatModelResponse;
+      const chatModel: GoogleGenAIChatModel = {
+        ...baseFields,
+        type: 'google_genai',
+        temperature: data.temperature,
+        topK: data.top_k ?? null,
+        topP: data.top_p ?? null,
+        maxTokens: data.max_tokens ?? 1024,
+        maxRetries: data.max_retries ?? 6,
+        timeout: data.timeout ?? null,
+        safetySettings: data.safety_settings ?? null,
+      };
+      return chatModel;
+    }
+    default:
+      throw new Error(`Unknown chat model type.`);
   }
-
-  throw new Error(`Unknown chat model type: ${response.type}`);
 }
 
 export { toEntity };

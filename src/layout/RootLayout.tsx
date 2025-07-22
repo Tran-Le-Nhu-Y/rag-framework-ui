@@ -99,13 +99,13 @@ const RootLayout = () => {
   const getSelectedIndexFromPath = (pathname: string) => {
     if (pathname === '/' || pathname === RoutePaths.AGENT) return 0;
     if (
-      pathname === RoutePaths.CHATMODEL ||
-      pathname === RoutePaths.CREATE_CHATMODEL
+      pathname === RoutePaths.CHAT_MODEL ||
+      pathname === RoutePaths.CREATE_CHAT_MODEL
     )
       return 1;
     if (pathname === RoutePaths.PROMPT || pathname === RoutePaths.CREATE_PROMPT)
       return 3;
-    if (pathname === '/use-guide') return 4;
+    if (pathname === RoutePaths.USER_GUIDE) return 4;
     return 0; // fallback
   };
   React.useEffect(() => {
@@ -233,7 +233,7 @@ const RootLayout = () => {
               selected={selectedIndex === 1}
               onClick={(event) => {
                 handleListItemClick(event, 1);
-                navigate(RoutePaths.CHATMODEL);
+                navigate(RoutePaths.CHAT_MODEL);
               }}
             >
               <ListItemIcon>
@@ -284,7 +284,7 @@ const RootLayout = () => {
               selected={selectedIndex === 4}
               onClick={(event) => {
                 handleListItemClick(event, 4);
-                navigate('/use-guide');
+                navigate(RoutePaths.USER_GUIDE);
               }}
             >
               <ListItemIcon>

@@ -11,15 +11,7 @@ declare interface Prompt {
   respond_prompt: string;
 }
 
-declare type EmbeddingType = 'google_genai' | 'hugging_face';
 declare type Embeddings = HuggingFaceEmbeddings | GoogleGenAIEmbeddings;
-declare type GoogleGenAIEmbeddingsTaskType =
-  | 'task_type_unspecified'
-  | 'retrieval_query'
-  | 'retrieval_document'
-  | 'semantic_similarity'
-  | 'classification'
-  | 'clustering';
 
 declare interface HuggingFaceEmbeddings {
   id: string;
@@ -36,35 +28,4 @@ declare interface GoogleGenAIEmbeddings extends HuggingFaceEmbeddings {
 declare interface OutputClass {
   name: string;
   description: string;
-}
-
-declare type RetrieverType = 'bm25' | 'chroma_db';
-declare type ChatModelType = 'google_genai' | 'ollama';
-declare type ChatModel = OllamaChatModelPublic | GoogleGenAIChatModelPublic;
-
-declare interface BaseChatModel {
-  id: string;
-  model_name: string;
-  provider: string;
-  temperature: number;
-  top_k?: number | null;
-  top_p?: number | null;
-  type: ChatModelType;
-}
-
-declare interface OllamaChatModelPublic extends BaseChatModel {
-  base_url?: string | null;
-  seed?: number | null;
-  num_ctx: number;
-  num_predict?: number | null;
-  repeat_penalty?: number | null;
-  stop?: string[] | null;
-  type: 'ollama';
-}
-declare interface GoogleGenAIChatModelPublic extends BaseChatModel {
-  max_tokens: number;
-  max_retries: number;
-  timeout?: number | null;
-  safety_settings?: Record<string, string> | null;
-  type: 'google_genai';
 }

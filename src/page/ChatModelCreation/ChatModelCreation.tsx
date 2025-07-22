@@ -9,26 +9,23 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import {
-  HideDuration,
   isValidLength,
   RoutePaths,
   SnackbarSeverity,
   TextLength,
 } from '../../util';
-import { AppSnackbar, SelectForm } from '../../component';
+import { SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
 import { useNavigate } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useCreateChatModel } from '../../service';
+import { useSnackbar } from '../../hook';
 
 export default function ChatModelCreationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<SnackbarSeverity>('success');
+  const { show: showSnackbar } = useSnackbar();
   const [modelName, setModelName] = useState('');
   const [provider, setProvider] = useState<string>('');
   const [temperature, setTemperature] = useState<number>(0.5);
@@ -119,18 +116,20 @@ export default function ChatModelCreationPage() {
   const [createChatModelTrigger, chatModel] = useCreateChatModel();
   useEffect(() => {
     if (chatModel.isError) {
-      setSnackbarMessage(t('createPromptError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('createPromptError'),
+        severity: SnackbarSeverity.ERROR,
+      });
     } else if (chatModel.isSuccess) {
-      setSnackbarMessage(t('createPromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('createPromptSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
       setTimeout(() => {
-        navigate(RoutePaths.CHATMODEL);
+        navigate(RoutePaths.CHAT_MODEL);
       }, 1000);
     }
-  }, [chatModel.isError, chatModel.isSuccess, navigate, t]);
+  }, [chatModel.isError, chatModel.isSuccess, navigate, showSnackbar, t]);
 
   const handleCreateChatModelSubmit = async () => {
     try {
@@ -165,34 +164,30 @@ export default function ChatModelCreationPage() {
           safety_settings: safetySettingsObject,
         };
       } else {
-        setSnackbarMessage(t('missingProviderType'));
-        setSnackbarSeverity(SnackbarSeverity.ERROR);
-        setSnackbarOpen(true);
+        showSnackbar({
+          message: t('missingProviderType'),
+          severity: SnackbarSeverity.ERROR,
+        });
         return;
       }
 
-      await createChatModelTrigger(newChatModel);
-      setSnackbarMessage(t('createChatModelSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      navigate(RoutePaths.CHATMODEL);
+      await createChatModelTrigger(newChatModel).unwrap();
+      showSnackbar({
+        message: t('createChatModelSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
+      navigate(RoutePaths.CHAT_MODEL);
     } catch (error) {
       console.error('Creating chat model error:', error);
-      setSnackbarMessage(t('createChatModelError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('createChatModelError'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
   };
 
   return (
     <Stack spacing={1}>
-      <AppSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        autoHideDuration={HideDuration.FAST}
-        onClose={() => setSnackbarOpen(false)}
-      />
       <Typography sx={{ textAlign: 'center' }} variant="h4">
         {t('createChatModel')}
       </Typography>

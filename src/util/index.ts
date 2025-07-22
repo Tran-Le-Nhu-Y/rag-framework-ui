@@ -16,15 +16,13 @@ export const TextLength = {
   EXTREME_LONG: 60000,
 };
 
-export function isOllamaModel(
-  model: ChatModel
-): model is OllamaChatModelPublic {
+export function isOllamaModel(model: ChatModel): model is OllamaChatModel {
   return model.type === 'ollama';
 }
 
 export function isGoogleGenAIModel(
   model: ChatModel
-): model is GoogleGenAIChatModelPublic {
+): model is GoogleGenAIChatModel {
   return model.type === 'google_genai';
 }
 
@@ -33,22 +31,10 @@ export const PathHolders = {
   AGENT_ID: 'agentId',
   PROMPT_ID: 'promptId',
   CHAT_MODEL_ID: 'chatModelId',
-  //   MODULE_ID = 'moduleId',
-  //   MODULE_VERSION_ID = 'moduleVersionId',
-  //   SOFTWARE_DOCUMENT_ID = 'softwareDocumentId',
-  //   MODULE_DOCUMENT_ID = 'moduleDocumentId',
-  //   CUSTOMER_ID = 'customerId',
-  //   DEPLOYMENT_PROCESS_ID = 'processId',
-  //   DEPLOYMENT_PHASE_ID = 'phaseId',
-  //   DEPLOYMENT_PHASE_TYPE_ID = 'phaseTypeId',
-  //   // TEMPLATE_SOFTWARE_EXPIRATION_ID = 'softwareExpirationId',
-  //   // TEMPLATE_SOFTWARE_EXPIRATION_ID = 'softwareExpirationId',
-  //   // TEMPLATE_COMPLETE_DEPLOYMENT_ID = 'completeDeploymentId',
-  //   SOFTWARE_LICENSE_ID = 'softwareLicenseId',
 };
 const AGENT = '/agent';
 const PROMPT = '/prompt';
-const CHATMODEL = '/chat-model';
+const CHAT_MODEL = '/chat-model';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -59,9 +45,10 @@ export const RoutePaths = {
   CREATE_PROMPT: `${PROMPT}/create`,
   UPDATE_PROMPT: `${PROMPT}/:${PathHolders.PROMPT_ID}/update`,
 
-  CHATMODEL,
-  CREATE_CHATMODEL: `${CHATMODEL}/create`,
-  UPDATE_CHATMODEL: `${CHATMODEL}/:${PathHolders.CHAT_MODEL_ID}/update`,
+  CHAT_MODEL: CHAT_MODEL,
+  CREATE_CHAT_MODEL: `${CHAT_MODEL}/create`,
+  UPDATE_CHAT_MODEL: `${CHAT_MODEL}/:${PathHolders.CHAT_MODEL_ID}/update`,
+  USER_GUIDE: 'user-guide',
 };
 
 export const HideDuration = {

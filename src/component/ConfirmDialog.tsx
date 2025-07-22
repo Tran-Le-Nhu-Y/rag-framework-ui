@@ -8,7 +8,7 @@ import {
   DialogActions,
   Button,
 } from '@mui/material';
-import AppSnackbar from './AppSnackbar';
+import { useSnackbar } from '../hook';
 
 interface ConfirmDialogProps {
   title?: string;
@@ -34,11 +34,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   errorMessage,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error' | 'warning' | 'info',
-  });
+  const { show: showSnackbar } = useSnackbar();
 
   const handleClose = () => {
     if (!loading) {
@@ -50,33 +46,23 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     try {
       setLoading(true);
       await onDelete();
-      handleClose();
-      setSnackbar({
-        open: true,
-        message: successMessage || '',
-        severity: 'success',
-      });
+      handleClose?.();
+      showSnackbar({ message: successMessage || '', severity: 'success' });
     } catch (error) {
       console.error('Delete error:', error);
-      setSnackbar({
-        open: true,
-        message: errorMessage || '',
-        severity: 'error',
-      });
+      showSnackbar({ message: errorMessage || '', severity: 'error' });
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   return (
     <>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={() => {
+          if (!loading) handleClose?.();
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         maxWidth="xs"
@@ -100,7 +86,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           <Button
             onClick={handleConfirm}
             autoFocus
-            disabled={loading}
+            loading={loading}
             variant="contained"
             color="error"
             size="small"
@@ -109,14 +95,6 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Snackbar Alert */}
-      <AppSnackbar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={handleSnackbarClose}
-      />
     </>
   );
 };

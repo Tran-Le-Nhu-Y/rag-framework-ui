@@ -1,17 +1,12 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import { AppSnackbar, ConfirmDialog, DataGridTable } from '../../component';
+import { ConfirmDialog, DataGridTable } from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import {
-  HideDuration,
-  PathHolders,
-  RoutePaths,
-  SnackbarSeverity,
-} from '../../util';
+import { PathHolders, RoutePaths, SnackbarSeverity } from '../../util';
 import { useEffect, useState } from 'react';
 import {
   useDeleteChatModel,
@@ -19,14 +14,12 @@ import {
   useGetChatModels,
 } from '../../service';
 import ChatModelDetailDialog from './ChatModelDetail';
+import { useSnackbar } from '../../hook';
 
 const ChatModelManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<SnackbarSeverity>('success');
+  const { show: showSnackbar } = useSnackbar();
   const [chatModelIdToDelete, setChatModelIdToDelete] = useState<string | null>(
     null
   );
@@ -51,35 +44,10 @@ const ChatModelManagementPage = () => {
 
   const columns: GridColDef<BaseChatModel>[] = [
     {
-      field: 'model_name',
+      field: 'modelName',
       headerName: t('modelName'),
       type: 'string',
       width: 250,
-      headerAlign: 'center',
-    },
-
-    {
-      field: 'temperature',
-      headerName: t('temperature'),
-      type: 'number',
-      width: 150,
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'top_k',
-      headerName: t('topK'),
-      type: 'number',
-      width: 150,
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'top_p',
-      headerName: t('topP'),
-      type: 'number',
-      width: 150,
-      align: 'center',
       headerAlign: 'center',
     },
     {
@@ -117,7 +85,7 @@ const ChatModelManagementPage = () => {
           label={t('update')}
           onClick={() =>
             navigate(
-              RoutePaths.UPDATE_CHATMODEL.replace(
+              RoutePaths.UPDATE_CHAT_MODEL.replace(
                 `:${PathHolders.CHAT_MODEL_ID}`,
                 params.row.id
               )
@@ -131,7 +99,7 @@ const ChatModelManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteChatModel(params.row.id)}
+          onClick={() => setChatModelIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -141,65 +109,39 @@ const ChatModelManagementPage = () => {
     offset: 0,
     limit: 40,
   });
-  const chatModel = useGetChatModels(chatModelQuery!, {
-    skip: !chatModelQuery,
-  });
+  const chatModel = useGetChatModels(chatModelQuery);
   useEffect(() => {
     if (chatModel.data?.content) {
       setRows(chatModel.data.content);
     }
     if (chatModel.isError) {
-      setSnackbarMessage(t('promptsLoadingError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+      showSnackbar({
+        message: t('promptsLoadingError'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
-  }, [chatModel.data?.content, chatModel.isError, t]);
-
-  //   const [rows, setRows] = useState<ChatModel[]>([]);
-  //   useEffect(() => {
-  //     if (chatModel.data?.content) {
-  //       const mappedRows: ChatModel[] = chatModel.data.content.map(
-  //         (chatModel) => ({
-  //           id: chatModel.id,
-  //           model_name: chatModel.model_name,
-  //           temperature: chatModel.temperature,
-  //           top_k: chatModel.top_k,
-  //           top_p: chatModel.top_p,
-  //           type: chatModel.type,
-  //         })
-  //       );
-  //       setRows(mappedRows);
-  //     }
-  //   }, [chatModel.data, t]);
+  }, [chatModel.data?.content, chatModel.isError, showSnackbar, t]);
 
   //delete chat model
-  const [deleteChatModelTrigger, deleteChatModel] = useDeleteChatModel();
-  useEffect(() => {
-    if (deleteChatModel.isError) {
-      setSnackbarMessage(t('deleteChatModelFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
+  const [deleteChatModelTrigger] = useDeleteChatModel();
+  const handleDeleteChatModel = async (chatModelId: string) => {
+    try {
+      await deleteChatModelTrigger(chatModelId).unwrap();
+      showSnackbar({
+        message: t('deleteChatModelSuccess'),
+        severity: SnackbarSeverity.SUCCESS,
+      });
+    } catch (error) {
+      console.warn(error);
+      showSnackbar({
+        message: t('deleteChatModelFailed'),
+        severity: SnackbarSeverity.ERROR,
+      });
     }
-    if (deleteChatModel.isSuccess) {
-      setSnackbarMessage(t('deleteChatModelSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-    }
-  }, [deleteChatModel.isError, deleteChatModel.isSuccess, t]);
-
-  const handleDeleteChatModel = (chatModelId: string) => {
-    setChatModelIdToDelete(chatModelId);
   };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
-      <AppSnackbar
-        open={snackbarOpen}
-        message={snackbarMessage}
-        severity={snackbarSeverity}
-        autoHideDuration={HideDuration.FAST}
-        onClose={() => setSnackbarOpen(false)}
-      />
       {chatModelIdToDelete && (
         <ConfirmDialog
           open={true}
@@ -209,7 +151,7 @@ const ChatModelManagementPage = () => {
           confirmText={t('confirm')}
           cancelText={t('cancel')}
           onDelete={async () => {
-            await deleteChatModelTrigger(chatModelIdToDelete);
+            await handleDeleteChatModel(chatModelIdToDelete);
             setChatModelIdToDelete(null);
           }}
         />
@@ -218,7 +160,7 @@ const ChatModelManagementPage = () => {
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={() => navigate(RoutePaths.CREATE_CHATMODEL)}
+          onClick={() => navigate(RoutePaths.CREATE_CHAT_MODEL)}
         >
           {t('createChatModel')}
         </Button>
