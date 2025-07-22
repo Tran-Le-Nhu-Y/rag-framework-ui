@@ -6,7 +6,7 @@ import UseGuidePage from './UseGuide/UseGuide';
 import PromptManagementPage from './PromptConfig/PromptManagement';
 import PromptCreationPage from './PromptCreation/PromptCreation';
 import AgentUpdatePage from './AgentUpdate/AgentUpdate';
-import PromptUpdatePage from './PromptUpdate/PromptUpdate';
+import PromptUpdateDialog from './PromptConfig/PromptUpdate';
 import AgentDetailPage from './AgentDetail/AgentDetail';
 export {
   AgentManagementPage,
@@ -18,5 +18,5 @@ export {
   PromptCreationPage,
   AgentUpdatePage,
   PromptManagementPage,
-  PromptUpdatePage,
+  PromptUpdateDialog as PromptUpdatePage,
 };

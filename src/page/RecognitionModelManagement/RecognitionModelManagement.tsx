@@ -25,13 +25,13 @@ const RecognitionModelManagementPage = () => {
       width: 250,
       editable: true,
     },
-    {
-      field: 'status',
-      headerName: t('status'),
-      type: 'string',
-      width: 150,
-      editable: true,
-    },
+    // {
+    //   field: 'status',
+    //   headerName: t('status'),
+    //   type: 'string',
+    //   width: 150,
+    //   editable: true,
+    // },
 
     {
       field: 'createdAt',

@@ -68,7 +68,7 @@ const PromptManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => navigate('/prompt-update')}
+          onClick={() => setOpenUpdatePromptDialog(true)}
         />,
         <GridActionsCellItem
           icon={
@@ -178,9 +178,9 @@ const PromptManagementPage = () => {
         open={openUpdatePromptDialog}
         onCancel={() => setOpenUpdatePromptDialog(false)}
         onConfirm={() => {}}
-        onFilesChange={() => {
-          console.log('Handle file uploads');
-        }}
+        // onFilesChange={() => {
+        //   console.log('Handle file uploads');
+        // }}
       />
       <PromptDetailDialog
         open={openPromptDetailDialog}
