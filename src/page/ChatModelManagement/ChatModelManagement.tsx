@@ -5,11 +5,20 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { useNavigate } from 'react-router';
-import { HideDuration, RoutePaths, SnackbarSeverity } from '../../util';
+import {
+  HideDuration,
+  PathHolders,
+  RoutePaths,
+  SnackbarSeverity,
+} from '../../util';
 import { useEffect, useState } from 'react';
-import { useDeleteChatModel, useGetChatModels } from '../../service';
+import {
+  useDeleteChatModel,
+  useGetChatModelById,
+  useGetChatModels,
+} from '../../service';
+import ChatModelDetailDialog from './ChatModelDetail';
 
 const ChatModelManagementPage = () => {
   const { t } = useTranslation();
@@ -21,6 +30,24 @@ const ChatModelManagementPage = () => {
   const [chatModelIdToDelete, setChatModelIdToDelete] = useState<string | null>(
     null
   );
+  const [openChatModelDetailDialog, setOpenChatModelDetailDialog] =
+    useState(false);
+  const [selectedChatModelId, setSelectedChatModelId] = useState<string | null>(
+    null
+  );
+  const [viewedChatModel, setViewedChatModel] = useState<ChatModel | null>(
+    null
+  );
+
+  const chatModelDetail = useGetChatModelById(selectedChatModelId!, {
+    skip: !selectedChatModelId,
+  });
+  useEffect(() => {
+    if (chatModelDetail.data) {
+      setViewedChatModel(chatModelDetail.data);
+      setOpenChatModelDetailDialog(true);
+    }
+  }, [chatModelDetail.data]);
 
   const columns: GridColDef<BaseChatModel>[] = [
     {
@@ -70,22 +97,15 @@ const ChatModelManagementPage = () => {
       getActions: (params) => [
         <GridActionsCellItem
           icon={
-            <Tooltip title={t('export')}>
-              <SimCardDownloadIcon color="primary" />
-            </Tooltip>
-          }
-          label={t('export')}
-          onClick={() => {}}
-        />,
-        <GridActionsCellItem
-          icon={
             <Tooltip title={t('see')}>
               <RemoveRedEyeIcon />
             </Tooltip>
           }
           color="primary"
           label={t('see')}
-          onClick={() => navigate('/agent-detail')}
+          onClick={() => {
+            setSelectedChatModelId(params.row.id);
+          }}
         />,
         <GridActionsCellItem
           icon={
@@ -95,7 +115,14 @@ const ChatModelManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={() => navigate('/agent-update')}
+          onClick={() =>
+            navigate(
+              RoutePaths.UPDATE_CHATMODEL.replace(
+                `:${PathHolders.CHAT_MODEL_ID}`,
+                params.row.id
+              )
+            )
+          }
         />,
         <GridActionsCellItem
           icon={
@@ -199,6 +226,15 @@ const ChatModelManagementPage = () => {
       <Box sx={{ height: 400, width: '90%' }}>
         <DataGridTable rows={rows} columns={columns} />
       </Box>
+      <ChatModelDetailDialog
+        open={openChatModelDetailDialog}
+        onExit={() => {
+          setOpenChatModelDetailDialog(false);
+          setSelectedChatModelId(null);
+          setViewedChatModel(null);
+        }}
+        chatModel={viewedChatModel}
+      />
     </Stack>
   );
 };

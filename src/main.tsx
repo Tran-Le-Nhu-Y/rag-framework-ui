@@ -21,6 +21,7 @@ import {
   AgentUpdatePage,
   ChatModelCreationPage,
   ChatModelManagementPage,
+  ChatModelUpdatePage,
   PromptCreationPage,
   PromptManagementPage,
   PromptUpdatePage,
@@ -46,6 +47,10 @@ const router = createBrowserRouter(
       <Route
         path={RoutePaths.CREATE_CHATMODEL}
         element={<ChatModelCreationPage />}
+      />
+      <Route
+        path={RoutePaths.UPDATE_CHATMODEL}
+        element={<ChatModelUpdatePage />}
       />
 
       <Route
