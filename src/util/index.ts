@@ -23,12 +23,16 @@ export const PathHolders = {
   CHAT_MODEL_ID: 'chatModelId',
   EMBEDDING_MODEL_ID: 'embeddingModelId',
   MCP_ID: 'mcpId',
+  VECTOR_STORE_ID: 'vectorStoreId',
+  BM25_ID: 'bm25Id',
 };
 const AGENT = '/agent';
 const PROMPT = '/prompt';
 const CHATMODEL = '/chat-model';
 const EMBEDDINGS = '/embedding';
 const MCP = '/mcp';
+const VECTOR_STORE = '/vector-store';
+const BM25 = '/bm25';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -50,6 +54,14 @@ export const RoutePaths = {
   MCP,
   CREATE_MCP: `${MCP}/create`,
   UPDATE_MCP: `${MCP}/:${PathHolders.MCP_ID}/update`,
+
+  VECTOR_STORE,
+  CREATE_VECTOR_STORE: `${VECTOR_STORE}/create`,
+  UPDATE_VECTOR_STORE: `${VECTOR_STORE}/:${PathHolders.VECTOR_STORE_ID}/update`,
+
+  BM25,
+  CREATE_BM25: `${BM25}/create`,
+  UPDATE_BM25: `${BM25}/:${PathHolders.BM25_ID}/update`,
 };
 
 export const HideDuration = {

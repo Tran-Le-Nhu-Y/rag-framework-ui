@@ -16,6 +16,12 @@ import EmbeddingCreationPage from './EmbeddingCreation/EmbeddingCreation';
 import MCPManagementPage from './MCP/MCPManagement';
 import MCPCreationPage from './MCPCreation/MCPCreation';
 import MCPUpdatePage from './MCPUpdate/MCPUpdate';
+import BM25ManagementPage from './BM25/BM25Management';
+import BM25CreationPage from './BM25Creation/BM25Creation';
+import BM25UpdatePage from './BM25Update/BM25Update';
+import VectorStoreManagementPage from './VectorStore/VectorStoreManagement';
+import VectorStoreCreationPage from './VectorStoreCreation/VectorStoreCreation';
+import VectorStoreUpdatePage from './VectorStoreUpdate/VectorStoreUpdate';
 
 export {
   AgentManagementPage,
@@ -36,4 +42,10 @@ export {
   MCPManagementPage,
   MCPCreationPage,
   MCPUpdatePage,
+  BM25ManagementPage,
+  BM25CreationPage,
+  BM25UpdatePage,
+  VectorStoreCreationPage,
+  VectorStoreManagementPage,
+  VectorStoreUpdatePage,
 };

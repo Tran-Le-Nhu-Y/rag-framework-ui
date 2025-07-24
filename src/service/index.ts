@@ -51,3 +51,27 @@ import {
   useUpdateMCPMutation as useUpdateMCP,
 } from './mcp';
 export { useCreateMCP, useGetMCPs, useGetMCPById, useDeleteMCP, useUpdateMCP };
+
+import {
+  useGetVectorStoresQuery as useGetVectorStores,
+  useGetVectorStoreByIdQuery as useGetVectorStoreById,
+  useCreateVectorStoreMutation as useCreateVectorStore,
+  useUpdateVectorStoreMutation as useUpdateVectorStore,
+  useDeleteRetrieverMutation as useDeleteRetriever,
+  useCreateBM25Mutation as useCreateBM25,
+  useGetBM25ByIdQuery as useGetBM25ById,
+  useGetBM25sQuery as useGetBM25s,
+  useUpdateBM25Mutation as useUpdateBM25,
+} from './retriever';
+
+export {
+  useGetVectorStores,
+  useGetVectorStoreById,
+  useCreateVectorStore,
+  useUpdateVectorStore,
+  useDeleteRetriever,
+  useCreateBM25,
+  useGetBM25ById,
+  useGetBM25s,
+  useUpdateBM25,
+};

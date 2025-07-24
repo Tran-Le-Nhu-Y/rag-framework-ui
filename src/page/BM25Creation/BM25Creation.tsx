@@ -30,7 +30,7 @@ const typeList: Data[] = [
   { label: 'Stdio', value: 'stdio' },
 ];
 
-export default function MCPCreationPage() {
+export default function BM25CreationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);

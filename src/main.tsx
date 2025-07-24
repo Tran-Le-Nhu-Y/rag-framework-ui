@@ -19,6 +19,9 @@ import {
   AgentDetailPage,
   AgentManagementPage,
   AgentUpdatePage,
+  BM25CreationPage,
+  BM25ManagementPage,
+  BM25UpdatePage,
   ChatModelCreationPage,
   ChatModelManagementPage,
   ChatModelUpdatePage,
@@ -33,6 +36,9 @@ import {
   RecognitionModelCreationPage,
   RecognitionModelManagementPage,
   UseGuidePage,
+  VectorStoreCreationPage,
+  VectorStoreManagementPage,
+  VectorStoreUpdatePage,
 } from './page/index.ts';
 import { RoutePaths } from './util/index.ts';
 import EmbeddingUpdatePage from './page/EmbeddingUpdate/EmbeddingUpdate.tsx';
@@ -84,8 +90,24 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.PROMPT} element={<PromptManagementPage />} />
       <Route path={RoutePaths.CREATE_PROMPT} element={<PromptCreationPage />} />
       <Route path={RoutePaths.UPDATE_PROMPT} element={<PromptUpdatePage />} />
-      {/* <Route path="prompt-creation" element={<PromptCreationPage />} />
-      <Route path="prompt-update" element={<PromptUpdatePage />} /> */}
+
+      <Route
+        path={RoutePaths.VECTOR_STORE}
+        element={<VectorStoreManagementPage />}
+      />
+      <Route
+        path={RoutePaths.CREATE_VECTOR_STORE}
+        element={<VectorStoreCreationPage />}
+      />
+      <Route
+        path={RoutePaths.UPDATE_VECTOR_STORE}
+        element={<VectorStoreUpdatePage />}
+      />
+
+      <Route path={RoutePaths.BM25} element={<BM25ManagementPage />} />
+      <Route path={RoutePaths.CREATE_BM25} element={<BM25CreationPage />} />
+      <Route path={RoutePaths.UPDATE_BM25} element={<BM25UpdatePage />} />
+
       <Route path="use-guide" element={<UseGuidePage />} />
     </Route>
   )

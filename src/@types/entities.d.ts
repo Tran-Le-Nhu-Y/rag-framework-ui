@@ -77,3 +77,37 @@ declare interface MCPStreamableServer {
   sse_read_timeout?: number; // default: 30
   terminate_on_close?: boolean; // default: true
 }
+
+declare interface VectorStoreConnection {
+  host: string;
+  port: number; // > 0
+  ssl: boolean;
+  headers?: Record<string, string> | null;
+}
+
+declare interface ChromaRetriever {
+  id: string;
+  name: string; // An unique name is used for determining retrievers [1, 100] characters
+  weight: number; // Retriever weight for combining results [0, 1]
+  mode?: string; // #0"persistent" |  #1"remote"
+  connection?: VectorStoreConnection | null;
+  collection_name?: string; // Default"agent_collection"
+  k?: number; //Amount of documents to return
+  tenant: string; // ≥ 1 character Default"default_tenant"
+  database: string; // ≥ 1 character Default"default_database"
+  type?: string; //Default"chroma_db"
+  embeddings_id: string; // ID of the configured embeddings model.
+}
+
+declare interface BM25Retriever {
+  id: string;
+  name: string; // [1, 100] characters
+  weight: number; // [0, 1]
+  embeddings_model?: string | null;
+  k?: number;
+  enable_remove_emoji?: boolean;
+  enable_remove_emoticon?: boolean;
+  type?: string; //Default"bm25"
+  embeddings_id: string;
+  removal_words_file_id?: string | null;
+}

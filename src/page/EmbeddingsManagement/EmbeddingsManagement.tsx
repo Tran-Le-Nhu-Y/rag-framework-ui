@@ -134,7 +134,7 @@ const EmbeddingsManagementPage = () => {
       setRows(embeddingModel.data.content);
     }
     if (embeddingModel.isError) {
-      setSnackbarMessage(t('promptsLoadingError'));
+      setSnackbarMessage(t('embeddingModelsLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
