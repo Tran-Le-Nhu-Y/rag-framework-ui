@@ -19,7 +19,7 @@ export default function PromptCreationPage() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-  const [suggestQuestions, setSuggestQuestions] = useState('');
+  const [name, setName] = useState('');
   const [respond, setRespond] = useState('');
   const [createPromptTrigger, createPrompt] = useCreatePrompt();
   useEffect(() => {
@@ -38,12 +38,12 @@ export default function PromptCreationPage() {
   const handleCreatePromptSubmit = async () => {
     try {
       const newPrompt: CreatePromptRequest = {
-        suggestQuestionsPrompt: suggestQuestions,
+        promptName: name,
         respondPrompt: respond,
       };
 
       await createPromptTrigger(newPrompt);
-      setSuggestQuestions('');
+      setName('');
       setRespond('');
       navigate(RoutePaths.PROMPT);
 
@@ -74,22 +74,18 @@ export default function PromptCreationPage() {
 
       <Stack justifyContent={'center'} alignItems="center">
         <Stack spacing={2} width="80%">
-          <Stack spacing={1}>
+          <Stack spacing={2}>
             <TextField
               size="small"
               helperText={t('hyperTextMedium')}
-              label={t('suggest_questions_prompt')}
-              value={suggestQuestions}
+              label={t('promptName')}
+              value={name}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isValidLength(newValue, TextLength.MEDIUM))
-                  setSuggestQuestions(newValue);
+                  setName(newValue);
               }}
-              placeholder={`${t('enter')} ${t(
-                'suggest_questions_prompt'
-              ).toLowerCase()}...`}
-              multiline
-              rows={5}
+              placeholder={`${t('enter')} ${t('promptName').toLowerCase()}...`}
             />
 
             <TextField
@@ -99,14 +95,9 @@ export default function PromptCreationPage() {
               ).toLowerCase()}...`}
               label={t('respond_prompt')}
               value={respond}
-              helperText={t('hyperTextVeryLong')}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.EXTREME_LONG))
-                  setRespond(newValue);
-              }}
+              onChange={(e) => setRespond(e.target.value)}
               multiline
-              rows={10}
+              rows={15}
             />
           </Stack>
 

@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/mcp-mapper';
+import type { MCPStreamableServer } from '../@types/entities';
 
 const EXTENSION_URL = 'api/v1/mcp';
 export const mcpApi = createApi({
@@ -9,7 +10,7 @@ export const mcpApi = createApi({
   baseQuery: axiosBaseQuery(ragFrameworkInstance),
   tagTypes: ['PagingMCP', 'MCP'],
   endpoints: (builder) => ({
-    getMCPById: builder.query<MCPPublic, string>({
+    getMCPById: builder.query<MCPStreamableServer, string>({
       query: (mcpId: string) => ({
         url: `/${EXTENSION_URL}/${mcpId}`,
         method: 'GET',
@@ -27,12 +28,12 @@ export const mcpApi = createApi({
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.status;
       },
-      transformResponse(rawResult: MCPResponse) {
+      transformResponse(rawResult: MCPStreamableServerResponse) {
         return toEntity(rawResult);
       },
     }),
 
-    getMCPs: builder.query<PagingWrapper<MCPPublic>, GetMCPQuery>({
+    getMCPs: builder.query<PagingWrapper<MCPStreamableServer>, GetMCPQuery>({
       query: ({ offset = 0, limit = 100 }) => ({
         url: `/${EXTENSION_URL}/all`,
         method: 'GET',
@@ -59,15 +60,15 @@ export const mcpApi = createApi({
         return baseQueryReturnValue.status;
       },
       transformResponse: (
-        response: PagingWrapper<MCPResponse>
-      ): PagingWrapper<MCPPublic> => ({
+        response: PagingWrapper<MCPStreamableServerResponse>
+      ): PagingWrapper<MCPStreamableServer> => ({
         ...response,
         content: response.content.map(toEntity),
       }),
     }),
 
-    createMCP: builder.mutation<string, CreateMCPRequest>({
-      query: (data: CreateMCPRequest) => ({
+    createMCP: builder.mutation<string, CreateMCPStreamableServerRequest>({
+      query: (data: CreateMCPStreamableServerRequest) => ({
         url: `/${EXTENSION_URL}/create`,
         method: 'POST',
         body: data,
@@ -80,8 +81,8 @@ export const mcpApi = createApi({
         return baseQueryReturnValue.status;
       },
     }),
-    updateMCP: builder.mutation<void, UpdateMCPRequest>({
-      query: (data: UpdateMCPRequest) => ({
+    updateMCP: builder.mutation<void, UpdateMCPStreamableServerRequest>({
+      query: (data: UpdateMCPStreamableServerRequest) => ({
         url: `/${EXTENSION_URL}/${data.id}/update`,
         method: 'PUT',
         body: {

@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import type { Embeddings } from '../../@types/entities';
 
 export default function EmbeddingsDetailDialog({
   open,

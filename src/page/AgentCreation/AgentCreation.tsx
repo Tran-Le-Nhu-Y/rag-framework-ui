@@ -260,7 +260,7 @@ export default function AgentCreationPage() {
             <Stack>
               <Stack spacing={2} direction={'row'} padding={1}>
                 <SelectForm
-                  label={t('selectProvider')}
+                  label={t('selectModelType')}
                   dataList={providerList}
                   value={
                     providerList.find((item) => item.value === provider) || null
@@ -407,7 +407,7 @@ export default function AgentCreationPage() {
                 }}
               />
               <SelectForm
-                label={t('selectProvider')}
+                label={t('selectModelType')}
                 dataList={recognitionModels}
                 value={
                   recognitionModels.find(

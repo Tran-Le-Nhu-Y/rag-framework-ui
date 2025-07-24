@@ -7,7 +7,7 @@ declare interface Agent {
 }
 declare interface Prompt {
   id: string;
-  suggest_questions_prompt: string;
+  name: string;
   respond_prompt: string;
 }
 
@@ -66,17 +66,14 @@ declare interface GoogleGenAIChatModelPublic extends BaseChatModel {
   type: 'google_genai';
 }
 
+export type MCPStreamType = 'streamable_http' | 'stdio';
 declare interface MCPStreamableServer {
-  name: string;
-  url: string;
-  type: string;
-  headers?: Record<string, string> | null;
-  timeout?: number;
-  sse_reasd_timeout?: number;
-  terminate_on_close?: boolean;
-}
-
-declare interface MCPPublic {
   id: string;
-  servers: Array<MCPStreamableServer>;
+  name: string; // minLength: 1
+  url: string;
+  type: MCPStreamType; // default: 'streamable_http'
+  headers?: Record<string, string> | null;
+  timeout?: number; // default: 30
+  sse_read_timeout?: number; // default: 30
+  terminate_on_close?: boolean; // default: true
 }

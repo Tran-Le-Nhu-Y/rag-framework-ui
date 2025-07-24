@@ -24,6 +24,9 @@ import {
   ChatModelUpdatePage,
   EmbeddingCreationPage,
   EmbeddingsManagementPage,
+  MCPCreationPage,
+  MCPManagementPage,
+  MCPUpdatePage,
   PromptCreationPage,
   PromptManagementPage,
   PromptUpdatePage,
@@ -42,7 +45,6 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.CREATE_AGENT} element={<AgentCreationPage />} />
       <Route path={RoutePaths.UPDATE_AGENT} element={<AgentUpdatePage />} />
       <Route path={RoutePaths.AGENT_DETAIL} element={<AgentDetailPage />} />
-
       <Route
         path={RoutePaths.CHATMODEL}
         element={<ChatModelManagementPage />}
@@ -55,7 +57,6 @@ const router = createBrowserRouter(
         path={RoutePaths.UPDATE_CHATMODEL}
         element={<ChatModelUpdatePage />}
       />
-
       <Route
         path={RoutePaths.EMBEDDINGS}
         element={<EmbeddingsManagementPage />}
@@ -68,7 +69,6 @@ const router = createBrowserRouter(
         path={RoutePaths.UPDATE_EMBEDDINGS}
         element={<EmbeddingUpdatePage />}
       />
-
       <Route
         path="recognition-model-management"
         element={<RecognitionModelManagementPage />}
@@ -77,6 +77,9 @@ const router = createBrowserRouter(
         path="recognition-model-creation"
         element={<RecognitionModelCreationPage />}
       />
+      <Route path={RoutePaths.MCP} element={<MCPManagementPage />} />
+      <Route path={RoutePaths.CREATE_MCP} element={<MCPCreationPage />} />
+      <Route path={RoutePaths.UPDATE_MCP} element={<MCPUpdatePage />} />
 
       <Route path={RoutePaths.PROMPT} element={<PromptManagementPage />} />
       <Route path={RoutePaths.CREATE_PROMPT} element={<PromptCreationPage />} />

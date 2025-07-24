@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/chat-model-mapper';
+import type { ChatModel } from '../@types/entities';
 
 const EXTENSION_URL = 'api/v1/chat-model';
 export const chatModelApi = createApi({

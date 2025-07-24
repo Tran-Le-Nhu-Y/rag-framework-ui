@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/prompt-mapper';
+import type { Prompt } from '../@types/entities';
 
 const EXTENSION_URL = 'api/v1/prompt';
 export const promptApi = createApi({
@@ -85,7 +86,7 @@ export const promptApi = createApi({
         url: `/${EXTENSION_URL}/create`,
         method: 'POST',
         body: {
-          suggest_questions_prompt: data.suggestQuestionsPrompt,
+          name: data.promptName,
           respond_prompt: data.respondPrompt,
         },
       }),
@@ -102,7 +103,7 @@ export const promptApi = createApi({
         url: `/${EXTENSION_URL}/${data.promptId}/update`,
         method: 'PUT',
         body: {
-          suggest_questions_prompt: data.suggestQuestionsPrompt,
+          name: data.promptName,
           respond_prompt: data.respondPrompt,
         },
       }),

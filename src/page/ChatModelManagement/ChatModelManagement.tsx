@@ -19,6 +19,7 @@ import {
   useGetChatModels,
 } from '../../service';
 import ChatModelDetailDialog from './ChatModelDetail';
+import type { BaseChatModel, ChatModel } from '../../@types/entities';
 
 const ChatModelManagementPage = () => {
   const { t } = useTranslation();
@@ -56,6 +57,7 @@ const ChatModelManagementPage = () => {
       type: 'string',
       width: 250,
       headerAlign: 'center',
+      align: 'center',
     },
 
     {
@@ -88,6 +90,7 @@ const ChatModelManagementPage = () => {
       type: 'string',
       width: 150,
       headerAlign: 'center',
+      align: 'center',
     },
     {
       field: 'actions',
@@ -154,23 +157,6 @@ const ChatModelManagementPage = () => {
       setSnackbarOpen(true);
     }
   }, [chatModel.data?.content, chatModel.isError, t]);
-
-  //   const [rows, setRows] = useState<ChatModel[]>([]);
-  //   useEffect(() => {
-  //     if (chatModel.data?.content) {
-  //       const mappedRows: ChatModel[] = chatModel.data.content.map(
-  //         (chatModel) => ({
-  //           id: chatModel.id,
-  //           model_name: chatModel.model_name,
-  //           temperature: chatModel.temperature,
-  //           top_k: chatModel.top_k,
-  //           top_p: chatModel.top_p,
-  //           type: chatModel.type,
-  //         })
-  //       );
-  //       setRows(mappedRows);
-  //     }
-  //   }, [chatModel.data, t]);
 
   //delete chat model
   const [deleteChatModelTrigger, deleteChatModel] = useDeleteChatModel();

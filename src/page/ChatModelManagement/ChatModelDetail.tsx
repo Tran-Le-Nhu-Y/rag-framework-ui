@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import type { ChatModel } from '../../@types/entities';
 
 export default function ChatModelDetailDialog({
   open,
@@ -44,10 +45,10 @@ export default function ChatModelDetailDialog({
               </Stack>
               <Stack direction={'row'} spacing={1}>
                 <Typography variant="body1" fontWeight={'bold'}>
-                  {t('provider')}:
+                  {t('modelType')}:
                 </Typography>
                 <Typography variant="body1" fontWeight={500}>
-                  {chatModel.provider || 'N/A'}
+                  {chatModel.type || 'N/A'}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1}>

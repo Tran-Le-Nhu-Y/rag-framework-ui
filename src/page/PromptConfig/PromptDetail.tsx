@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import type { Prompt } from '../../@types/entities';
 
 export default function PromptDetailDialog({
   open,
@@ -32,13 +33,16 @@ export default function PromptDetailDialog({
           spacing={2}
           sx={{ mt: 1, mb: 1 }}
         >
-          <Stack spacing={2} width="100%">
-            <Typography variant="body1" fontWeight={'bold'}>
-              {t('suggest_questions_prompt')}:
-            </Typography>
-            <Typography variant="body1" fontWeight={500}>
-              {prompt?.suggest_questions_prompt || 'N/A'}
-            </Typography>
+          <Stack spacing={1} width="100%">
+            <Stack direction={'row'} spacing={1}>
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('promptName')}:
+              </Typography>
+              <Typography variant="body1" fontWeight={500}>
+                {prompt?.name || 'N/A'}
+              </Typography>
+            </Stack>
+
             <Typography variant="body1" fontWeight={'bold'}>
               {t('respond_prompt')}:
             </Typography>

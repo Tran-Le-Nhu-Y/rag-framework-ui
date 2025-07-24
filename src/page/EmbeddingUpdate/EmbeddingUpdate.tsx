@@ -13,6 +13,11 @@ import { useNavigate, useParams } from 'react-router';
 import { useGetEmbeddingById, useUpdateEmbeddingModel } from '../../service';
 import { AppSnackbar, SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
+import type {
+  HuggingFaceEmbeddings,
+  GoogleGenAIEmbeddings,
+  EmbeddingType,
+} from '../../@types/entities';
 
 const typeList: Data[] = [
   { label: 'Hugging Face', value: 'hugging_face' },
@@ -107,7 +112,7 @@ export default function EmbeddingUpdatePage() {
         onClose={() => setSnackbarOpen(false)}
       />
       <Typography sx={{ textAlign: 'center' }} variant="h4">
-        {t('embeddingCreation')}
+        {t('embeddingUpdate')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">
@@ -124,7 +129,7 @@ export default function EmbeddingUpdatePage() {
                   updateEmbeddingModel('name', newValue);
               }}
               placeholder={`${t('enter')} ${t(
-                'suggest_questions_prompt'
+                'embeddingModelName'
               ).toLowerCase()}...`}
             />
 
@@ -158,7 +163,7 @@ export default function EmbeddingUpdatePage() {
             />
             {embeddingModel.type === 'google_genai' && (
               <SelectForm
-                label={t('selectProvider')}
+                label={t('selectTaskType')}
                 dataList={taskTypeList}
                 value={
                   taskTypeList.find(

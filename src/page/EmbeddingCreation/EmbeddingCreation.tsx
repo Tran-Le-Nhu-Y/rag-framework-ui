@@ -12,6 +12,12 @@ import { useNavigate } from 'react-router';
 import { useCreateEmbeddingModel } from '../../service';
 import { AppSnackbar, SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
+import type {
+  Embeddings,
+  EmbeddingType,
+  GoogleGenAIEmbeddings,
+  HuggingFaceEmbeddings,
+} from '../../@types/entities';
 
 const typeList: Data[] = [
   { label: 'Hugging Face', value: 'hugging_face' },
@@ -100,19 +106,17 @@ export default function EmbeddingCreationPage() {
                   updateEmbeddingModel('name', newValue);
               }}
               placeholder={`${t('enter')} ${t(
-                'suggest_questions_prompt'
+                'embeddingModelName'
               ).toLowerCase()}...`}
             />
 
             <TextField
               type="text"
               size="small"
-              placeholder={`${t('enter')} ${t(
-                'respond_prompt'
-              ).toLowerCase()}...`}
+              placeholder={`${t('enter')} ${t('modelName').toLowerCase()}...`}
+              helperText={t('hyperTextMedium')}
               label={t('modelName')}
               value={embeddingModel.model_name}
-              helperText={t('hyperTextVeryLong')}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isValidLength(newValue, TextLength.MEDIUM))
@@ -134,7 +138,7 @@ export default function EmbeddingCreationPage() {
             />
             {embeddingModel.type === 'google_genai' && (
               <SelectForm
-                label={t('selectProvider')}
+                label={t('selectTaskType')}
                 dataList={taskTypeList}
                 value={
                   taskTypeList.find(

@@ -165,7 +165,7 @@ export default function ChatModelCreationPage() {
           safety_settings: safetySettingsObject,
         };
       } else {
-        setSnackbarMessage(t('missingProviderType'));
+        setSnackbarMessage(t('missingModelType'));
         setSnackbarSeverity(SnackbarSeverity.ERROR);
         setSnackbarOpen(true);
         return;
@@ -218,7 +218,7 @@ export default function ChatModelCreationPage() {
                   ).toLowerCase()}...`}
                 />
                 <SelectForm
-                  label={t('selectProvider')}
+                  label={t('selectModelType')}
                   dataList={providerList}
                   value={
                     providerList.find((item) => item.value === provider) || null
