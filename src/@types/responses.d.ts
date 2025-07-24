@@ -52,3 +52,30 @@ declare interface MCPStreamableServerResponse {
   sse_read_timeout?: number;
   terminate_on_close?: boolean;
 }
+
+declare interface ChromaRetrieverResponse {
+  id: string;
+  name: string;
+  weight: number;
+  mode?: string;
+  connection?: VectorStoreConnection | null;
+  collection_name?: string;
+  k?: number;
+  tenant: string;
+  database: string;
+  type?: string;
+  embeddings_id: string;
+}
+
+declare interface BM25RetrieverResponse {
+  id: string;
+  name: string;
+  weight: number;
+  embeddings_model?: string | null;
+  k?: number;
+  enable_remove_emoji?: boolean;
+  enable_remove_emoticon?: boolean;
+  type?: string;
+  embeddings_id: string;
+  removal_words_file_id?: string | null;
+}

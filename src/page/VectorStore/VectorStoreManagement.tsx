@@ -12,60 +12,64 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
-import { useDeleteMCP, useGetMCPs } from '../../service';
+import { useDeleteRetriever, useGetVectorStores } from '../../service';
 import {
   HideDuration,
   PathHolders,
   RoutePaths,
   SnackbarSeverity,
 } from '../../util';
-import MCPDetailDialog from './MCPDetail';
-import type { MCPStreamableServer } from '../../@types/entities';
+import type { ChromaRetriever } from '../../@types/entities';
+import VectorStoreDetailDialog from './VectorStoreDetail';
 
-const MCPManagementPage = () => {
+const VectorStoreManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-  const [openMCPDetailDialog, setOpenMCPDetailDialog] = useState(false);
-  const [mcpIdToDelete, setMCPIdToDelete] = useState<string | null>(null);
-  const [viewedMCP, setViewedMCP] = useState<MCPStreamableServer | null>(null);
+  const [openVectorStoreDetailDialog, setOpenVectorStoreDetailDialog] =
+    useState(false);
+  const [vectorStoreIdToDelete, setVectorStoreIdToDelete] = useState<
+    string | null
+  >(null);
+  const [viewedVectorStore, setViewedVectorStore] =
+    useState<ChromaRetriever | null>(null);
 
   // Fetch all prompts
-  const [mcpQuery] = useState<GetMCPQuery>({
+  const [vectorStoreQuery] = useState<GetVectorStoreQuery>({
     offset: 0,
     limit: 40,
   });
-  const mcps = useGetMCPs(mcpQuery!, {
-    skip: !mcpQuery,
+  const vectorStores = useGetVectorStores(vectorStoreQuery!, {
+    skip: !vectorStoreQuery,
   });
   useEffect(() => {
-    if (mcps.isError) {
-      setSnackbarMessage(t('mcpsLoadingError'));
+    if (vectorStores.isError) {
+      setSnackbarMessage(t('vectorStoresLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [mcps.isError, t]);
+  }, [vectorStores.isError, t]);
 
-  const [rows, setRows] = useState<MCPStreamableServer[]>([]);
+  const [rows, setRows] = useState<ChromaRetriever[]>([]);
   useEffect(() => {
-    if (mcps.data?.content) {
-      const mappedRows: MCPStreamableServer[] = mcps.data.content.map(
-        (mcp) => ({
-          ...mcp,
-          id: mcp.id,
+    if (vectorStores.data?.content) {
+      const mappedRows: ChromaRetriever[] = vectorStores.data.content.map(
+        (store) => ({
+          ...store,
+          id: store.id,
         })
       );
       setRows(mappedRows);
     }
-  }, [mcps.data, t]);
+  }, [vectorStores.data, t]);
 
-  const columns: GridColDef<MCPStreamableServer>[] = [
+  const columns: GridColDef<ChromaRetriever>[] = [
     {
       field: 'name',
-      headerName: t('mcpName'),
+      headerName: t('vectorStoreName'),
       type: 'string',
       width: 250,
       headerAlign: 'center',
@@ -73,18 +77,34 @@ const MCPManagementPage = () => {
     },
 
     {
-      field: 'url',
-      headerName: t('url'),
+      field: 'weight',
+      headerName: t('weight'),
       type: 'string',
-      width: 300,
+      width: 100,
       headerAlign: 'center',
       align: 'center',
     },
     {
-      field: 'type',
-      headerName: t('mcpType'),
+      field: 'mode',
+      headerName: t('mode'),
       type: 'string',
-      width: 200,
+      width: 100,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'collection_name',
+      headerName: t('collectionName'),
+      type: 'string',
+      width: 150,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'database',
+      headerName: t('database'),
+      type: 'string',
+      width: 150,
       headerAlign: 'center',
       align: 'center',
     },
@@ -92,7 +112,7 @@ const MCPManagementPage = () => {
       field: 'actions',
       headerName: t('actions'),
       type: 'actions',
-      width: 250,
+      width: 180,
       getActions: (params) => [
         <GridActionsCellItem
           icon={
@@ -103,8 +123,8 @@ const MCPManagementPage = () => {
           color="primary"
           label={t('see')}
           onClick={() => {
-            setViewedMCP(params.row);
-            setOpenMCPDetailDialog(true);
+            setViewedVectorStore(params.row);
+            setOpenVectorStoreDetailDialog(true);
           }}
         />,
         <GridActionsCellItem
@@ -117,8 +137,8 @@ const MCPManagementPage = () => {
           label={t('update')}
           onClick={() =>
             navigate(
-              RoutePaths.UPDATE_MCP.replace(
-                `:${PathHolders.MCP_ID}`,
+              RoutePaths.UPDATE_VECTOR_STORE.replace(
+                `:${PathHolders.VECTOR_STORE_ID}`,
                 params.row.id
               )
             )
@@ -131,29 +151,29 @@ const MCPManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteMCP(params.row.id)}
+          onClick={() => handleDeleteStore(params.row.id)}
         />,
       ],
     },
   ];
 
-  //delete mcp
-  const [deleteMCPTrigger, deleteMCP] = useDeleteMCP();
+  //delete VectorStore
+  const [deleteVectorStoreTrigger, deleteVectorStore] = useDeleteRetriever();
   useEffect(() => {
-    if (deleteMCP.isError) {
-      setSnackbarMessage(t('deleteMCPFailed'));
+    if (deleteVectorStore.isError) {
+      setSnackbarMessage(t('deleteStoreFailed'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-    if (deleteMCP.isSuccess) {
-      setSnackbarMessage(t('deleteMCPSuccess'));
+    if (deleteVectorStore.isSuccess) {
+      setSnackbarMessage(t('deleteStoreSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
     }
-  }, [deleteMCP.isError, deleteMCP.isSuccess, t]);
+  }, [deleteVectorStore.isError, deleteVectorStore.isSuccess, t]);
 
-  const handleDeleteMCP = (mcpId: string) => {
-    setMCPIdToDelete(mcpId);
+  const handleDeleteStore = (storeId: string) => {
+    setVectorStoreIdToDelete(storeId);
   };
 
   return (
@@ -165,30 +185,32 @@ const MCPManagementPage = () => {
         autoHideDuration={HideDuration.FAST}
         onClose={() => setSnackbarOpen(false)}
       />
-      {mcpIdToDelete && (
+      {vectorStoreIdToDelete && (
         <ConfirmDialog
           open={true}
-          onClose={() => setMCPIdToDelete(null)}
-          title={t('confirmMCPDeleteTitle')}
-          message={t('deleteMCPConfirm')}
+          onClose={() => setVectorStoreIdToDelete(null)}
+          title={t('confirmStoreDeleteTitle')}
+          message={t('deleteStoreConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
           onDelete={async () => {
-            await deleteMCPTrigger(mcpIdToDelete);
-            setMCPIdToDelete(null);
+            await deleteVectorStoreTrigger(vectorStoreIdToDelete);
+            setVectorStoreIdToDelete(null);
           }}
         />
       )}
-      <Typography variant="h4">{t('mcpList')}</Typography>
+      <Typography variant="h4">{t('vectorStoreList')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={() => navigate(RoutePaths.CREATE_MCP)}
+          onClick={() => navigate(RoutePaths.CREATE_VECTOR_STORE)}
         >
-          {t('createMCP')}
+          {t('createVectorStore')}
         </Button>
       </Box>
-      {mcps.isLoading || mcps.isFetching || deleteMCP.isLoading ? (
+      {vectorStores.isLoading ||
+      vectorStores.isFetching ||
+      deleteVectorStore.isLoading ? (
         <Loading />
       ) : (
         <Box sx={{ height: 500, width: '90%' }}>
@@ -196,13 +218,13 @@ const MCPManagementPage = () => {
         </Box>
       )}
 
-      <MCPDetailDialog
-        open={openMCPDetailDialog}
-        onExit={() => setOpenMCPDetailDialog(false)}
-        mcp={viewedMCP}
+      <VectorStoreDetailDialog
+        open={openVectorStoreDetailDialog}
+        onExit={() => setOpenVectorStoreDetailDialog(false)}
+        vectorStore={viewedVectorStore}
       />
     </Stack>
   );
 };
 
-export default MCPManagementPage;
+export default VectorStoreManagementPage;

@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { MCPStreamableServer } from '../../@types/entities';
 
-export default function MCPDetailDialog({
+export default function BM25DetailDialog({
   open,
   mcp,
   onExit,

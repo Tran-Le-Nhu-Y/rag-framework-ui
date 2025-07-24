@@ -89,7 +89,6 @@ export const embeddingsApi = createApi({
       query: (data: UpdateEmbeddingRequest) => ({
         url: `/${EXTENSION_URL}/${data.id}/update`,
         method: 'PUT',
-        // body: data,
         body: {
           // Gửi toàn bộ data, trừ `chatModelId`
           ...data,

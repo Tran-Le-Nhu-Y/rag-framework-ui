@@ -49,6 +49,13 @@ export default function EmbeddingUpdatePage() {
   const embeddingModelDetail = useGetEmbeddingById(embeddingModelId!, {
     skip: !embeddingModelId,
   });
+  useEffect(() => {
+    if (embeddingModelDetail.isError) {
+      setSnackbarMessage(t('embeddingModelLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [embeddingModelDetail.data, embeddingModelDetail.isError, t]);
 
   const updateEmbeddingModel = (key: string, value: string) => {
     setEmbeddingModel((prev) => ({ ...prev, [key]: value }));

@@ -19,10 +19,10 @@ import {
   RoutePaths,
   SnackbarSeverity,
 } from '../../util';
-import MCPDetailDialog from './MCPDetail';
 import type { MCPStreamableServer } from '../../@types/entities';
+import BM25DetailDialog from './BM25Detail';
 
-const MCPManagementPage = () => {
+const BM25ManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -196,7 +196,7 @@ const MCPManagementPage = () => {
         </Box>
       )}
 
-      <MCPDetailDialog
+      <BM25DetailDialog
         open={openMCPDetailDialog}
         onExit={() => setOpenMCPDetailDialog(false)}
         mcp={viewedMCP}
@@ -205,4 +205,4 @@ const MCPManagementPage = () => {
   );
 };
 
-export default MCPManagementPage;
+export default BM25ManagementPage;
