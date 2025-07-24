@@ -21,7 +21,7 @@ export default function PromptUpdatePage() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-  const [suggestQuestions, setSuggestQuestions] = useState('');
+  const [name, setName] = useState('');
   const [respond, setRespond] = useState('');
 
   const prompt = useGetPromptById(promptId!, { skip: !promptId });
@@ -36,19 +36,19 @@ export default function PromptUpdatePage() {
   const [updatePromptTrigger] = useUpdatePrompt();
   useEffect(() => {
     if (prompt.data) {
-      setSuggestQuestions(prompt.data.suggest_questions_prompt);
+      setName(prompt.data.name);
       setRespond(prompt.data.respond_prompt);
     }
   }, [prompt.data]);
 
   const handleSubmit = async (data: {
-    suggestQuestionsPrompt: string;
+    name: string;
     respondPrompt: string;
   }) => {
     if (!promptId) return;
 
-    if (!data.suggestQuestionsPrompt.trim()) {
-      setSnackbarMessage(t('suggestQuestionsPromptRequired'));
+    if (!data.name.trim()) {
+      setSnackbarMessage(t('promptNameRequired'));
       setSnackbarSeverity(SnackbarSeverity.WARNING);
       setSnackbarOpen(true);
       return;
@@ -61,7 +61,7 @@ export default function PromptUpdatePage() {
     try {
       await updatePromptTrigger({
         promptId: promptId,
-        suggestQuestionsPrompt: data.suggestQuestionsPrompt,
+        promptName: data.name,
         respondPrompt: data.respondPrompt,
       });
 
@@ -94,22 +94,18 @@ export default function PromptUpdatePage() {
 
       <Stack justifyContent={'center'} alignItems="center">
         <Stack spacing={2} width="80%">
-          <Stack spacing={1}>
+          <Stack spacing={2}>
             <TextField
               size="small"
               helperText={t('hyperTextMedium')}
-              label={t('suggest_questions_prompt')}
-              value={suggestQuestions}
+              label={t('promptName')}
+              value={name}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isValidLength(newValue, TextLength.MEDIUM))
-                  setSuggestQuestions(newValue);
+                  setName(newValue);
               }}
-              placeholder={`${t('enter')} ${t(
-                'suggest_questions_prompt'
-              ).toLowerCase()}...`}
-              multiline
-              rows={5}
+              placeholder={`${t('enter')} ${t('promptName').toLowerCase()}...`}
             />
 
             <TextField
@@ -119,14 +115,9 @@ export default function PromptUpdatePage() {
               ).toLowerCase()}...`}
               label={t('respond_prompt')}
               value={respond}
-              helperText={t('hyperTextVeryLong')}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.EXTREME_LONG))
-                  setRespond(newValue);
-              }}
+              onChange={(e) => setRespond(e.target.value)}
               multiline
-              rows={10}
+              rows={15}
             />
           </Stack>
 
@@ -136,7 +127,7 @@ export default function PromptUpdatePage() {
               color="primary"
               onClick={() =>
                 handleSubmit({
-                  suggestQuestionsPrompt: suggestQuestions,
+                  name: name,
                   respondPrompt: respond,
                 })
               }

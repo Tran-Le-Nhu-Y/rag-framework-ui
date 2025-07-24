@@ -20,6 +20,11 @@ import { useNavigate, useParams } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useGetChatModelById, useUpdateChatModel } from '../../service';
+import type {
+  OllamaChatModelPublic,
+  GoogleGenAIChatModelPublic,
+  ChatModel,
+} from '../../@types/entities';
 
 const providerList: Data[] = [
   { label: 'Ollama', value: 'ollama' },
@@ -107,7 +112,7 @@ export default function ChatModelUpdatePage() {
         setSafetySettingsList(
           Object.entries(model.safety_settings).map(([category, level]) => ({
             category,
-            level,
+            level: level as string,
           }))
         );
       }
@@ -163,7 +168,7 @@ export default function ChatModelUpdatePage() {
         onClose={() => setSnackbarOpen(false)}
       />
       <Typography sx={{ textAlign: 'center' }} variant="h4">
-        {t('createChatModel')}
+        {t('updateChatModel')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">
@@ -183,11 +188,11 @@ export default function ChatModelUpdatePage() {
                   ).toLowerCase()}...`}
                 />
                 <SelectForm
-                  label={t('selectProvider')}
+                  label={t('selectModelType')}
                   dataList={providerList}
                   value={
                     providerList.find(
-                      (item) => item.value === chatModel.provider
+                      (item) => item.value === chatModel.type
                     ) || null
                   }
                   onChange={(selected) => {

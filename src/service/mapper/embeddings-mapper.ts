@@ -1,3 +1,9 @@
+import type {
+  Embeddings,
+  HuggingFaceEmbeddings,
+  GoogleGenAIEmbeddings,
+} from '../../@types/entities';
+
 function toEntity(response: EmbeddingsResponse): Embeddings {
   const baseEmbeddings = {
     id: response.id,

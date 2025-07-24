@@ -16,29 +16,19 @@ export const TextLength = {
   EXTREME_LONG: 60000,
 };
 
-export function isOllamaModel(
-  model: ChatModel
-): model is OllamaChatModelPublic {
-  return model.type === 'ollama';
-}
-
-export function isGoogleGenAIModel(
-  model: ChatModel
-): model is GoogleGenAIChatModelPublic {
-  return model.type === 'google_genai';
-}
-
 export const PathHolders = {
   ROOT: '/',
   AGENT_ID: 'agentId',
   PROMPT_ID: 'promptId',
   CHAT_MODEL_ID: 'chatModelId',
   EMBEDDING_MODEL_ID: 'embeddingModelId',
+  MCP_ID: 'mcpId',
 };
 const AGENT = '/agent';
 const PROMPT = '/prompt';
 const CHATMODEL = '/chat-model';
 const EMBEDDINGS = '/embedding';
+const MCP = '/mcp';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -56,6 +46,10 @@ export const RoutePaths = {
   EMBEDDINGS,
   CREATE_EMBEDDINGS: `${EMBEDDINGS}/create`,
   UPDATE_EMBEDDINGS: `${EMBEDDINGS}/:${PathHolders.EMBEDDING_MODEL_ID}/update`,
+
+  MCP,
+  CREATE_MCP: `${MCP}/create`,
+  UPDATE_MCP: `${MCP}/:${PathHolders.MCP_ID}/update`,
 };
 
 export const HideDuration = {

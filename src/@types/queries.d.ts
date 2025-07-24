@@ -19,3 +19,7 @@ declare interface GetEmbeddingsQuery {
   offset?: number?;
   limit?: number?;
 }
+declare interface GetMCPQuery {
+  offset?: number?;
+  limit?: number?;
+}

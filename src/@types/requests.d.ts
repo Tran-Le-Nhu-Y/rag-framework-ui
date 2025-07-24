@@ -1,11 +1,11 @@
 declare interface CreatePromptRequest {
-  suggestQuestionsPrompt: string;
+  promptName: string;
   respondPrompt: string;
 }
 
 declare interface UpdatePromptRequest {
   promptId: string;
-  suggestQuestionsPrompt: string;
+  promptName: string;
   respondPrompt: string;
 }
 
@@ -47,4 +47,25 @@ declare interface UpdateEmbeddingRequest {
   model_name: string;
   task_type?: GoogleGenAIEmbeddingsTaskType;
   type: EmbeddingType;
+}
+
+declare interface CreateMCPStreamableServerRequest {
+  name: string; // minLength: 1
+  url: string;
+  type: MCPStreamType; // default: 'streamable_http'
+  headers?: Record<string, string> | null;
+  timeout?: number; // default: 30
+  sse_read_timeout?: number; // default: 300
+  terminate_on_close?: boolean; // default: true
+}
+
+declare interface UpdateMCPStreamableServerRequest {
+  id: string;
+  name: string;
+  url: string;
+  type: MCPStreamType;
+  headers?: Record<string, string> | null;
+  timeout?: number;
+  sse_read_timeout?: number;
+  terminate_on_close?: boolean;
 }

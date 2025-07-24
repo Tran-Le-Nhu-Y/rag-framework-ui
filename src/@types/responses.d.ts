@@ -10,7 +10,7 @@ declare interface PagingWrapper<T> {
 
 declare interface PromptResponse {
   id: string;
-  suggest_questions_prompt: string;
+  name: string;
   respond_prompt: string;
 }
 
@@ -40,4 +40,15 @@ declare interface EmbeddingsResponse {
   model_name: string;
   type: EmbeddingType;
   task_type?: GoogleGenAIEmbeddingsTaskType;
+}
+
+declare interface MCPStreamableServerResponse {
+  id: string;
+  name: string;
+  url: string;
+  type: MCPStreamType;
+  headers?: Record<string, string> | null;
+  timeout?: number;
+  sse_read_timeout?: number;
+  terminate_on_close?: boolean;
 }

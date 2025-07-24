@@ -97,22 +97,13 @@ const RootLayout = () => {
 
   const location = useLocation();
   const getSelectedIndexFromPath = (pathname: string) => {
-    if (pathname === '/' || pathname === RoutePaths.AGENT) return 0;
-    if (
-      pathname === RoutePaths.CHATMODEL ||
-      pathname === RoutePaths.CREATE_CHATMODEL ||
-      pathname === RoutePaths.UPDATE_CHATMODEL
-    )
-      return 1;
-    if (
-      pathname === RoutePaths.EMBEDDINGS ||
-      pathname === RoutePaths.CREATE_EMBEDDINGS ||
-      pathname === RoutePaths.UPDATE_EMBEDDINGS
-    )
-      return 2;
-    if (pathname === RoutePaths.PROMPT || pathname === RoutePaths.CREATE_PROMPT)
-      return 3;
-    if (pathname === '/use-guide') return 4;
+    if (pathname === '/' || pathname.startsWith(RoutePaths.AGENT)) return 0;
+    if (pathname.startsWith(RoutePaths.CHATMODEL)) return 1;
+    if (pathname.startsWith(RoutePaths.PROMPT)) return 3;
+    if (pathname.startsWith(RoutePaths.MCP)) return 4;
+    if (pathname.startsWith(RoutePaths.EMBEDDINGS)) return 5;
+
+    if (pathname === '/use-guide') return 7;
     return 0; // fallback
   };
   React.useEffect(() => {
@@ -252,11 +243,62 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('embeddingModelManagement')} disablePadding>
+          <ListItem key={t('vectorStoreManagement')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 2}
               onClick={(event) => {
                 handleListItemClick(event, 2);
+                navigate(RoutePaths.CHATMODEL);
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('vectorStoreManagement')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('promptManagement')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 3}
+              onClick={(event) => {
+                handleListItemClick(event, 3);
+                navigate(RoutePaths.PROMPT);
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('promptManagement')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('mcpManagement')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 4}
+              onClick={(event) => {
+                handleListItemClick(event, 4);
+                navigate(RoutePaths.MCP);
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('mcpManagement')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('embeddingModelManagement')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 5}
+              onClick={(event) => {
+                handleListItemClick(event, 5);
                 navigate(RoutePaths.EMBEDDINGS);
               }}
             >
@@ -271,9 +313,9 @@ const RootLayout = () => {
         <List>
           <ListItem key={t('recognitionModelManagement')} disablePadding>
             <ListItemButton
-              selected={selectedIndex === 3}
+              selected={selectedIndex === 6}
               onClick={(event) => {
-                handleListItemClick(event, 3);
+                handleListItemClick(event, 6);
                 navigate('/recognition-model-management');
               }}
             >
@@ -286,28 +328,11 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('promptManagement')} disablePadding>
-            <ListItemButton
-              selected={selectedIndex === 4}
-              onClick={(event) => {
-                handleListItemClick(event, 4);
-                navigate(RoutePaths.PROMPT);
-              }}
-            >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={t('promptManagement')} />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
           <ListItem key={t('useGuide')} disablePadding>
             <ListItemButton
-              selected={selectedIndex === 5}
+              selected={selectedIndex === 7}
               onClick={(event) => {
-                handleListItemClick(event, 5);
+                handleListItemClick(event, 7);
                 navigate('/use-guide');
               }}
             >

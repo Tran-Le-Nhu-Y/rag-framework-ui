@@ -19,6 +19,7 @@ import {
   useGetEmbeddings,
 } from '../../service';
 import EmbeddingsDetailDialog from './EmbeddingModelDetail';
+import type { Embeddings } from '../../@types/entities';
 
 const EmbeddingsManagementPage = () => {
   const { t } = useTranslation();

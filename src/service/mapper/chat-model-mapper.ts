@@ -1,3 +1,9 @@
+import type {
+  ChatModel,
+  OllamaChatModelPublic,
+  GoogleGenAIChatModelPublic,
+} from '../../@types/entities';
+
 function toEntity(response: ChatModelResponse): ChatModel {
   const baseFields = {
     id: response.id,

@@ -13,6 +13,10 @@ import ChatModelCreationPage from './ChatModelCreation/ChatModelCreation';
 import ChatModelUpdatePage from './ChatModelUpdate/ChatModelUpdate';
 import EmbeddingsManagementPage from './EmbeddingsManagement/EmbeddingsManagement';
 import EmbeddingCreationPage from './EmbeddingCreation/EmbeddingCreation';
+import MCPManagementPage from './MCP/MCPManagement';
+import MCPCreationPage from './MCPCreation/MCPCreation';
+import MCPUpdatePage from './MCPUpdate/MCPUpdate';
+
 export {
   AgentManagementPage,
   RecognitionModelManagementPage,
@@ -29,4 +33,7 @@ export {
   ChatModelUpdatePage,
   EmbeddingsManagementPage,
   EmbeddingCreationPage,
+  MCPManagementPage,
+  MCPCreationPage,
+  MCPUpdatePage,
 };

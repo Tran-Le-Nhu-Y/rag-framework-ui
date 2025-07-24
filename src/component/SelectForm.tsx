@@ -15,6 +15,9 @@ type Props = {
   onChange?: (value: Data | Data[] | null) => void;
   loading?: boolean;
   multiple?: boolean;
+  error?: boolean;
+  helperText?: string;
+  isClearable?: boolean;
 };
 
 export default function SelectForm({
@@ -24,6 +27,9 @@ export default function SelectForm({
   onChange,
   loading = false,
   multiple = false, // default 1
+  error = false,
+  helperText = '',
+  isClearable = true,
 }: Props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<Data[]>([]);
@@ -44,13 +50,24 @@ export default function SelectForm({
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
-      isOptionEqualToValue={(option, value) => option.value === value.value}
+      isOptionEqualToValue={(option, value) => {
+        if (!option || !value) return false;
+        return option.value === value.value;
+      }}
+      disableClearable={!isClearable}
       getOptionLabel={(option) => option.label}
       options={options}
       value={value ?? (multiple ? [] : null)}
       onChange={(_, newValue) => onChange?.(newValue)}
       loading={loading}
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label}
+          error={error}
+          helperText={helperText}
+        />
+      )}
     />
   );
 }

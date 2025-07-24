@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/embeddings-mapper';
+import type { Embeddings } from '../@types/entities';
 
 const EXTENSION_URL = 'api/v1/embeddings';
 export const embeddingsApi = createApi({

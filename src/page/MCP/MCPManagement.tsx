@@ -12,73 +12,81 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
-import PromptDetailDialog from './PromptDetail';
-import { useDeletePrompt, useGetPrompts } from '../../service';
+import { useDeletePrompt, useGetMCPs } from '../../service';
 import {
   HideDuration,
   PathHolders,
   RoutePaths,
   SnackbarSeverity,
 } from '../../util';
-import type { Prompt } from '../../@types/entities';
+import MCPDetailDialog from './MCPDetail';
+import type { MCPStreamableServer } from '../../@types/entities';
 
-const PromptManagementPage = () => {
+const MCPManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-  const [openPromptDetailDialog, setOpenPromptDetailDialog] = useState(false);
-  const [promptIdToDelete, setPromptIdToDelete] = useState<string | null>(null);
-  const [viewedPrompt, setViewedPrompt] = useState<Prompt | null>(null);
+  const [openMCPDetailDialog, setOpenMCPDetailDialog] = useState(false);
+  const [mcpIdToDelete, setMCPIdToDelete] = useState<string | null>(null);
+  const [viewedMCP, setViewedMCP] = useState<MCPStreamableServer | null>(null);
 
   // Fetch all prompts
-  const [promptsQuery] = useState<GetPromptsQuery>({
+  const [mcpQuery] = useState<GetMCPQuery>({
     offset: 0,
     limit: 40,
   });
-  const prompts = useGetPrompts(promptsQuery!, {
-    skip: !promptsQuery,
+  const mcps = useGetMCPs(mcpQuery!, {
+    skip: !mcpQuery,
   });
   useEffect(() => {
-    if (prompts.isError) {
-      setSnackbarMessage(t('promptsLoadingError'));
+    if (mcps.isError) {
+      setSnackbarMessage(t('mcpsLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [prompts.isError, t]);
+  }, [mcps.isError, t]);
 
-  const [rows, setRows] = useState<Prompt[]>([]);
+  const [rows, setRows] = useState<MCPStreamableServer[]>([]);
   useEffect(() => {
-    if (prompts.data?.content) {
-      const mappedRows: Prompt[] = prompts.data.content.map((prompt) => ({
-        id: prompt.id,
-        name: prompt.name,
-        respond_prompt: prompt.respond_prompt,
-      }));
+    if (mcps.data?.content) {
+      const mappedRows: MCPStreamableServer[] = mcps.data.content.map(
+        (mcp) => ({
+          ...mcp,
+          id: mcp.id,
+        })
+      );
       setRows(mappedRows);
     }
-  }, [prompts.data, t]);
+  }, [mcps.data, t]);
 
-  const columns: GridColDef<Prompt>[] = [
+  const columns: GridColDef<MCPStreamableServer>[] = [
     {
       field: 'name',
-      headerName: t('promptName'),
+      headerName: t('mcpName'),
       type: 'string',
       width: 250,
-      editable: true,
       headerAlign: 'center',
       align: 'center',
     },
 
     {
-      field: 'respond_prompt',
-      headerName: t('respond_prompt'),
+      field: 'url',
+      headerName: t('url'),
       type: 'string',
-      width: 500,
-      editable: true,
+      width: 300,
       headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'type',
+      headerName: t('mcpType'),
+      type: 'string',
+      width: 200,
+      headerAlign: 'center',
+      align: 'center',
     },
     {
       field: 'actions',
@@ -95,12 +103,8 @@ const PromptManagementPage = () => {
           color="primary"
           label={t('see')}
           onClick={() => {
-            setViewedPrompt({
-              id: params.row.id,
-              name: params.row.name,
-              respond_prompt: params.row.respond_prompt,
-            });
-            setOpenPromptDetailDialog(true);
+            setViewedMCP(params.row);
+            setOpenMCPDetailDialog(true);
           }}
         />,
         <GridActionsCellItem
@@ -113,8 +117,8 @@ const PromptManagementPage = () => {
           label={t('update')}
           onClick={() =>
             navigate(
-              RoutePaths.UPDATE_PROMPT.replace(
-                `:${PathHolders.PROMPT_ID}`,
+              RoutePaths.UPDATE_MCP.replace(
+                `:${PathHolders.MCP_ID}`,
                 params.row.id
               )
             )
@@ -149,7 +153,7 @@ const PromptManagementPage = () => {
   }, [deletePrompt.isError, deletePrompt.isSuccess, t]);
 
   const handleDeletePrompt = (promptId: string) => {
-    setPromptIdToDelete(promptId);
+    setMCPIdToDelete(promptId);
   };
 
   return (
@@ -161,30 +165,30 @@ const PromptManagementPage = () => {
         autoHideDuration={HideDuration.FAST}
         onClose={() => setSnackbarOpen(false)}
       />
-      {promptIdToDelete && (
+      {mcpIdToDelete && (
         <ConfirmDialog
           open={true}
-          onClose={() => setPromptIdToDelete(null)}
+          onClose={() => setMCPIdToDelete(null)}
           title={t('confirmPromptDeleteTitle')}
           message={t('deletePromptConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
           onDelete={async () => {
-            await deletePromptTrigger(promptIdToDelete);
-            setPromptIdToDelete(null);
+            await deletePromptTrigger(mcpIdToDelete);
+            setMCPIdToDelete(null);
           }}
         />
       )}
-      <Typography variant="h4">{t('promptList')}</Typography>
+      <Typography variant="h4">{t('mcpList')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={() => navigate(RoutePaths.CREATE_PROMPT)}
+          onClick={() => navigate(RoutePaths.CREATE_MCP)}
         >
-          {t('createPrompt')}
+          {t('createMCP')}
         </Button>
       </Box>
-      {prompts.isLoading || prompts.isFetching || deletePrompt.isLoading ? (
+      {mcps.isLoading || mcps.isFetching || deletePrompt.isLoading ? (
         <Loading />
       ) : (
         <Box sx={{ height: 500, width: '90%' }}>
@@ -192,13 +196,13 @@ const PromptManagementPage = () => {
         </Box>
       )}
 
-      <PromptDetailDialog
-        open={openPromptDetailDialog}
-        onExit={() => setOpenPromptDetailDialog(false)}
-        prompt={viewedPrompt}
+      <MCPDetailDialog
+        open={openMCPDetailDialog}
+        onExit={() => setOpenMCPDetailDialog(false)}
+        mcp={viewedMCP}
       />
     </Stack>
   );
 };
 
-export default PromptManagementPage;
+export default MCPManagementPage;
