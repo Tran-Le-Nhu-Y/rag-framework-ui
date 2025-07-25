@@ -8,7 +8,6 @@ function toBM25Entity(response: BM25RetrieverResponse): BM25Retriever {
     weight: response.weight,
     k: response.k,
     type: response.type,
-    embeddings_model: response.embeddings_model,
     enable_remove_emoji: response.enable_remove_emoji,
     enable_remove_emoticon: response.enable_remove_emoticon,
     removal_words_file_id: response.removal_words_file_id,

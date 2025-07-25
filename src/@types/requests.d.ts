@@ -100,7 +100,6 @@ declare interface UpdateChromaRetrieverRequest {
 declare interface CreateBM25RetrieverRequest {
   name: string;
   weight: number;
-  embeddings_model?: string | null;
   k?: number;
   enable_remove_emoji?: boolean;
   enable_remove_emoticon?: boolean;
@@ -113,11 +112,17 @@ declare interface UpdateBM25RetrieverRequest {
   id: string;
   name: string;
   weight: number;
-  embeddings_model?: string | null;
   k?: number;
   enable_remove_emoji?: boolean;
   enable_remove_emoticon?: boolean;
   type?: string;
   embeddings_id: string;
   removal_words_file_id?: string | null;
+}
+declare interface UploadFileRequest {
+  file: File;
+}
+declare interface UpdateBM25FileOnlyRequest {
+  id: string;
+  removal_words_file_id: string;
 }

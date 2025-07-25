@@ -100,6 +100,7 @@ const RootLayout = () => {
     if (pathname === '/' || pathname.startsWith(RoutePaths.AGENT)) return 0;
     if (pathname.startsWith(RoutePaths.CHATMODEL)) return 1;
     if (pathname.startsWith(RoutePaths.VECTOR_STORE)) return 2;
+    if (pathname.startsWith(RoutePaths.BM25)) return 3;
     if (pathname.startsWith(RoutePaths.PROMPT)) return 4;
     if (pathname.startsWith(RoutePaths.MCP)) return 5;
     if (pathname.startsWith(RoutePaths.EMBEDDINGS)) return 6;
@@ -266,7 +267,7 @@ const RootLayout = () => {
               selected={selectedIndex === 3}
               onClick={(event) => {
                 handleListItemClick(event, 3);
-                navigate(RoutePaths.CHATMODEL);
+                navigate(RoutePaths.BM25);
               }}
             >
               <ListItemIcon>

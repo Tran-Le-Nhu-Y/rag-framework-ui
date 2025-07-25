@@ -75,3 +75,11 @@ export {
   useGetBM25s,
   useUpdateBM25,
 };
+
+import {
+  useGetFileByIdQuery as useGetFileById,
+  useDeleteFileMutation as useDeleteFile,
+  usePostFileMutation as usePostFile,
+  useGetTokenByIdMutation as useGetTokenById,
+} from './file';
+export { useGetFileById, useDeleteFile, usePostFile, useGetTokenById };

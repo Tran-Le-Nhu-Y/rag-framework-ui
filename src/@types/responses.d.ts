@@ -71,11 +71,17 @@ declare interface BM25RetrieverResponse {
   id: string;
   name: string;
   weight: number;
-  embeddings_model?: string | null;
   k?: number;
   enable_remove_emoji?: boolean;
   enable_remove_emoticon?: boolean;
   type?: string;
   embeddings_id: string;
   removal_words_file_id?: string | null;
+}
+
+declare interface FileResponse {
+  id: string;
+  name: string;
+  mime_type?: string | null;
+  created_at: string;
 }

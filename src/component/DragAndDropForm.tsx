@@ -14,17 +14,7 @@ import {
 } from '@mui/material';
 import { getFileSize } from '../util';
 
-const FILE_MAX_BYTES = 128 * 1000 * 1000; // 128MB
-// const SUPPORTED_FILE_TYPES = [
-//   'text/*',
-//   'image/*',
-//   'application/xml',
-//   'application/pdf',
-//   'application/msword',
-//   'application/vnd.ms-excel',
-//   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-//   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-// ];
+const DEFAULT_FILE_MAX_BYTES = 128 * 1000 * 1000; // 128MB
 
 export interface FileAttachment {
   id: number;
@@ -35,13 +25,15 @@ export interface FileAttachment {
 }
 
 export interface DragAndDropFormProps {
+  maxBytes?: number;
+  acceptedFileTypes?: string[];
   onFilesChange: (files: File[]) => void;
-  acceptedFileTypes: string[];
 }
 
 export const DragAndDropForm: React.FC<DragAndDropFormProps> = ({
+  maxBytes = DEFAULT_FILE_MAX_BYTES,
+  acceptedFileTypes = [],
   onFilesChange,
-  acceptedFileTypes,
 }) => {
   const { t } = useTranslation('standard');
 
@@ -54,9 +46,9 @@ export const DragAndDropForm: React.FC<DragAndDropFormProps> = ({
       const size = file.size;
       return {
         id: Date.now() + Math.random(),
-        status: size > FILE_MAX_BYTES ? 'failed' : 'loading',
-        progress: size > FILE_MAX_BYTES ? 0 : 0,
-        error: size > FILE_MAX_BYTES ? 'File too large' : undefined,
+        status: size > DEFAULT_FILE_MAX_BYTES ? 'failed' : 'loading',
+        progress: size > DEFAULT_FILE_MAX_BYTES ? 0 : 0,
+        error: size > DEFAULT_FILE_MAX_BYTES ? 'File too large' : undefined,
         file: file,
       };
     });
@@ -69,26 +61,9 @@ export const DragAndDropForm: React.FC<DragAndDropFormProps> = ({
     e.preventDefault();
   };
   const dropFileHandler = (e: React.DragEvent) => {
-    // e.preventDefault();
-    // if (e.dataTransfer.files) {
-    //   selectFileHandler(Array.from(e.dataTransfer.files));
-    // }
     e.preventDefault();
     if (e.dataTransfer.files) {
-      const droppedFiles = Array.from(e.dataTransfer.files);
-
-      const acceptedTypes = acceptedFileTypes.flatMap((type) => {
-        if (type.endsWith('/*')) return [type.replace('/*', '/')];
-        return [type];
-      });
-
-      const validFiles = droppedFiles.filter((file) =>
-        acceptedTypes.some(
-          (type) => file.type.startsWith(type) || file.name.endsWith(type)
-        )
-      );
-
-      selectFileHandler(validFiles);
+      selectFileHandler(Array.from(e.dataTransfer.files));
     }
   };
 
@@ -123,7 +98,7 @@ export const DragAndDropForm: React.FC<DragAndDropFormProps> = ({
             sx={{ fontSize: 40, color: 'lightskyblue', display: 'block' }}
           />
           <Typography variant="caption">
-            {`${t('imageSizeLimit')} ${getFileSize(FILE_MAX_BYTES)}`}
+            {`${t('sizeLimit')} ${getFileSize(maxBytes)}`}
           </Typography>
         </Stack>
       )}
@@ -131,21 +106,33 @@ export const DragAndDropForm: React.FC<DragAndDropFormProps> = ({
       <List
         sx={{
           width: '100%',
-          maxHeight: 340,
-          overflow: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
+          maxHeight: 200,
+          overflowY: 'auto',
+
+          //   display: 'flex',
+          //   flexDirection: 'column',
         }}
       >
         {files.map((file) => (
-          <ListItem key={file.id} sx={{ width: 'fit-content' }}>
+          <ListItem
+            key={file.id}
+            disableGutters
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              px: 1,
+              //   py: 1,
+              //   width: 'fit-content',
+            }}
+          >
             <Paper
               elevation={1}
               sx={{
-                padding: 2,
+                width: '100%',
+                padding: 1,
                 display: 'flex',
                 alignItems: 'center',
-                minWidth: 200,
+                minWidth: 250,
                 position: 'relative',
                 backgroundColor: file.status === 'failed' ? '#ffe6e6' : 'white',
                 border: file.status === 'failed' ? '1px solid #ff4d4d' : 'none',
@@ -169,12 +156,12 @@ export const DragAndDropForm: React.FC<DragAndDropFormProps> = ({
                 </Typography>
 
                 {/* {file.status === 'loading' && (
-										<LinearProgress
-											variant="determinate"
-											value={file.progress}
-											sx={{ mt: 1 }}
-										/>
-									)} */}
+                  <LinearProgress
+                    variant="determinate"
+                    value={file.progress}
+                    sx={{ mt: 1 }}
+                  />
+                )} */}
 
                 {file.status === 'failed' && (
                   <LinearProgress

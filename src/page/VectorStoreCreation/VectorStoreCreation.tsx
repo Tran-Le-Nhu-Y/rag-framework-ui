@@ -417,7 +417,6 @@ export default function VectorStoreCreationPage() {
                 setVectorStore((prev) => ({
                   ...prev,
                   embeddings_id: (selected as Data).value,
-                  embedding_model: (selected as Data).label,
                 }));
               }}
             />

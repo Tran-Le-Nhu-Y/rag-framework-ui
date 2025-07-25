@@ -12,14 +12,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
-import { useDeleteMCP, useGetMCPs } from '../../service';
+import { useDeleteRetriever, useGetBM25s } from '../../service';
 import {
   HideDuration,
   PathHolders,
   RoutePaths,
   SnackbarSeverity,
 } from '../../util';
-import type { MCPStreamableServer } from '../../@types/entities';
+import type { BM25Retriever } from '../../@types/entities';
 import BM25DetailDialog from './BM25Detail';
 
 const BM25ManagementPage = () => {
@@ -29,43 +29,41 @@ const BM25ManagementPage = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-  const [openMCPDetailDialog, setOpenMCPDetailDialog] = useState(false);
-  const [mcpIdToDelete, setMCPIdToDelete] = useState<string | null>(null);
-  const [viewedMCP, setViewedMCP] = useState<MCPStreamableServer | null>(null);
+  const [openBM25DetailDialog, setOpenBM25DetailDialog] = useState(false);
+  const [bm25IdToDelete, setBM25IdToDelete] = useState<string | null>(null);
+  const [viewedBM25, setViewedBM25] = useState<BM25Retriever | null>(null);
 
-  // Fetch all prompts
-  const [mcpQuery] = useState<GetMCPQuery>({
+  // Fetch all bm25s
+  const [bm25Query] = useState<GetBM25Query>({
     offset: 0,
     limit: 40,
   });
-  const mcps = useGetMCPs(mcpQuery!, {
-    skip: !mcpQuery,
+  const bm25s = useGetBM25s(bm25Query!, {
+    skip: !bm25Query,
   });
   useEffect(() => {
-    if (mcps.isError) {
-      setSnackbarMessage(t('mcpsLoadingError'));
+    if (bm25s.isError) {
+      setSnackbarMessage(t('bm25sLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [mcps.isError, t]);
+  }, [bm25s.isError, t]);
 
-  const [rows, setRows] = useState<MCPStreamableServer[]>([]);
+  const [rows, setRows] = useState<BM25Retriever[]>([]);
   useEffect(() => {
-    if (mcps.data?.content) {
-      const mappedRows: MCPStreamableServer[] = mcps.data.content.map(
-        (mcp) => ({
-          ...mcp,
-          id: mcp.id,
-        })
-      );
+    if (bm25s.data?.content) {
+      const mappedRows: BM25Retriever[] = bm25s.data.content.map((bm25) => ({
+        ...bm25,
+        id: bm25.id,
+      }));
       setRows(mappedRows);
     }
-  }, [mcps.data, t]);
+  }, [bm25s.data, t]);
 
-  const columns: GridColDef<MCPStreamableServer>[] = [
+  const columns: GridColDef<BM25Retriever>[] = [
     {
       field: 'name',
-      headerName: t('mcpName'),
+      headerName: t('bm25Name'),
       type: 'string',
       width: 250,
       headerAlign: 'center',
@@ -73,20 +71,56 @@ const BM25ManagementPage = () => {
     },
 
     {
-      field: 'url',
-      headerName: t('url'),
+      field: 'weight',
+      headerName: t('weight'),
       type: 'string',
-      width: 300,
+      width: 150,
       headerAlign: 'center',
       align: 'center',
     },
     {
-      field: 'type',
-      headerName: t('mcpType'),
+      field: 'enable_remove_emoji',
+      headerName: t('enable_remove_emoji'),
       type: 'string',
-      width: 200,
+      width: 180,
       headerAlign: 'center',
       align: 'center',
+      renderCell: (params) => {
+        return (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <Typography>{params.value ? t('true') : t('false')}</Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: 'enable_remove_emoticon',
+      headerName: t('enable_remove_emoticon'),
+      type: 'string',
+      width: 180,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => {
+        return (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <Typography>{params.value ? t('true') : t('false')}</Typography>
+          </Box>
+        );
+      },
     },
     {
       field: 'actions',
@@ -103,8 +137,8 @@ const BM25ManagementPage = () => {
           color="primary"
           label={t('see')}
           onClick={() => {
-            setViewedMCP(params.row);
-            setOpenMCPDetailDialog(true);
+            setViewedBM25(params.row);
+            setOpenBM25DetailDialog(true);
           }}
         />,
         <GridActionsCellItem
@@ -117,8 +151,8 @@ const BM25ManagementPage = () => {
           label={t('update')}
           onClick={() =>
             navigate(
-              RoutePaths.UPDATE_MCP.replace(
-                `:${PathHolders.MCP_ID}`,
+              RoutePaths.UPDATE_BM25.replace(
+                `:${PathHolders.BM25_ID}`,
                 params.row.id
               )
             )
@@ -131,29 +165,29 @@ const BM25ManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteMCP(params.row.id)}
+          onClick={() => handleDeleteBM25(params.row.id)}
         />,
       ],
     },
   ];
 
-  //delete mcp
-  const [deleteMCPTrigger, deleteMCP] = useDeleteMCP();
+  //delete bm25
+  const [deleteBM25Trigger, deleteBM25] = useDeleteRetriever();
   useEffect(() => {
-    if (deleteMCP.isError) {
-      setSnackbarMessage(t('deleteMCPFailed'));
+    if (deleteBM25.isError) {
+      setSnackbarMessage(t('deleteBM25Failed'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-    if (deleteMCP.isSuccess) {
-      setSnackbarMessage(t('deleteMCPSuccess'));
+    if (deleteBM25.isSuccess) {
+      setSnackbarMessage(t('deleteBM25Success'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
     }
-  }, [deleteMCP.isError, deleteMCP.isSuccess, t]);
+  }, [deleteBM25.isError, deleteBM25.isSuccess, t]);
 
-  const handleDeleteMCP = (mcpId: string) => {
-    setMCPIdToDelete(mcpId);
+  const handleDeleteBM25 = (bm25Id: string) => {
+    setBM25IdToDelete(bm25Id);
   };
 
   return (
@@ -165,30 +199,30 @@ const BM25ManagementPage = () => {
         autoHideDuration={HideDuration.FAST}
         onClose={() => setSnackbarOpen(false)}
       />
-      {mcpIdToDelete && (
+      {bm25IdToDelete && (
         <ConfirmDialog
           open={true}
-          onClose={() => setMCPIdToDelete(null)}
-          title={t('confirmMCPDeleteTitle')}
-          message={t('deleteMCPConfirm')}
+          onClose={() => setBM25IdToDelete(null)}
+          title={t('confirmBM25DeleteTitle')}
+          message={t('deleteBM25Confirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
           onDelete={async () => {
-            await deleteMCPTrigger(mcpIdToDelete);
-            setMCPIdToDelete(null);
+            await deleteBM25Trigger(bm25IdToDelete);
+            setBM25IdToDelete(null);
           }}
         />
       )}
-      <Typography variant="h4">{t('mcpList')}</Typography>
+      <Typography variant="h4">{t('bm25Management')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={() => navigate(RoutePaths.CREATE_MCP)}
+          onClick={() => navigate(RoutePaths.CREATE_BM25)}
         >
-          {t('createMCP')}
+          {t('createBM25')}
         </Button>
       </Box>
-      {mcps.isLoading || mcps.isFetching || deleteMCP.isLoading ? (
+      {bm25s.isLoading || bm25s.isFetching || deleteBM25.isLoading ? (
         <Loading />
       ) : (
         <Box sx={{ height: 500, width: '90%' }}>
@@ -197,9 +231,9 @@ const BM25ManagementPage = () => {
       )}
 
       <BM25DetailDialog
-        open={openMCPDetailDialog}
-        onExit={() => setOpenMCPDetailDialog(false)}
-        mcp={viewedMCP}
+        open={openBM25DetailDialog}
+        onExit={() => setOpenBM25DetailDialog(false)}
+        bm25={viewedBM25}
       />
     </Stack>
   );

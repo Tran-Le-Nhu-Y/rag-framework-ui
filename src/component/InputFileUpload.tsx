@@ -39,6 +39,7 @@ export interface FileAttachment {
 export interface InputFileUploadProps {
   onFilesChange: (files: File[]) => void;
   acceptedFileTypes: string[];
+  onFileRemove?: () => void;
   resetSignal?: boolean;
 }
 
@@ -47,6 +48,7 @@ const FILE_MAX_BYTES = 128 * 1000 * 1000; // 128MB
 export const InputFileUpload: React.FC<InputFileUploadProps> = ({
   onFilesChange,
   acceptedFileTypes,
+  onFileRemove,
   resetSignal,
 }) => {
   const [files, setFiles] = useState<FileAttachment[]>([]);
@@ -89,6 +91,10 @@ export const InputFileUpload: React.FC<InputFileUploadProps> = ({
     const newFiles = files.filter((file) => file.id !== id);
     setFiles(newFiles);
     onFilesChange(newFiles.map((f) => f.file));
+    // Gọi hàm onFileRemove nếu có
+    if (onFileRemove) {
+      onFileRemove();
+    }
   };
 
   useEffect(() => {
