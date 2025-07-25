@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 
-export default function RecognitionModelDetailDialog({
+export default function CNNModelDetailDialog({
   open,
   recognitionModelName = '',
   recognitionModelDescription = '',

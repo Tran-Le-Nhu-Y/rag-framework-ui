@@ -104,7 +104,7 @@ const RootLayout = () => {
     if (pathname.startsWith(RoutePaths.PROMPT)) return 4;
     if (pathname.startsWith(RoutePaths.MCP)) return 5;
     if (pathname.startsWith(RoutePaths.EMBEDDINGS)) return 6;
-
+    if (pathname.startsWith(RoutePaths.CNN)) return 7;
     if (pathname === '/use-guide') return 8;
     return 0; // fallback
   };
@@ -335,7 +335,7 @@ const RootLayout = () => {
               selected={selectedIndex === 7}
               onClick={(event) => {
                 handleListItemClick(event, 7);
-                navigate('/recognition-model-management');
+                navigate(RoutePaths.CNN);
               }}
             >
               <ListItemIcon>

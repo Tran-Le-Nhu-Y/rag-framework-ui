@@ -1,48 +1,112 @@
-import { Box, Button, Stack, Tooltip } from '@mui/material';
-import { DataGridTable } from '../../component';
+import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
+import { ConfirmDialog, DataGridTable } from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useTranslation } from 'react-i18next';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { RoutePaths } from '../../util';
+import { useState } from 'react';
+
+const fakeAgents = [
+  {
+    id: '1',
+    name: 'ShrimpAgent Alpha',
+    description: 'An agent for detecting white spot disease.',
+    language: 'en',
+    image_recognizer_id: 'model_1',
+    retriever_ids: ['retriever_1'],
+    tool_ids: ['tool_1', 'tool_2'],
+    mcp_server_ids: ['mcp_1'],
+    llm_id: 'llm_1',
+    prompt_id: 'prompt_1',
+    createdAt: '2024-05-01',
+    updatedAt: '2024-06-01',
+  },
+  {
+    id: '2',
+    name: 'Tôm AI Pro',
+    description: 'Hỗ trợ chẩn đoán bệnh cho tôm.',
+    language: 'vi',
+    image_recognizer_id: 'model_2',
+    retriever_ids: ['retriever_2'],
+    tool_ids: null,
+    mcp_server_ids: ['mcp_2', 'mcp_3'],
+    llm_id: 'llm_2',
+    prompt_id: 'prompt_2',
+    createdAt: '2024-05-02',
+    updatedAt: '2024-06-02',
+  },
+];
 
 const AgentManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [agentIdToDelete, setAgentIdToDelete] = useState<string | null>(null);
+  //   const handleExport = (agent: any) => {
+  //     const blob = new Blob([JSON.stringify(agent, null, 2)], {
+  //       type: 'application/json',
+  //     });
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = `${agent.name}-config.json`;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   };
 
-  const columns: GridColDef<(typeof rows)[number]>[] = [
-    { field: 'id', headerName: 'ID', width: 100 },
+  const columns: GridColDef<(typeof fakeAgents)[number]>[] = [
     {
-      field: 'agentName',
+      field: 'name',
       headerName: t('agentName'),
+      width: 200,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'description',
+      headerName: t('agentDescription'),
       width: 250,
-      editable: true,
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Tooltip title={params.value || ''}>
+          <span>{params.value ?? '-'}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      field: 'language',
+      headerName: t('language'),
+      width: 120,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'image_recognizer_id',
+      headerName: t('imageRecognizer'),
+      width: 150,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'retriever_ids',
+      headerName: t('retrievers'),
+      width: 150,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => params.value?.join(', ') || '-',
     },
 
-    {
-      field: 'createdAt',
-      headerName: t('createAt'),
-      type: 'string',
-      width: 150,
-      editable: true,
-    },
-
-    {
-      field: 'updatedAt',
-      headerName: t('updateAt'),
-      type: 'string',
-      width: 150,
-      editable: true,
-    },
     {
       field: 'actions',
       headerName: t('actions'),
       type: 'actions',
-      width: 250,
-      getActions: () => [
+      width: 200,
+      getActions: (params) => [
         <GridActionsCellItem
           icon={
             <Tooltip title={t('export')}>
@@ -55,22 +119,24 @@ const AgentManagementPage = () => {
         <GridActionsCellItem
           icon={
             <Tooltip title={t('see')}>
-              <RemoveRedEyeIcon />
+              <RemoveRedEyeIcon color="primary" />
             </Tooltip>
           }
-          color="primary"
           label={t('see')}
-          onClick={() => navigate(RoutePaths.AGENT_DETAIL)}
+          onClick={() =>
+            navigate(`${RoutePaths.AGENT_DETAIL}/${params.row.id}`)
+          }
         />,
         <GridActionsCellItem
           icon={
             <Tooltip title={t('update')}>
-              <DriveFileRenameOutlineIcon />
+              <DriveFileRenameOutlineIcon color="primary" />
             </Tooltip>
           }
-          color="primary"
           label={t('update')}
-          onClick={() => navigate(RoutePaths.UPDATE_AGENT)}
+          onClick={() =>
+            navigate(`${RoutePaths.UPDATE_AGENT}/${params.row.id}`)
+          }
         />,
         <GridActionsCellItem
           icon={
@@ -79,49 +145,31 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => {}}
+          onClick={() => handleDeleteAgent(params.row.id)}
         />,
       ],
     },
   ];
 
-  const rows = [
-    { id: 1, agentName: 'A', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 2, agentName: 'B', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 3, agentName: 'C', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 4, agentName: 'D', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 5, agentName: 'E', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 6, agentName: 'F', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-    { id: 7, agentName: 'G', createdAt: '2024-05-01', updatedAt: '2024-05-01' },
-  ];
-
-  //   const handleUpdateAgent = (data: { name: string; description: string }) => {
-  //     console.log('Updated agent:', data);
-  //     setOpenUpdateAgentDialog(false);
-  //     // TODO: Gọi API lưu hoặc cập nhật danh sách agent
-  //   };
-  //   const handleExport = () => {
-  //     const content = {
-  //       name: 'agentName',
-  //       description: 'agentDescription',
-  //     };
-  //     const blob = new Blob([JSON.stringify(content, null, 2)], {
-  //       type: 'application/json',
-  //     });
-
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = `${'agent'}-config.json`; // Đặt tên file
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //     URL.revokeObjectURL(url);
-  //   };
+  const handleDeleteAgent = (agentlId: string) => {
+    setAgentIdToDelete(agentlId);
+  };
 
   return (
-    <Stack justifyContent={'center'} alignItems="center" spacing={2}>
-      <h1>{t('agentList')}</h1>
+    <Stack justifyContent="center" alignItems="center" spacing={2}>
+      {agentIdToDelete && (
+        <ConfirmDialog
+          open={true}
+          onClose={() => setAgentIdToDelete(null)}
+          title={t('confirmAgentDeleteTitle')}
+          message={t('deleteAgentConfirm')}
+          confirmText={t('confirm')}
+          cancelText={t('cancel')}
+          onDelete={() => {}}
+        />
+      )}
+      <Typography variant="h4">{t('agentList')}</Typography>
+
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
@@ -130,8 +178,9 @@ const AgentManagementPage = () => {
           {t('createAgent')}
         </Button>
       </Box>
-      <Box sx={{ height: 400, width: '90%' }}>
-        <DataGridTable rows={rows} columns={columns} />
+
+      <Box sx={{ height: 500, width: '90%' }}>
+        <DataGridTable rows={fakeAgents} columns={columns} />
       </Box>
     </Stack>
   );

@@ -1,5 +1,10 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import { AppSnackbar, ConfirmDialog, DataGridTable } from '../../component';
+import {
+  AppSnackbar,
+  ConfirmDialog,
+  DataGridTable,
+  Loading,
+} from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
@@ -144,19 +149,19 @@ const ChatModelManagementPage = () => {
     offset: 0,
     limit: 40,
   });
-  const chatModel = useGetChatModels(chatModelQuery!, {
+  const chatModels = useGetChatModels(chatModelQuery!, {
     skip: !chatModelQuery,
   });
   useEffect(() => {
-    if (chatModel.data?.content) {
-      setRows(chatModel.data.content);
+    if (chatModels.data?.content) {
+      setRows(chatModels.data.content);
     }
-    if (chatModel.isError) {
-      setSnackbarMessage(t('promptsLoadingError'));
+    if (chatModels.isError) {
+      setSnackbarMessage(t('chatModelsLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [chatModel.data?.content, chatModel.isError, t]);
+  }, [chatModels.data?.content, chatModels.isError, t]);
 
   //delete chat model
   const [deleteChatModelTrigger, deleteChatModel] = useDeleteChatModel();
@@ -209,9 +214,14 @@ const ChatModelManagementPage = () => {
           {t('createChatModel')}
         </Button>
       </Box>
-      <Box sx={{ height: 400, width: '90%' }}>
-        <DataGridTable rows={rows} columns={columns} />
-      </Box>
+
+      {chatModels.isLoading || chatModels.isFetching || chatModels.isLoading ? (
+        <Loading />
+      ) : (
+        <Box sx={{ height: 400, width: '90%' }}>
+          <DataGridTable rows={rows} columns={columns} />
+        </Box>
+      )}
       <ChatModelDetailDialog
         open={openChatModelDetailDialog}
         onExit={() => {

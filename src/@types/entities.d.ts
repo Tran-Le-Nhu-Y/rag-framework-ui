@@ -1,9 +1,14 @@
 declare interface Agent {
-  id: number;
-  name: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
+  id: string;
+  name: string; // [1, 100] characters
+  description?: string | null;
+  language: string;
+  image_recognizer_id: string; // required, ≥ 1 character
+  retriever_ids: string[]; // required, ≥ 1 item
+  tool_ids?: string[] | null;
+  mcp_server_ids?: string[] | null;
+  llm_id: string;
+  prompt_id: string;
 }
 declare interface Prompt {
   id: string;
@@ -28,11 +33,6 @@ declare interface HuggingFaceEmbeddings extends BaseEmbeddings {
 declare interface GoogleGenAIEmbeddings extends BaseEmbeddings {
   task_type?: string | null;
   type: 'google_genai';
-}
-
-declare interface OutputClass {
-  name: string;
-  description: string;
 }
 
 declare type RetrieverType = 'bm25' | 'chroma_db';
@@ -116,4 +116,40 @@ declare interface File {
   name: string;
   mime_type?: string | null;
   created_at: string;
+}
+
+declare interface OutputClass {
+  name: string;
+  description: string;
+}
+
+declare type PreprocessingConfig = ImageResize | ImagePad | ImageGrayscale;
+declare interface ImageRecognizer {
+  id: string;
+  name: string;
+  type: string;
+  model_file_id: string;
+  min_probability: number;
+  max_results?: number;
+  output_classes: OutputClass[];
+  preprocessing_configs: PreprocessingConfig[] | null;
+}
+
+declare interface ImageResize {
+  type: 'resize';
+  target_size: number;
+  interpolation?: string;
+  max_size?: number | null;
+}
+
+declare interface ImagePad {
+  type: 'pad';
+  padding: number[] | number;
+  fill?: number | number[];
+  mode?: string;
+}
+
+declare interface ImageGrayscale {
+  type: 'grayscale';
+  num_output_channels: 1 | 3;
 }

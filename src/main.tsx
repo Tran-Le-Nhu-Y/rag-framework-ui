@@ -25,6 +25,9 @@ import {
   ChatModelCreationPage,
   ChatModelManagementPage,
   ChatModelUpdatePage,
+  CNNModelCreationPage,
+  CNNModelManagementPage,
+  CNNModelUpdatePage,
   EmbeddingCreationPage,
   EmbeddingsManagementPage,
   MCPCreationPage,
@@ -33,8 +36,6 @@ import {
   PromptCreationPage,
   PromptManagementPage,
   PromptUpdatePage,
-  RecognitionModelCreationPage,
-  RecognitionModelManagementPage,
   UseGuidePage,
   VectorStoreCreationPage,
   VectorStoreManagementPage,
@@ -75,17 +76,14 @@ const router = createBrowserRouter(
         path={RoutePaths.UPDATE_EMBEDDINGS}
         element={<EmbeddingUpdatePage />}
       />
-      <Route
-        path="recognition-model-management"
-        element={<RecognitionModelManagementPage />}
-      />
-      <Route
-        path="recognition-model-creation"
-        element={<RecognitionModelCreationPage />}
-      />
+
       <Route path={RoutePaths.MCP} element={<MCPManagementPage />} />
       <Route path={RoutePaths.CREATE_MCP} element={<MCPCreationPage />} />
       <Route path={RoutePaths.UPDATE_MCP} element={<MCPUpdatePage />} />
+
+      <Route path={RoutePaths.CNN} element={<CNNModelManagementPage />} />
+      <Route path={RoutePaths.CREATE_CNN} element={<CNNModelCreationPage />} />
+      <Route path={RoutePaths.UPDATE_CNN} element={<CNNModelUpdatePage />} />
 
       <Route path={RoutePaths.PROMPT} element={<PromptManagementPage />} />
       <Route path={RoutePaths.CREATE_PROMPT} element={<PromptCreationPage />} />
