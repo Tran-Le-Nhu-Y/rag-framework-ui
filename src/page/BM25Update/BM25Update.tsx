@@ -5,7 +5,6 @@ import {
   Stack,
   Switch,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -13,116 +12,187 @@ import { useEffect, useState } from 'react';
 import {
   HideDuration,
   isValidLength,
+  PathHolders,
   RoutePaths,
   SnackbarSeverity,
   TextLength,
 } from '../../util';
-import { useNavigate } from 'react-router';
-import { useCreateMCP } from '../../service';
-import { AppSnackbar, SelectForm } from '../../component';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import type { MCPStreamableServer, MCPStreamType } from '../../@types/entities';
+import { useNavigate, useParams } from 'react-router';
+import {
+  useDeleteFile,
+  useGetBM25ById,
+  useGetEmbeddings,
+  useGetFileById,
+  usePostFile,
+  useUpdateBM25,
+} from '../../service';
+import { AppSnackbar, InputFileUpload, SelectForm } from '../../component';
+import type {
+  BM25Retriever,
+  Embeddings,
+  File as ServerFile,
+} from '../../@types/entities';
 import type { Data } from '../../component/SelectForm';
-
-const typeList: Data[] = [
-  { label: 'Streamable HTTP', value: 'streamable_http' },
-  { label: 'Stdio', value: 'stdio' },
-];
+import { FilePreviewCard } from '../../component/FilePreviewCard';
 
 export default function BM25UpdatePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const bm25Id = useParams()[PathHolders.BM25_ID];
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-  const [streamableServer, setStreamableServer] = useState<MCPStreamableServer>(
-    {
-      id: '',
-      name: '',
-      type: 'streamable_http',
-      url: '',
-      headers: {},
-      timeout: 60,
-      sse_read_timeout: 30,
-      terminate_on_close: true,
-    }
-  );
+  const [postFile] = usePostFile();
+  const [bm25, setBM25] = useState<BM25Retriever>({
+    id: '',
+    name: '',
+    weight: 0,
+    k: 4,
+    type: 'bm25',
+    embeddings_id: '',
+    enable_remove_emoji: false,
+    enable_remove_emoticon: false,
+    removal_words_file_id: '',
+  });
 
-  const [headers, setHeaders] = useState<{ key: string; value: string }[]>([
-    { key: '', value: '' },
-  ]);
-
-  // header =>  object
-  const headerObject = headers.reduce((acc, { key, value }) => {
-    if (key.trim()) acc[key] = value;
-    return acc;
-  }, {} as Record<string, string>);
-
-  const [createMCPTrigger, createMCP] = useCreateMCP();
+  //Get BM25 detail
+  const bm25Detail = useGetBM25ById(bm25Id!, {
+    skip: !bm25Id,
+  });
   useEffect(() => {
-    if (createMCP.isError) {
-      setSnackbarMessage(t('createMCPFailed'));
+    if (bm25Detail.data) {
+      setBM25((prev) => ({
+        ...prev,
+        ...bm25Detail.data,
+      }));
+    }
+    if (bm25Detail.isError) {
+      setSnackbarMessage(t('bm25LoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
-    } else if (createMCP.isSuccess) {
-      setSnackbarMessage(t('createMCPSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      navigate(RoutePaths.PROMPT);
     }
-  }, [createMCP.isError, createMCP.isSuccess, navigate, t]);
+  }, [bm25Detail.data, bm25Detail.isError, t]);
 
-  const handleCreateMCPSubmit = async () => {
-    try {
-      const fullServerData: MCPStreamableServer = {
-        ...streamableServer,
-        headers: headerObject,
-      };
+  //Get File Information
+  const fileId = bm25?.removal_words_file_id;
+  const shouldFetchFile = !!fileId && fileId !== '';
+  const fileDetail = useGetFileById(fileId!, {
+    skip: !shouldFetchFile,
+  });
+  useEffect(() => {
+    if (fileDetail.isError) {
+      setSnackbarMessage(t('fileLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [fileDetail, fileDetail.isError, t]);
+  // Thêm state để giữ file hiển thị
+  const [fileData, setFileData] = useState<ServerFile | null>(null);
+  useEffect(() => {
+    if (fileDetail.data) setFileData(fileDetail.data);
+  }, [fileDetail.data]);
 
-      const newMCP: CreateMCPStreamableServerRequest = {
-        name: fullServerData.name,
-        type: fullServerData.type,
-        url: fullServerData.url,
-        headers: fullServerData.headers,
-        sse_read_timeout: fullServerData.sse_read_timeout,
-        terminate_on_close: fullServerData.terminate_on_close,
-        timeout: fullServerData.timeout,
-      };
-
-      await createMCPTrigger(newMCP);
-      setSnackbarMessage(t('createMCPSuccess'));
+  // Handle Update
+  const [updateBM25Trigger, updateBM25] = useUpdateBM25();
+  useEffect(() => {
+    if (updateBM25.isError) {
+      setSnackbarMessage(t('createBM25Failed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    } else if (updateBM25.isSuccess) {
+      setSnackbarMessage(t('updateBM25Success'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
-      navigate(RoutePaths.MCP);
+      setTimeout(() => {
+        navigate(RoutePaths.BM25);
+      }, 1000);
+    }
+  }, [updateBM25.isError, updateBM25.isSuccess, navigate, t]);
+
+  const [newFile, setNewFile] = useState<File | null>(null); // New File => upload
+  const [isRemoveOldFile, setIsRemoveOldFile] = useState(false); // delete file
+  const [deleteFileTrigger] = useDeleteFile();
+  const handleUpdateBM25Submit = async () => {
+    // Validate required fields
+    if (!bm25.name.trim()) {
+      setSnackbarMessage(t('bm25NameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+
+    if (!bm25.embeddings_id) {
+      setSnackbarMessage(t('embeddingRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+
+    try {
+      let updatedFileId = bm25.removal_words_file_id;
+      // Step 1: Delete old file (if any)
+      if (isRemoveOldFile && bm25.removal_words_file_id) {
+        await deleteFileTrigger(bm25.removal_words_file_id).unwrap();
+        updatedFileId = '';
+      }
+
+      // Step 2: Upload new file (if any)
+      if (newFile) {
+        updatedFileId = await postFile({ file: newFile }).unwrap();
+      }
+
+      // Step 3: Update
+      const payload: UpdateBM25RetrieverRequest = {
+        id: bm25Id!,
+        name: bm25.name,
+        embeddings_id: bm25.embeddings_id,
+        type: bm25.type,
+        weight: bm25.weight,
+        enable_remove_emoji: bm25.enable_remove_emoji,
+        enable_remove_emoticon: bm25.enable_remove_emoticon,
+        k: bm25.k,
+        removal_words_file_id: updatedFileId,
+      };
+
+      await updateBM25Trigger(payload);
+
+      // Reset file state
+      setIsRemoveOldFile(false);
+      setNewFile(null);
     } catch (error) {
       console.error('Error:', error);
-      setSnackbarMessage(t('createMCPFailed'));
+      setSnackbarMessage(t('createStoreFailed'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
   };
 
-  const handleAddHeader = () => {
-    setHeaders([...headers, { key: '', value: '' }]);
-  };
-
-  const handleRemoveHeader = (index: number) => {
-    const newHeaders = [...headers];
-    newHeaders.splice(index, 1);
-    setHeaders(newHeaders);
-  };
-
-  const handleHeaderChange = (
-    index: number,
-    field: 'key' | 'value',
-    value: string
-  ) => {
-    const newHeaders = [...headers];
-    newHeaders[index][field] = value;
-    setHeaders(newHeaders);
-  };
+  //get all embedding model
+  const [embeddingList, setEmbeddingList] = useState<Data[]>([]);
+  const [embeddingModelQuery] = useState<GetEmbeddingsQuery>({
+    offset: 0,
+    limit: 40,
+  });
+  const embeddingModel = useGetEmbeddings(embeddingModelQuery!, {
+    skip: !embeddingModelQuery,
+  });
+  useEffect(() => {
+    if (embeddingModel.data?.content) {
+      const mappedList: Data[] = embeddingModel.data.content.map(
+        (item: Embeddings) => ({
+          label: item.name,
+          value: item.id,
+        })
+      );
+      setEmbeddingList(mappedList);
+    }
+    if (embeddingModel.isError) {
+      setSnackbarMessage(t('promptsLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [embeddingModel.data?.content, embeddingModel.isError, t]);
 
   return (
     <Stack spacing={1}>
@@ -133,8 +203,9 @@ export default function BM25UpdatePage() {
         autoHideDuration={HideDuration.FAST}
         onClose={() => setSnackbarOpen(false)}
       />
+
       <Typography sx={{ textAlign: 'center' }} variant="h4" pb={2}>
-        {t('createMCP')}
+        {t('updateBM25')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">
@@ -144,167 +215,156 @@ export default function BM25UpdatePage() {
               fullWidth
               size="small"
               helperText={t('hyperTextMedium')}
-              label={t('mcpName')}
-              value={streamableServer.name}
+              label={t('bm25Name')}
+              value={bm25.name}
               onChange={(e) => {
                 const newValue = e.target.value;
                 if (isValidLength(newValue, TextLength.MEDIUM))
-                  setStreamableServer((prev) => ({
+                  setBM25((prev) => ({
                     ...prev,
                     name: newValue,
                   }));
               }}
-              placeholder={`${t('enter')} ${t('mcpName').toLowerCase()}...`}
+              placeholder={`${t('enter')} ${t('bm25Name').toLowerCase()}...`}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label={t('weight')}
+              type="number"
+              inputProps={{
+                min: 0,
+                max: 1,
+                step: 0.1,
+              }}
+              value={bm25.weight ?? 0}
+              onChange={(e) =>
+                setBM25((prev) => ({
+                  ...prev,
+                  weight: Number(e.target.value),
+                }))
+              }
+              placeholder={`${t('enter')} ${t('weight').toLowerCase()}...`}
+            />
+          </Stack>
+
+          <Stack spacing={2} direction={'row'} width={'100%'}>
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              label={t('k')}
+              value={bm25.k}
+              onChange={(e) =>
+                setBM25((prev) => ({
+                  ...prev,
+                  k: Number(e.target.value),
+                }))
+              }
+              placeholder={`${t('enter')} ${t('k').toLowerCase()}...`}
             />
 
             <SelectForm
-              label={t('selectMcpType')}
-              dataList={typeList}
+              label={t('embeddingModel')}
+              dataList={embeddingList}
               value={
-                typeList.find((item) => item.value === streamableServer.type) ||
-                null
+                embeddingList.find(
+                  (item) => item.value === bm25.embeddings_id
+                ) || null
               }
               isClearable={false}
               onChange={(selected) => {
-                setStreamableServer((prev) => ({
+                setBM25((prev) => ({
                   ...prev,
-                  type: (selected as Data).value as MCPStreamType,
+                  embeddings_id: (selected as Data).value,
                 }));
               }}
             />
           </Stack>
           <Stack spacing={2} direction={'row'} width={'100%'}>
-            <TextField
-              fullWidth
-              size="small"
-              helperText={t('hyperTextMedium')}
-              label={t('url')}
-              value={streamableServer.url}
-              onChange={(e) =>
-                setStreamableServer((prev) => ({
-                  ...prev,
-                  url: e.target.value,
-                }))
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={bm25.enable_remove_emoji ?? false}
+                  onChange={(e) => {
+                    setBM25((prev) => ({
+                      ...prev,
+                      enable_remove_emoji: e.target.checked,
+                    }));
+                  }}
+                />
               }
-              placeholder={`${t('enter')} ${t('url').toLowerCase()}...`}
-            />
-
-            <TextField
-              fullWidth
-              size="small"
-              type="text"
-              placeholder={`${t('enter')} ${t('timeout').toLowerCase()}...`}
-              label={t('timeout')}
-              value={streamableServer.timeout}
-              onChange={(e) =>
-                setStreamableServer((prev) => ({
-                  ...prev,
-                  timeout: Number(e.target.value),
-                }))
-              }
-            />
-          </Stack>
-          <Stack spacing={2} direction={'row'} width={'100%'}>
-            <TextField
-              fullWidth
-              size="small"
-              helperText={t('hyperTextMedium')}
-              label={t('sse_read_timeout')}
-              value={streamableServer.sse_read_timeout}
-              onChange={(e) =>
-                setStreamableServer((prev) => ({
-                  ...prev,
-                  sse_read_timeout: Number(e.target.value),
-                }))
-              }
-              placeholder={`${t('enter')} ${t(
-                'sse_read_timeout'
-              ).toLowerCase()}...`}
+              label={t('enable_remove_emoji')}
             />
 
             <FormControlLabel
-              sx={{ width: '100%' }}
-              label={t('terminate_on_close')}
               control={
                 <Switch
-                  checked={streamableServer.terminate_on_close}
-                  onChange={(e) =>
-                    setStreamableServer((prev) => ({
+                  checked={bm25.enable_remove_emoticon ?? false}
+                  onChange={(e) => {
+                    setBM25((prev) => ({
                       ...prev,
-                      terminate_on_close: e.target.checked,
-                    }))
-                  }
-                  color="primary"
+                      enable_remove_emoticon: e.target.checked,
+                    }));
+                  }}
                 />
               }
+              label={t('enable_remove_emoticon')}
             />
           </Stack>
 
-          <Stack spacing={1} width={'100%'}>
-            <Typography variant="subtitle1">{t('headers')}:</Typography>
-            {headers.map((header, index) => (
-              <Stack
-                key={index}
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                width={'100%'}
-              >
-                <TextField
-                  size="small"
-                  fullWidth
-                  label={t('headerKey')}
-                  value={header.key}
-                  onChange={(e) =>
-                    handleHeaderChange(index, 'key', e.target.value)
-                  }
-                  placeholder={`${t('enter')} ${t(
-                    'headerKey'
-                  ).toLowerCase()}...`}
+          <Box display="flex" flexWrap="wrap" alignItems="center" gap={2}>
+            <Typography variant="body1">
+              {t('removal_words_file_upload')}:
+            </Typography>
+            {fileDetail.isLoading ? (
+              <Typography variant="body1">{t('loading')}</Typography>
+            ) : fileData ? (
+              <>
+                <FilePreviewCard
+                  file={fileData}
+                  onDelete={() => {
+                    setIsRemoveOldFile(true);
+                    setBM25((prev) => ({
+                      ...prev,
+                      removal_words_file_id: '',
+                    }));
+                    setFileData(null); // Rerender UI
+                  }}
                 />
-                <TextField
-                  size="small"
-                  fullWidth
-                  label={t('headerValue')}
-                  value={header.value}
-                  onChange={(e) =>
-                    handleHeaderChange(index, 'value', e.target.value)
-                  }
-                  placeholder={`${t('enter')} ${t(
-                    'headerValue'
-                  ).toLowerCase()}...`}
-                />
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleRemoveHeader(index)}
-                >
-                  <DeleteIcon />
-                </Button>
-              </Stack>
-            ))}
-
-            <Box display="flex" justifyContent="center">
-              <Button variant="contained" onClick={handleAddHeader}>
-                <Tooltip title={t('addHeader')}>
-                  <AddCircleIcon />
-                </Tooltip>
-              </Button>
-            </Box>
-          </Stack>
+              </>
+            ) : (
+              <InputFileUpload
+                onFilesChange={(files) => {
+                  if (!files || files.length === 0) return;
+                  setNewFile(files[0]);
+                  setIsRemoveOldFile(true); // Khi chọn file mới thì đánh dấu xoá file cũ
+                  setBM25((prev) => ({
+                    ...prev,
+                    removal_words_file_id: '',
+                  }));
+                }}
+                onFileRemove={() => {
+                  setIsRemoveOldFile(true); // Nếu nhấn nút xoá file cũ
+                  setNewFile(null);
+                }}
+                acceptedFileTypes={['.txt']}
+              />
+            )}
+          </Box>
 
           <Box display="flex" justifyContent="center" gap={2} pt={2}>
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleCreateMCPSubmit()}
+              onClick={() => handleUpdateBM25Submit()}
             >
               {t('confirm')}
             </Button>
             <Button
               variant="outlined"
               color="info"
-              onClick={() => navigate(RoutePaths.MCP)}
+              onClick={() => navigate(RoutePaths.BM25)}
             >
               {t('cancel')}
             </Button>

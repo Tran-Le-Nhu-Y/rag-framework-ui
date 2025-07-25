@@ -137,7 +137,7 @@ export default function PromptUpdatePage() {
             <Button
               variant="outlined"
               color="info"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(RoutePaths.PROMPT)}
             >
               {t('cancel')}
             </Button>

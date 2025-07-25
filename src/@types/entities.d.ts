@@ -103,11 +103,17 @@ declare interface BM25Retriever {
   id: string;
   name: string; // [1, 100] characters
   weight: number; // [0, 1]
-  embeddings_model?: string | null;
-  k?: number;
+  k?: number; // DEFAULT 4
   enable_remove_emoji?: boolean;
   enable_remove_emoticon?: boolean;
   type?: string; //Default"bm25"
   embeddings_id: string;
   removal_words_file_id?: string | null;
+}
+
+declare interface File {
+  id: string;
+  name: string;
+  mime_type?: string | null;
+  created_at: string;
 }

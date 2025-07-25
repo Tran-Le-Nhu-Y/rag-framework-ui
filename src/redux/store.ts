@@ -4,6 +4,7 @@ import { chatModelApi } from '../service/chat-model';
 import { embeddingsApi } from '../service/embeddings';
 import { mcpApi } from '../service/mcp';
 import { retrieverApi } from '../service/retriever';
+import { fileApi } from '../service/file';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     [embeddingsApi.reducerPath]: embeddingsApi.reducer,
     [mcpApi.reducerPath]: mcpApi.reducer,
     [retrieverApi.reducerPath]: retrieverApi.reducer,
+    [fileApi.reducerPath]: fileApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -19,7 +21,8 @@ export const store = configureStore({
       chatModelApi.middleware,
       embeddingsApi.middleware,
       mcpApi.middleware,
-      retrieverApi.middleware
+      retrieverApi.middleware,
+      fileApi.middleware
     ),
 });
 
