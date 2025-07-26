@@ -156,7 +156,7 @@ export default function MCPUpdatePage() {
         onClose={() => setSnackbarOpen(false)}
       />
       <Typography sx={{ textAlign: 'center' }} variant="h4" pb={2}>
-        {t('createMCP')}
+        {t('updateMCP')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">

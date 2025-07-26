@@ -68,11 +68,7 @@ export default function CNNModelCreationPage() {
     { label: 'ImagePad', value: 'pad' },
     { label: 'ImageGrayscale', value: 'grayscale' },
   ];
-  const imageResizeTypes: Data[] = [
-    { label: 'Resize', value: 'resize' },
-    { label: 'Pad', value: 'pad' },
-    { label: 'Grayscale', value: 'grayscale' },
-  ];
+
   const interpolationTypes: Data[] = [
     { label: 'Nearest', value: 'nearest' },
     { label: 'Nearest Exact', value: 'nearest-exact' },
@@ -292,16 +288,140 @@ export default function CNNModelCreationPage() {
             </IconButton>
           </Stack>
           <Stack spacing={1}>
+            {/* {preprocessingConfigs.map((config, index) => (
+              <Box
+                key={index}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <IconButton
+                  color="error"
+                  aria-label="delete-preprocessing"
+                  onClick={() => {
+                    setPreprocessingConfigs((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    );
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                {config.type === 'resize' && (
+                  <Stack>
+                    <Typography variant="subtitle1">Image Resize:</Typography>
+                    <Stack spacing={1} direction={'row'} width={'100%'}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Target Size"
+                        value={config.targetsize}
+                        onChange={(e) => {
+                          const updated = [...preprocessingConfigs];
+                          (updated[index] as ImageResizeConfig).targetsize =
+                            e.target.value;
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                      <SelectForm
+                        label={t('Interpolation')}
+                        dataList={interpolationTypes}
+                        onChange={(val) => handleAddPreprocessing(val as Data)}
+                      />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Max Size"
+                        value={config.maxsize}
+                        onChange={(e) => {
+                          const updated = [...preprocessingConfigs];
+                          (updated[index] as ImageResizeConfig).maxsize =
+                            e.target.value;
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                    </Stack>
+                  </Stack>
+                )}
+
+                {config.type === 'pad' && (
+                  <Stack>
+                    <Typography variant="subtitle1">Image Pad:</Typography>
+                    <Stack spacing={1} direction={'row'} width={'100%'}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Padding"
+                        value={config.padding}
+                        onChange={(e) => {
+                          const updated = [...preprocessingConfigs];
+                          (updated[index] as ImagePadConfig).padding =
+                            e.target.value;
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Fill"
+                        value={config.fill}
+                        onChange={(e) => {
+                          const updated = [...preprocessingConfigs];
+                          (updated[index] as ImagePadConfig).fill =
+                            e.target.value;
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                      <SelectForm
+                        label={t('mode')}
+                        dataList={modes}
+                        onChange={(val) => handleAddPreprocessing(val as Data)}
+                      />
+                    </Stack>
+                  </Stack>
+                )}
+
+                {config.type === 'grayscale' && (
+                  <Stack
+                    spacing={1}
+                    direction={'row'}
+                    width={'100%'}
+                    alignItems={'center'}
+                  >
+                    <Typography variant="subtitle1">
+                      Image Grayscale:
+                    </Typography>
+                    <TextField
+                      size="small"
+                      label="Num Output Channels"
+                      value={config.num_output_channels}
+                      onChange={(e) => {
+                        const updated = [...preprocessingConfigs];
+                        (
+                          updated[index] as ImageGrayscaleConfig
+                        ).num_output_channels = e.target.value;
+                        setPreprocessingConfigs(updated);
+                      }}
+                    />
+                  </Stack>
+                )}
+              </Box>
+            ))} */}
             {preprocessingConfigs.map((config, index) => (
-              <Box key={index}>
-                <Typography variant="subtitle1">
-                  {config.type === 'resize'
-                    ? 'Image Resize'
-                    : config.type === 'pad'
-                    ? 'Image Pad'
-                    : 'Image Grayscale'}
-                  :
-                </Typography>
+              <Stack
+                direction={'row'}
+                key={index}
+                width={'100%'}
+                alignItems={'center'}
+              >
+                <Box display={'flex'} width={'15%'}>
+                  <Typography variant="subtitle1">
+                    {config.type === 'resize'
+                      ? 'Image Resize'
+                      : config.type === 'pad'
+                      ? 'Image Pad'
+                      : 'Image Grayscale'}
+                  </Typography>
+                </Box>
+
                 {config.type === 'resize' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
                     <TextField
@@ -319,7 +439,13 @@ export default function CNNModelCreationPage() {
                     <SelectForm
                       label={t('Interpolation')}
                       dataList={interpolationTypes}
-                      onChange={(val) => handleAddPreprocessing(val as Data)}
+                      onChange={(val) => {
+                        const updated = [...preprocessingConfigs];
+                        (updated[index] as ImageResizeConfig).interpolation = (
+                          val as Data
+                        ).value;
+                        setPreprocessingConfigs(updated);
+                      }}
                     />
                     <TextField
                       fullWidth
@@ -332,11 +458,6 @@ export default function CNNModelCreationPage() {
                           e.target.value;
                         setPreprocessingConfigs(updated);
                       }}
-                    />
-                    <SelectForm
-                      label={t('selectImageTypes')}
-                      dataList={imageResizeTypes}
-                      onChange={(val) => handleAddPreprocessing(val as Data)}
                     />
                   </Stack>
                 )}
@@ -370,12 +491,13 @@ export default function CNNModelCreationPage() {
                     <SelectForm
                       label={t('mode')}
                       dataList={modes}
-                      onChange={(val) => handleAddPreprocessing(val as Data)}
-                    />
-                    <SelectForm
-                      label={t('selectImageTypes')}
-                      dataList={imageResizeTypes}
-                      onChange={(val) => handleAddPreprocessing(val as Data)}
+                      onChange={(val) => {
+                        const updated = [...preprocessingConfigs];
+                        (updated[index] as ImagePadConfig).mode = (
+                          val as Data
+                        ).value;
+                        setPreprocessingConfigs(updated);
+                      }}
                     />
                   </Stack>
                 )}
@@ -383,7 +505,7 @@ export default function CNNModelCreationPage() {
                 {config.type === 'grayscale' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
                     <TextField
-                      fullWidth
+                      sx={{ width: '33%' }}
                       size="small"
                       label="Num Output Channels"
                       value={config.num_output_channels}
@@ -395,14 +517,20 @@ export default function CNNModelCreationPage() {
                         setPreprocessingConfigs(updated);
                       }}
                     />
-                    <SelectForm
-                      label={t('selectImageTypes')}
-                      dataList={imageResizeTypes}
-                      onChange={(val) => handleAddPreprocessing(val as Data)}
-                    />
                   </Stack>
                 )}
-              </Box>
+                <IconButton
+                  color="error"
+                  aria-label="delete-preprocessing"
+                  onClick={() => {
+                    setPreprocessingConfigs((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    );
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Stack>
             ))}
           </Stack>
         </Stack>

@@ -35,6 +35,7 @@ const MCP = '/mcp';
 const VECTOR_STORE = '/vector-store';
 const BM25 = '/bm25';
 const CNN = '/cnn';
+const TOOL = '/tool';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -68,6 +69,8 @@ export const RoutePaths = {
   CNN,
   CREATE_CNN: `${CNN}/create`,
   UPDATE_CNN: `${CNN}/:${PathHolders.CNN_ID}/update`,
+
+  TOOL,
 };
 
 export const HideDuration = {

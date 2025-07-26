@@ -23,6 +23,7 @@ import VectorStoreUpdatePage from './VectorStoreUpdate/VectorStoreUpdate';
 import CNNModelUpdatePage from './CNNModelUpdate/CNNModelUpdate';
 import CNNModelManagementPage from './CNNModelManagement/CNNModelManagement';
 import CNNModelCreationPage from './CNNModelCreation/CNNModelCreation';
+import SearchToolManagementPage from './SearchTool/SearchToolManagement';
 
 export {
   AgentManagementPage,
@@ -50,4 +51,5 @@ export {
   CNNModelUpdatePage,
   CNNModelManagementPage,
   CNNModelCreationPage,
+  SearchToolManagementPage,
 };

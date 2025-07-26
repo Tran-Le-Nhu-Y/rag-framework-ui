@@ -161,7 +161,6 @@ const CNNModelManagementPage = () => {
       <CNNModelDetailDialog
         open={openAgentDetailDialog}
         onExit={() => setOpenAgentDetailDialog(false)}
-        onExport={() => {}}
       />
     </Stack>
   );

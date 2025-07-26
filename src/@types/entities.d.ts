@@ -153,3 +153,10 @@ declare interface ImageGrayscale {
   type: 'grayscale';
   num_output_channels: 1 | 3;
 }
+
+declare interface Tool {
+  id: string;
+  type: string;
+  name: string;
+  max_results: number; //default 4
+}

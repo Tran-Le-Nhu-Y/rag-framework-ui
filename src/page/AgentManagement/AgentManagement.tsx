@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { RoutePaths } from '../../util';
 import { useState } from 'react';
+import AgentDetailDialog from './AgentDetailDialog';
 
 const fakeAgents = [
   {
@@ -58,7 +59,7 @@ const AgentManagementPage = () => {
   //     document.body.removeChild(a);
   //     URL.revokeObjectURL(url);
   //   };
-
+  const [detailOpen, setDetailOpen] = useState(false);
   const columns: GridColDef<(typeof fakeAgents)[number]>[] = [
     {
       field: 'name',
@@ -123,9 +124,7 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('see')}
-          onClick={() =>
-            navigate(`${RoutePaths.AGENT_DETAIL}/${params.row.id}`)
-          }
+          onClick={() => setDetailOpen(true)}
         />,
         <GridActionsCellItem
           icon={
@@ -134,9 +133,7 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('update')}
-          onClick={() =>
-            navigate(`${RoutePaths.UPDATE_AGENT}/${params.row.id}`)
-          }
+          onClick={() => navigate(RoutePaths.UPDATE_AGENT)}
         />,
         <GridActionsCellItem
           icon={
@@ -182,6 +179,10 @@ const AgentManagementPage = () => {
       <Box sx={{ height: 500, width: '90%' }}>
         <DataGridTable rows={fakeAgents} columns={columns} />
       </Box>
+      <AgentDetailDialog
+        open={detailOpen}
+        onClose={() => setDetailOpen(false)}
+      />
     </Stack>
   );
 };

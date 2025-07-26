@@ -136,7 +136,7 @@ export default function CNNModelUpdatePage() {
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={1}>
-      <Typography variant="h4">{t('createRecognitionModel')}</Typography>
+      <Typography variant="h4">{t('updateRecognitionModel')}</Typography>
       <Stack spacing={1} width="100%">
         <Stack direction={'row'} spacing={2} width="100%">
           <TextField

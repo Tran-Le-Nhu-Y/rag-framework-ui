@@ -36,6 +36,7 @@ import {
   PromptCreationPage,
   PromptManagementPage,
   PromptUpdatePage,
+  SearchToolManagementPage,
   UseGuidePage,
   VectorStoreCreationPage,
   VectorStoreManagementPage,
@@ -105,6 +106,8 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.BM25} element={<BM25ManagementPage />} />
       <Route path={RoutePaths.CREATE_BM25} element={<BM25CreationPage />} />
       <Route path={RoutePaths.UPDATE_BM25} element={<BM25UpdatePage />} />
+
+      <Route path={RoutePaths.TOOL} element={<SearchToolManagementPage />} />
 
       <Route path="use-guide" element={<UseGuidePage />} />
     </Route>
