@@ -104,8 +104,9 @@ const RootLayout = () => {
     if (pathname.startsWith(RoutePaths.PROMPT)) return 4;
     if (pathname.startsWith(RoutePaths.MCP)) return 5;
     if (pathname.startsWith(RoutePaths.EMBEDDINGS)) return 6;
-
-    if (pathname === '/use-guide') return 8;
+    if (pathname.startsWith(RoutePaths.CNN)) return 7;
+    if (pathname.startsWith(RoutePaths.TOOL)) return 8;
+    if (pathname === '/use-guide') return 9;
     return 0; // fallback
   };
   React.useEffect(() => {
@@ -335,7 +336,7 @@ const RootLayout = () => {
               selected={selectedIndex === 7}
               onClick={(event) => {
                 handleListItemClick(event, 7);
-                navigate('/recognition-model-management');
+                navigate(RoutePaths.CNN);
               }}
             >
               <ListItemIcon>
@@ -347,11 +348,28 @@ const RootLayout = () => {
         </List>
         <Divider />
         <List>
-          <ListItem key={t('useGuide')} disablePadding>
+          <ListItem key={t('searchToolConfig')} disablePadding>
             <ListItemButton
               selected={selectedIndex === 8}
               onClick={(event) => {
                 handleListItemClick(event, 8);
+                navigate(RoutePaths.TOOL);
+              }}
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('searchToolConfig')} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <Divider />
+        <List>
+          <ListItem key={t('useGuide')} disablePadding>
+            <ListItemButton
+              selected={selectedIndex === 9}
+              onClick={(event) => {
+                handleListItemClick(event, 9);
                 navigate('/use-guide');
               }}
             >

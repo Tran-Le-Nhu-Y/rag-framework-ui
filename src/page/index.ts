@@ -1,7 +1,5 @@
 import AgentManagementPage from './AgentManagement/AgentManagement';
-import RecognitionModelManagementPage from './RecognitionModelManagement/RecognitionModelManagement';
 import AgentCreationPage from './AgentCreation/AgentCreation';
-import RecognitionModelCreationPage from './RecognitionModelCreation/RecognitionModelCreation';
 import UseGuidePage from './UseGuide/UseGuide';
 import PromptManagementPage from './PromptConfig/PromptManagement';
 import PromptCreationPage from './PromptCreation/PromptCreation';
@@ -22,13 +20,15 @@ import BM25UpdatePage from './BM25Update/BM25Update';
 import VectorStoreManagementPage from './VectorStore/VectorStoreManagement';
 import VectorStoreCreationPage from './VectorStoreCreation/VectorStoreCreation';
 import VectorStoreUpdatePage from './VectorStoreUpdate/VectorStoreUpdate';
+import CNNModelUpdatePage from './CNNModelUpdate/CNNModelUpdate';
+import CNNModelManagementPage from './CNNModelManagement/CNNModelManagement';
+import CNNModelCreationPage from './CNNModelCreation/CNNModelCreation';
+import SearchToolManagementPage from './SearchTool/SearchToolManagement';
 
 export {
   AgentManagementPage,
-  RecognitionModelManagementPage,
   AgentDetailPage,
   AgentCreationPage,
-  RecognitionModelCreationPage,
   UseGuidePage,
   PromptCreationPage,
   AgentUpdatePage,
@@ -48,4 +48,8 @@ export {
   VectorStoreCreationPage,
   VectorStoreManagementPage,
   VectorStoreUpdatePage,
+  CNNModelUpdatePage,
+  CNNModelManagementPage,
+  CNNModelCreationPage,
+  SearchToolManagementPage,
 };

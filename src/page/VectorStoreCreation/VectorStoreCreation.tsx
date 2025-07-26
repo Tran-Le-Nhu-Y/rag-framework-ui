@@ -161,7 +161,7 @@ export default function VectorStoreCreationPage() {
   }, [embeddingModel.data?.content, embeddingModel.isError, t]);
 
   return (
-    <Stack spacing={1}>
+    <Stack>
       <AppSnackbar
         open={snackbarOpen}
         message={snackbarMessage}
@@ -230,7 +230,7 @@ export default function VectorStoreCreationPage() {
 
           {vectorStore.mode === 'remote' && (
             <Stack
-              spacing={2}
+              spacing={1}
               sx={{
                 border: '2px dashed ',
                 p: 2,
@@ -242,7 +242,6 @@ export default function VectorStoreCreationPage() {
                 <TextField
                   fullWidth
                   size="small"
-                  helperText={t('hyperTextMedium')}
                   label={t('host')}
                   value={vectorStore.connection?.host ?? ''}
                   onChange={(e) => {
@@ -425,7 +424,6 @@ export default function VectorStoreCreationPage() {
             <TextField
               fullWidth
               size="small"
-              helperText={t('hyperTextMedium')}
               label={t('tenant')}
               value={vectorStore.tenant}
               onChange={(e) =>
@@ -453,7 +451,7 @@ export default function VectorStoreCreationPage() {
             />
           </Stack>
 
-          <Box display="flex" justifyContent="center" gap={2} pt={2}>
+          <Box display="flex" justifyContent="center" gap={2}>
             <Button
               variant="contained"
               color="primary"

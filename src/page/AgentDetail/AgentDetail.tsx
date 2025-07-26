@@ -1,667 +1,152 @@
-import {
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import { isValidLength, TextLength } from '../../util';
-import {
-  InputFileUpload,
-  RemoteConnectionDialog,
-  SelectForm,
-} from '../../component';
-import type { Data } from '../../component/SelectForm';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useNavigate } from 'react-router';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
+import { SaveAlt, Edit } from '@mui/icons-material';
 
-export default function AgentCreationPage() {
+export default function AgentDetailPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [recognitionModel, setRecognitionModel] = useState<string>('');
-  const [prompt, setPrompt] = useState<string[]>([]);
-  const [provider, setProvider] = useState<string>('');
-  const [filteredContent, setFilteredContent] = useState<string[]>([]);
-  const [filteredMode, setFilteredMode] = useState<string>('');
-  const [llm, setLlm] = useState<string>('');
-  //   const [vectorStoreName, setVectorStoreName] = useState('');
-  //   const [searchToolName, setSearchToolName] = useState('');
-  //   const [accessMethod, setAccessMethod] = useState('');
-  //   const [searchingProvider, setSearchingProvider] = useState('');
-  const [numberOfSearchingResults, setNumberOfSearchingResults] = useState('');
-  const providerList: Data[] = [
-    { label: 'OpenAI', value: 'OpenAI' },
-    { label: 'Anthropic', value: 'Anthropic' },
-    { label: 'Google', value: 'Google' },
-  ];
-  const filteredContentList: Data[] = [
-    { label: 'Sexual', value: 'Sexual' },
-    { label: 'Toxic', value: 'Toxic' },
-  ];
-  const filteredModeList: Data[] = [
-    { label: 'Unspecified', value: 'Unspecified' },
-  ];
-  const llmListByProvider: Record<string, Data[]> = {
-    OpenAI: [
-      { label: 'GPT-4', value: 'gpt-4' },
-      { label: 'GPT-3.5', value: 'gpt-3.5' },
-    ],
-    Anthropic: [
-      { label: 'Claude 2', value: 'claude-2' },
-      { label: 'Claude 3', value: 'claude-3' },
-    ],
-    Google: [
-      { label: 'Gemini Pro', value: 'gemini-pro' },
-      { label: 'Gemini Ultra', value: 'gemini-ultra' },
-    ],
-  };
-  const recognitionModels: Data[] = [
-    { label: 'White spot detector', value: 'white-spot' },
-    { label: 'Color classifier', value: 'color-classifier' },
-  ];
-  const prompts: Data[] = [
-    { label: 'Test 1', value: 'Test 1' },
-    { label: 'Test 2', value: 'Test 2' },
-  ];
-  const accessMethods: Data[] = [
-    { label: 'Persistent', value: 'persistent' },
-    { label: 'Remote', value: 'remote' },
-  ];
-  const vectorDBs: Data[] = [
-    { label: 'Chroma', value: 'chroma' },
-    { label: 'FAISS', value: 'faiss' },
-  ];
 
-  const searchingProviders: Data[] = [
-    { label: 'DuckDuckGo ', value: 'duckduckgo' },
-    { label: 'Google', value: 'google' },
-    { label: 'Bing', value: 'bing' },
-  ];
-
-  const generateId = () =>
-    `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-  const [searchTools, setSearchTools] = useState([
-    {
-      id: generateId(),
-      name: '',
-      provider: '',
-      maxResults: 4,
+  // Fake agent data
+  const fakeAgent = {
+    id: 'agent-001',
+    name: 'Shrimp Disease Advisor',
+    description:
+      'This agent helps detect white spot disease and gives treatment advice.',
+    recognitionModel: 'White Spot Detector v1.0',
+    language: 'English',
+    chatModel: 'Gemini-Pro-1.5',
+    mcpModel: 'Shrimp Knowledge MCP v1',
+    retriever: 'BM25 Retriever',
+    searching: 'Similarity Search',
+    prompts: ['Initial Diagnosis', 'Emergency Treatment'],
+    modelFile: {
+      name: 'white-spot-model-v1.onnx',
+      url: '/models/white-spot-model-v1.onnx',
     },
-  ]);
-
-  const handleAddSearchTool = () => {
-    setSearchTools((prev) => [
-      ...prev,
-      {
-        id: generateId(),
-        name: '',
-        provider: '',
-        maxResults: 4,
-      },
-    ]);
-  };
-
-  const handleUpdateTool = (id: string, field: string, value: unknown) => {
-    setSearchTools((prev) =>
-      prev.map((tool) => (tool.id === id ? { ...tool, [field]: value } : tool))
-    );
-  };
-  const handleRemoveSearchTool = (id: string) => {
-    setSearchTools((prev) => prev.filter((tool) => tool.id !== id));
-  };
-
-  const [vectorStore, setVectorStore] = useState([
-    {
-      id: generateId(),
-      name: '',
-      provider: '',
-      accessMethod: '',
+    classFile: {
+      name: 'classes.json',
+      url: '/files/classes.json',
     },
-  ]);
-
-  const handleAddVectorStore = () => {
-    setVectorStore((prev) => [
-      ...prev,
-      {
-        id: generateId(),
-        name: '',
-        provider: '',
-        accessMethod: '',
-      },
-    ]);
   };
 
-  const handleUpdateVectorStore = (
-    id: string,
-    field: string,
-    value: unknown
-  ) => {
-    setVectorStore((prev) =>
-      prev.map((tool) => (tool.id === id ? { ...tool, [field]: value } : tool))
-    );
-  };
-  const handleRemoveVectorStore = (id: string) => {
-    setVectorStore((prev) => prev.filter((tool) => tool.id !== id));
+  const handleExport = () => {
+    const json = JSON.stringify(fakeAgent, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fakeAgent.name.replace(/\s+/g, '_')}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
-  //remote connection
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [, setRemoteConfigs] = useState<
-    Record<
-      string,
-      {
-        host: string;
-        port: string;
-        fields: { key: string; value: string }[];
-      }
-    >
-  >({});
+  const handleEdit = () => {
+    navigate(`/agent/update/${fakeAgent.id}`);
+  };
 
   return (
-    <Stack spacing={1}>
-      <Typography sx={{ textAlign: 'center' }} variant="h4">
-        {t('agentDetailInformation')}
-      </Typography>
+    <Box pl={5} pr={5}>
+      <Stack spacing={3}>
+        <Typography variant="h4" textAlign="center">
+          {t('agentDetailInformation')}
+        </Typography>
 
-      <Stack justifyContent={'center'} alignItems="center">
-        <Stack spacing={4} width="100%">
-          <Stack spacing={2} direction={'row'} width="100%">
-            <Stack width="100%">
-              <TextField
-                size="small"
-                helperText={t('hyperTextMedium')}
-                label={t('agentName')}
-                value={name}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  if (isValidLength(newValue, TextLength.MEDIUM))
-                    setName(newValue);
-                }}
-                placeholder={`${t('enter')} ${t('agentName').toLowerCase()}...`}
-              />
-
-              <TextField
-                type="text"
-                placeholder={`${t('enter')} ${t(
-                  'agentDescription'
-                ).toLowerCase()}...`}
-                label={t('agentDescription')}
-                value={description}
-                helperText={t('hyperTextVeryLong')}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  if (isValidLength(newValue, TextLength.MEDIUM))
-                    setDescription(newValue);
-                }}
-                multiline
-                rows={2}
-              />
-            </Stack>
-            <Stack width="100%" spacing={3}>
-              <SelectForm
-                label={t('selectPrompt')}
-                multiple={true}
-                dataList={prompts}
-                value={prompts.filter((item) => prompt.includes(item.value))}
-                onChange={(selected) =>
-                  setPrompt(
-                    Array.isArray(selected)
-                      ? selected.map((item) => item.value)
-                      : []
-                  )
-                }
-              />
-              <SelectForm
-                label={t('selectRecognitionModel')}
-                dataList={recognitionModels}
-                value={
-                  recognitionModels.find(
-                    (item) => item.value === recognitionModel
-                  ) || null
-                }
-                onChange={(selected) => {
-                  setRecognitionModel((selected as Data | null)?.value || '');
-                }}
-              />
-            </Stack>
+        <Stack direction={'row'} spacing={2} width={'100%'}>
+          <Stack direction={'row'} spacing={2} width={'100%'}>
+            <Typography fontWeight="bold">{t('agentName')}:</Typography>
+            <Typography variant="body1">{fakeAgent.name}</Typography>
           </Stack>
+          <Stack direction={'row'} spacing={2} width={'100%'}>
+            <Typography fontWeight="bold">{t('language')}:</Typography>
+            <Typography variant="body1">{fakeAgent.language}</Typography>
+          </Stack>
+        </Stack>
 
-          <Box
-            sx={{
-              border: '2px dashed #ccc',
-              borderColor: 'grey.400',
-              borderRadius: 2,
-              p: 2,
-              position: 'relative',
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 12,
-                transform: 'translateY(-50%)',
-                backgroundColor: 'background.paper',
-                px: 1,
-              }}
-            >
-              <strong>{t('llmmodelConfiguration')}</strong>
+        <Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            {t('agentDescription')}
+          </Typography>
+          <Typography variant="body1">{fakeAgent.description}</Typography>
+        </Box>
+
+        <Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            {t('selectPrompt')}
+          </Typography>
+          <Typography variant="body1">
+            {fakeAgent.prompts.join(', ')}
+          </Typography>
+        </Box>
+
+        <Divider />
+
+        <Stack direction="row" spacing={4}>
+          <Box flex={1}>
+            <Typography variant="subtitle2" color="text.secondary">
+              {t('selectRecognitionModel')}
             </Typography>
-
-            <Stack>
-              <Stack spacing={2} direction={'row'} padding={1}>
-                <SelectForm
-                  label={t('selectProvider')}
-                  dataList={providerList}
-                  value={
-                    providerList.find((item) => item.value === provider) || null
-                  }
-                  onChange={(selected) => {
-                    setProvider((selected as Data | null)?.value || '');
-                    setLlm('');
-                  }}
-                />
-
-                {provider && (
-                  <SelectForm
-                    label={t('selectLargeLanguageModel')}
-                    dataList={llmListByProvider[provider] || []}
-                    value={
-                      (llmListByProvider[provider] || []).find(
-                        (item) => item.value === llm
-                      ) || null
-                    }
-                    onChange={(selected) =>
-                      setLlm((selected as Data | null)?.value || '')
-                    }
-                  />
-                )}
-              </Stack>
-              <Stack spacing={2} direction={'row'} padding={1}>
-                <SelectForm
-                  multiple={true}
-                  label={t('filteredContent')}
-                  dataList={filteredContentList}
-                  value={filteredContentList.filter((item) =>
-                    filteredContent.includes(item.value)
-                  )}
-                  onChange={(selected) =>
-                    setFilteredContent(
-                      Array.isArray(selected)
-                        ? selected.map((item) => item.value)
-                        : []
-                    )
-                  }
-                />
-
-                <SelectForm
-                  label={t('filteredMode')}
-                  dataList={filteredModeList}
-                  value={
-                    filteredModeList.find(
-                      (item) => item.value === filteredMode
-                    ) || null
-                  }
-                  onChange={(selected) => {
-                    setFilteredMode((selected as Data | null)?.value || '');
-                  }}
-                />
-              </Stack>
-            </Stack>
+            <Typography>{fakeAgent.recognitionModel}</Typography>
           </Box>
-          <Box
-            sx={{
-              border: '2px dashed #ccc',
-              borderColor: 'grey.400',
-              borderRadius: 2,
-              p: 2,
-              position: 'relative',
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 12,
-                transform: 'translateY(-50%)',
-                backgroundColor: 'background.paper',
-                px: 1,
-              }}
-            >
-              <strong>{t('textPreprocessingConfig')}</strong>
+          <Box flex={1}>
+            <Typography variant="subtitle2" color="text.secondary">
+              {t('selectChatModel')}
             </Typography>
-
-            <Stack spacing={2} direction={'row'} alignItems={'center'}>
-              <TextField
-                label={t('numberOfDocumentReturn')}
-                placeholder={t('enterNumberOfDocumentReturn')}
-                // helperText={t('defaultNumber')}
-                type="number"
-                defaultValue={4}
-                value={numberOfSearchingResults}
-                onChange={(e) => setNumberOfSearchingResults(e.target.value)}
-                fullWidth
-                size="small"
-              />
-              <Stack
-                direction={'row'}
-                width={'100%'}
-                spacing={2}
-                height={'50%'}
-                alignItems={'center'}
-              >
-                <Typography>{t('filterWordsFile')}:</Typography>
-                <InputFileUpload
-                  onFilesChange={function (): void {
-                    throw new Error('Function not implemented.');
-                  }}
-                  acceptedFileTypes={['.pdf', '.txt']}
-                />
-              </Stack>
-            </Stack>
-          </Box>
-          <Box
-            sx={{
-              border: '2px dashed #ccc',
-              borderColor: 'grey.400',
-              borderRadius: 2,
-              p: 2,
-              position: 'relative',
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 12,
-                transform: 'translateY(-50%)',
-                backgroundColor: 'background.paper',
-                px: 1,
-              }}
-            >
-              <strong>{t('embedModelConfiguration')}</strong>
-            </Typography>
-
-            <Stack spacing={2} direction={'row'} alignItems={'center'}>
-              <SelectForm
-                label={t('selectEmbedModel')}
-                dataList={recognitionModels}
-                value={
-                  recognitionModels.find(
-                    (item) => item.value === recognitionModel
-                  ) || null
-                }
-                onChange={(selected) => {
-                  setRecognitionModel((selected as Data | null)?.value || '');
-                }}
-              />
-              <SelectForm
-                label={t('selectProvider')}
-                dataList={recognitionModels}
-                value={
-                  recognitionModels.find(
-                    (item) => item.value === recognitionModel
-                  ) || null
-                }
-                onChange={(selected) => {
-                  setRecognitionModel((selected as Data | null)?.value || '');
-                }}
-              />
-            </Stack>
-          </Box>
-
-          <Box
-            sx={{
-              border: '2px dashed #ccc',
-              borderColor: 'grey.400',
-              borderRadius: 2,
-              p: 2,
-              position: 'relative',
-              mb: 2,
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 12,
-                transform: 'translateY(-50%)',
-                backgroundColor: 'background.paper',
-                px: 1,
-              }}
-            >
-              <strong>{t('searchToolConfig')}</strong>
-            </Typography>
-            {searchTools.map((tool, index) => (
-              <Stack
-                key={tool.id}
-                direction={'row'}
-                spacing={2}
-                alignItems={'center'}
-                mb={2}
-              >
-                <Typography>{index + 1}.</Typography>
-                <TextField
-                  label={t('searchToolName')}
-                  placeholder={t('searchToolName')}
-                  type="text"
-                  value={tool.name}
-                  onChange={(e) =>
-                    handleUpdateTool(tool.id, 'name', e.target.value)
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <SelectForm
-                  label={t('selectSearchingProvider')}
-                  dataList={searchingProviders}
-                  value={
-                    searchingProviders.find(
-                      (item) => item.value === tool.provider
-                    ) || null
-                  }
-                  onChange={(selected) => {
-                    handleUpdateTool(
-                      tool.id,
-                      'provider',
-                      (selected as Data | null)?.value || ''
-                    );
-                  }}
-                />
-                <TextField
-                  label={t('theMaximunNumberOfSearchingResults')}
-                  placeholder={t('enterTheMaximunNumberOfSearchingResults')}
-                  type="number"
-                  value={tool.maxResults}
-                  onChange={(e) =>
-                    handleUpdateTool(
-                      tool.id,
-                      'maxResults',
-                      parseInt(e.target.value)
-                    )
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleRemoveSearchTool(tool.id)}
-                >
-                  <DeleteIcon />
-                </Button>
-              </Stack>
-            ))}
-            <Box
-              display={'flex'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >
-              <Button variant="contained" onClick={handleAddSearchTool}>
-                <Tooltip title={t('addSearchTool')}>
-                  <AddCircleIcon />
-                </Tooltip>
-              </Button>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              border: '2px dashed #ccc',
-              borderColor: 'grey.400',
-              borderRadius: 2,
-              p: 2,
-              position: 'relative',
-              mb: 2,
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 12,
-                transform: 'translateY(-50%)',
-                backgroundColor: 'background.paper',
-                px: 1,
-              }}
-            >
-              <strong>{t('vectorStoreConfig')}</strong>
-            </Typography>
-            {vectorStore.map((vectorDB, index) => (
-              <Stack
-                key={vectorDB.id}
-                direction={'row'}
-                spacing={2}
-                alignItems={'center'}
-                mb={2}
-              >
-                <Typography>{index + 1}.</Typography>
-                <TextField
-                  label={t('vectorDBName')}
-                  placeholder={t('vectorDBName')}
-                  type="text"
-                  value={vectorDB.name}
-                  onChange={(e) =>
-                    handleUpdateVectorStore(vectorDB.id, 'name', e.target.value)
-                  }
-                  fullWidth
-                  size="small"
-                />
-                <SelectForm
-                  label={t('seclectVectorDB')}
-                  dataList={vectorDBs}
-                  value={
-                    vectorDBs.find(
-                      (item) => item.value === vectorDB.provider
-                    ) || null
-                  }
-                  onChange={(selected) => {
-                    handleUpdateVectorStore(
-                      vectorDB.id,
-                      'provider',
-                      (selected as Data | null)?.value || ''
-                    );
-                  }}
-                />
-                <SelectForm
-                  label={t('selectAccessMethod')}
-                  dataList={accessMethods}
-                  value={
-                    accessMethods.find(
-                      (item) => item.value === vectorDB.accessMethod
-                    ) || null
-                  }
-                  onChange={(selected) => {
-                    const value = (selected as Data | null)?.value || '';
-                    handleUpdateVectorStore(vectorDB.id, 'accessMethod', value);
-                    if (value === 'remote') {
-                      setDialogOpen(true);
-                    }
-                  }}
-                />
-                <Button
-                  variant="outlined"
-                  disabled={vectorDB.accessMethod !== 'remote'}
-                  onClick={() => {
-                    if (vectorDB.accessMethod === 'remote') setDialogOpen(true);
-                  }}
-                >
-                  <Tooltip title={t('see')}>
-                    <RemoveRedEyeIcon />
-                  </Tooltip>
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleRemoveVectorStore(vectorDB.id)}
-                >
-                  <DeleteIcon />
-                </Button>
-              </Stack>
-            ))}
-            <Box
-              display={'flex'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >
-              <Button variant="contained" onClick={handleAddVectorStore}>
-                <Tooltip title={t('addVectorDB')}>
-                  <AddCircleIcon />
-                </Tooltip>
-              </Button>
-            </Box>
-          </Box>
-
-          <Box display="flex" justifyContent="center" gap={2}>
-            <Box mt={3} display="flex" justifyContent="center" gap={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {}}
-                startIcon={<SimCardDownloadIcon />}
-              >
-                {t('export')}
-              </Button>
-              <Button
-                variant="outlined"
-                color="info"
-                onClick={() => navigate(-1)}
-              >
-                {t('exit')}
-              </Button>
-            </Box>
+            <Typography>{fakeAgent.chatModel}</Typography>
           </Box>
         </Stack>
+
+        <Stack direction="row" spacing={4}>
+          <Box flex={1}>
+            <Typography variant="subtitle2" color="text.secondary">
+              {t('selectMCPModel')}
+            </Typography>
+            <Typography>{fakeAgent.mcpModel}</Typography>
+          </Box>
+          <Box flex={1}>
+            <Typography variant="subtitle2" color="text.secondary">
+              {t('selectRetrievers')}
+            </Typography>
+            <Typography>{fakeAgent.retriever}</Typography>
+          </Box>
+        </Stack>
+
+        <Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            {t('selectSearching')}
+          </Typography>
+          <Typography>{fakeAgent.searching}</Typography>
+        </Box>
+
+        <Divider />
+
+        <Box display="flex" justifyContent="center" gap={2} flexWrap="wrap">
+          <Button variant="contained" onClick={() => navigate(-1)}>
+            {t('goBack')}
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleEdit}
+            startIcon={<Edit />}
+          >
+            {t('update')}
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleExport}
+            startIcon={<SaveAlt />}
+          >
+            {t('export')}
+          </Button>
+        </Box>
       </Stack>
-      <RemoteConnectionDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onSave={(host, port, fields) => {
-          // Ví dụ: lưu theo id vectorStore
-          const currentId = vectorStore.find(
-            (v) => v.accessMethod === 'remote'
-          )?.id;
-          if (currentId) {
-            setRemoteConfigs((prev) => ({
-              ...prev,
-              [currentId]: { host, port, fields },
-            }));
-          }
-        }}
-      />
-    </Stack>
+    </Box>
   );
 }

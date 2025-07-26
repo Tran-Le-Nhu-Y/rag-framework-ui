@@ -25,6 +25,7 @@ export const PathHolders = {
   MCP_ID: 'mcpId',
   VECTOR_STORE_ID: 'vectorStoreId',
   BM25_ID: 'bm25Id',
+  CNN_ID: 'cnnId',
 };
 const AGENT = '/agent';
 const PROMPT = '/prompt';
@@ -33,6 +34,8 @@ const EMBEDDINGS = '/embedding';
 const MCP = '/mcp';
 const VECTOR_STORE = '/vector-store';
 const BM25 = '/bm25';
+const CNN = '/cnn';
+const TOOL = '/tool';
 export const RoutePaths = {
   AGENT,
   CREATE_AGENT: `${AGENT}/create`,
@@ -62,6 +65,12 @@ export const RoutePaths = {
   BM25,
   CREATE_BM25: `${BM25}/create`,
   UPDATE_BM25: `${BM25}/:${PathHolders.BM25_ID}/update`,
+
+  CNN,
+  CREATE_CNN: `${CNN}/create`,
+  UPDATE_CNN: `${CNN}/:${PathHolders.CNN_ID}/update`,
+
+  TOOL,
 };
 
 export const HideDuration = {

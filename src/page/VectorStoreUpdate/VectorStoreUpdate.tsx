@@ -220,7 +220,7 @@ export default function VectorStoreUpdatePage() {
   }, [embeddingModel.data?.content, embeddingModel.isError, t]);
 
   return (
-    <Stack spacing={1}>
+    <Stack>
       <AppSnackbar
         open={snackbarOpen}
         message={snackbarMessage}
@@ -229,7 +229,7 @@ export default function VectorStoreUpdatePage() {
         onClose={() => setSnackbarOpen(false)}
       />
       <Typography sx={{ textAlign: 'center' }} variant="h4" pb={2}>
-        {t('createVectorStore')}
+        {t('updateVectorStore')}
       </Typography>
 
       <Stack justifyContent={'center'} alignItems="center">
@@ -289,7 +289,7 @@ export default function VectorStoreUpdatePage() {
 
           {vectorStore.mode === 'remote' && (
             <Stack
-              spacing={2}
+              spacing={1}
               sx={{
                 border: '2px dashed ',
                 p: 2,
@@ -297,7 +297,7 @@ export default function VectorStoreUpdatePage() {
                 borderRadius: 5,
               }}
             >
-              <Stack spacing={2} direction={'row'} width={'100%'}>
+              <Stack spacing={1} direction={'row'} width={'100%'}>
                 <TextField
                   fullWidth
                   size="small"
@@ -484,7 +484,6 @@ export default function VectorStoreUpdatePage() {
             <TextField
               fullWidth
               size="small"
-              helperText={t('hyperTextMedium')}
               label={t('tenant')}
               value={vectorStore.tenant}
               onChange={(e) =>
