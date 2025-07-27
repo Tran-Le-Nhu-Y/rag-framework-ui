@@ -130,4 +130,5 @@ export const {
   useGetToolByIdQuery,
   useGetToolsQuery,
   useDeleteToolMutation,
+  useUpdateToolMutation,
 } = toolApi;

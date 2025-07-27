@@ -11,15 +11,9 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
+import type { Tool } from '../../@types/entities';
 
-interface SearchToolForm {
-  id: string;
-  name: string;
-  type: string;
-  max_results: number;
-}
-
-const TOOL_TYPES = ['DuckDuckGo', 'InternalDB', 'ElasticSearch'];
+const TOOL_TYPES = ['duckduckgo_search'];
 
 export default function SearchToolUpdateDialog({
   open,
@@ -28,15 +22,15 @@ export default function SearchToolUpdateDialog({
   onUpdate,
 }: {
   open: boolean;
-  tool: SearchToolForm | null;
+  tool: Tool | null;
   onExit: () => void;
-  onUpdate: (updatedTool: SearchToolForm) => void;
+  onUpdate: (updatedTool: Tool) => void;
 }) {
   const { t } = useTranslation();
-  const [form, setForm] = useState<SearchToolForm>({
+  const [form, setForm] = useState<Tool>({
     id: '',
     name: '',
-    type: '',
+    type: 'duckduckgo_search',
     max_results: 0,
   });
 
@@ -46,10 +40,7 @@ export default function SearchToolUpdateDialog({
     }
   }, [tool]);
 
-  const handleChange = (
-    field: keyof SearchToolForm,
-    value: string | number
-  ) => {
+  const handleChange = (field: keyof Tool, value: string | number) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -91,6 +82,10 @@ export default function SearchToolUpdateDialog({
             label={t('maxResults')}
             type="number"
             value={form.max_results}
+            inputProps={{
+              min: 1,
+              step: 1,
+            }}
             onChange={(e) =>
               handleChange('max_results', Number(e.target.value))
             }

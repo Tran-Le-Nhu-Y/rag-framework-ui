@@ -89,5 +89,12 @@ import {
   useGetToolByIdQuery as useGetToolById,
   useGetToolsQuery as useGetTools,
   useDeleteToolMutation as useDeleteTool,
+  useUpdateToolMutation as useUpdateTool,
 } from './tool';
-export { useCreateTool, useGetToolById, useGetTools, useDeleteTool };
+export {
+  useCreateTool,
+  useGetToolById,
+  useGetTools,
+  useDeleteTool,
+  useUpdateTool,
+};

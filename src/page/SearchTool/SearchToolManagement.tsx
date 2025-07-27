@@ -1,5 +1,10 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import { ConfirmDialog, DataGridTable } from '../../component';
+import {
+  AppSnackbar,
+  ConfirmDialog,
+  DataGridTable,
+  Loading,
+} from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,79 +13,31 @@ import { useEffect, useState } from 'react';
 import type { Tool } from '../../@types/entities';
 import SearchToolCreateDialog from './SearchToolCreationDialog';
 import SearchToolUpdateDialog from './SearchToolUpdateDialog';
+import {
+  useCreateTool,
+  useDeleteTool,
+  useGetTools,
+  useUpdateTool,
+} from '../../service';
+import { HideDuration, SnackbarSeverity } from '../../util';
 
 const SearchToolManagementPage = () => {
   const { t } = useTranslation();
-  //   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  //   const [snackbarMessage, setSnackbarMessage] = useState('');
-  //   const [snackbarSeverity, setSnackbarSeverity] =
-  //     useState<SnackbarSeverity>('success');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
   const [openToolCreationDialog, setOpenToolCreationDialog] = useState(false);
   const [openToolUpdateDialog, setOpenToolUpdateDialog] = useState(false);
   const [toolToUpdate, setToolToUpdate] = useState<Tool | null>(null);
   const [toolIdToDelete, setToolIdToDelete] = useState<string | null>(null);
-  //   const [viewedPrompt, setViewedPrompt] = useState<Tool | null>(null);
-
-  const [rows, setRows] = useState<Tool[]>([]);
-
-  useEffect(() => {
-    // Giả lập dữ liệu ban đầu
-    const fakeData: Tool[] = [
-      {
-        id: '1',
-        name: 'Web Search',
-        type: 'DuckDuckGo',
-        max_results: 10,
-      },
-      {
-        id: '2',
-        name: 'Document Lookup',
-        type: 'InternalDB',
-        max_results: 5,
-      },
-      {
-        id: '3',
-        name: 'Product Finder',
-        type: 'ElasticSearch',
-        max_results: 8,
-      },
-    ];
-    setRows(fakeData);
-  }, []);
-  //   // Fetch all prompts
-  //   const [promptsQuery] = useState<GetPromptsQuery>({
-  //     offset: 0,
-  //     limit: 40,
-  //   });
-  //   const prompts = useGetPrompts(promptsQuery!, {
-  //     skip: !promptsQuery,
-  //   });
-  //   useEffect(() => {
-  //     if (prompts.isError) {
-  //       setSnackbarMessage(t('promptsLoadingError'));
-  //       setSnackbarSeverity(SnackbarSeverity.ERROR);
-  //       setSnackbarOpen(true);
-  //     }
-  //   }, [prompts.isError, t]);
-
-  //   const [rows, setRows] = useState<Prompt[]>([]);
-  //   useEffect(() => {
-  //     if (prompts.data?.content) {
-  //       const mappedRows: Prompt[] = prompts.data.content.map((prompt) => ({
-  //         id: prompt.id,
-  //         name: prompt.name,
-  //         respond_prompt: prompt.respond_prompt,
-  //       }));
-  //       setRows(mappedRows);
-  //     }
-  //   }, [prompts.data, t]);
 
   const columns: GridColDef<Tool>[] = [
     {
       field: 'name',
       headerName: t('searchToolName'),
       type: 'string',
-      width: 250,
+      width: 300,
       headerAlign: 'center',
       align: 'center',
     },
@@ -107,27 +64,6 @@ const SearchToolManagementPage = () => {
       type: 'actions',
       width: 250,
       getActions: (params) => [
-        // <GridActionsCellItem
-        //   icon={
-        //     <Tooltip title={t('see')}>
-        //       <RemoveRedEyeIcon />
-        //     </Tooltip>
-        //   }
-        //   color="primary"
-        //   label={t('see')}
-        //   onClick={
-        //     () => {
-
-        // 	}
-        //     //     setViewedPrompt({
-        //     //       id: params.row.id,
-        //     //       name: params.row.name,
-        //     //       respond_prompt: params.row.respond_prompt,
-        //     //     });
-        //     //     setOpenToolCreationDialog(true);
-        //     //   }
-        //   }
-        // />,
         <GridActionsCellItem
           icon={
             <Tooltip title={t('update')}>
@@ -136,18 +72,10 @@ const SearchToolManagementPage = () => {
           }
           color="primary"
           label={t('update')}
-          onClick={
-            () => {
-              setToolToUpdate(params.row);
-              setOpenToolUpdateDialog(true);
-            }
-            // navigate(
-            //   RoutePaths.UPDATE_PROMPT.replace(
-            //     `:${PathHolders.PROMPT_ID}`,
-            //     params.row.id
-            //   )
-            // )
-          }
+          onClick={() => {
+            setToolToUpdate(params.row);
+            setOpenToolUpdateDialog(true);
+          }}
         />,
         <GridActionsCellItem
           icon={
@@ -156,62 +84,140 @@ const SearchToolManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={
-            () => {
-              setToolIdToDelete(params.row.id);
-            }
-            // handleDeletePrompt(params.row.id)
-          }
+          onClick={() => handleDeleteTool(params.row.id)}
         />,
       ],
     },
   ];
-  //   const handleCreateTool = (newTool: Tool) => {
-  //     // setSnackbarMessage(t('createPromptSuccess'));
-  //     // setSnackbarSeverity('success');
-  //     // setSnackbarOpen(true);
-  //   };
 
-  const handleUpdateTool = (updatedTool: Tool) => {
-    setRows((prev) =>
-      prev.map((tool) => (tool.id === updatedTool.id ? updatedTool : tool))
-    );
-    // setSnackbarMessage(t('updatePromptSuccess'));
-    // setSnackbarSeverity('success');
-    // setSnackbarOpen(true);
+  // Fetch all tools
+  const [toolsQuery] = useState<GetToolQuery>({
+    offset: 0,
+    limit: 40,
+  });
+  const tools = useGetTools(toolsQuery!, {
+    skip: !toolsQuery,
+  });
+  useEffect(() => {
+    if (tools.isError) {
+      setSnackbarMessage(t('toolsLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [tools.isError, t]);
+
+  const [rows, setRows] = useState<Tool[]>([]);
+  useEffect(() => {
+    if (tools.data?.content) {
+      const mappedRows: Tool[] = tools.data.content.map((tool) => ({
+        id: tool.id,
+        name: tool.name,
+        type: tool.type,
+        max_results: tool.max_results,
+      }));
+      setRows(mappedRows);
+    }
+  }, [tools.data, t, setRows]);
+
+  //delete tool
+  const [deleteToolTrigger, deleteTool] = useDeleteTool();
+  useEffect(() => {
+    if (deleteTool.isError) {
+      setSnackbarMessage(t('deleteToolFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+    if (deleteTool.isSuccess) {
+      setSnackbarMessage(t('deleteToolSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+    }
+  }, [deleteTool.isError, deleteTool.isSuccess, t]);
+
+  const handleDeleteTool = (toolId: string) => {
+    setToolIdToDelete(toolId);
   };
-  //   //delete prompt
-  //   const [deletePromptTrigger, deletePrompt] = useDeletePrompt();
-  //   useEffect(() => {
-  //     if (deletePrompt.isError) {
-  //       setSnackbarMessage(t('deletePromptFailed'));
-  //       setSnackbarSeverity(SnackbarSeverity.ERROR);
-  //       setSnackbarOpen(true);
-  //     }
-  //     if (deletePrompt.isSuccess) {
-  //       setSnackbarMessage(t('deletePromptSuccess'));
-  //       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-  //       setSnackbarOpen(true);
-  //     }
-  //   }, [deletePrompt.isError, deletePrompt.isSuccess, t]);
 
-  //   const handleDeletePrompt = (promptId: string) => {
-  //     setPromptIdToDelete(promptId);
-  //   };
+  //create tool
+  const [createToolTrigger, createTool] = useCreateTool();
+  useEffect(() => {
+    if (createTool.isError) {
+      setSnackbarMessage(t('createToolFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [createTool.isError, createTool.isSuccess, t]);
+
+  const handleCreateToolSubmit = async (createTool: Tool) => {
+    try {
+      const newTool: CreateToolRequest = {
+        name: createTool.name,
+        type: createTool.type,
+        max_results: createTool.max_results,
+      };
+
+      await createToolTrigger(newTool);
+      setOpenToolCreationDialog(false);
+
+      setSnackbarMessage(t('createToolSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Creating tool  have error:', error);
+      setSnackbarMessage(t('createToolFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+      return;
+    }
+  };
+
+  //update tool
+  const [updateToolTrigger] = useUpdateTool();
+
+  const handleUpdateToolSubmit = async (updateTool: Tool) => {
+    setRows((prev) =>
+      prev.map((tool) => (tool.id === updateTool.id ? updateTool : tool))
+    );
+
+    if (!updateTool.name.trim()) {
+      setSnackbarMessage(t('toolNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    try {
+      await updateToolTrigger({
+        id: updateTool.id,
+        name: updateTool.name,
+        type: updateTool.type,
+        max_results: updateTool.max_results,
+      });
+
+      setSnackbarMessage(t('updateToolSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+      setOpenToolUpdateDialog(false);
+    } catch (error) {
+      setSnackbarMessage(t('updateToolFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+      console.error(error);
+    }
+  };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={2}>
-      {/* <AppSnackbar
+      <AppSnackbar
         open={snackbarOpen}
         message={snackbarMessage}
         severity={snackbarSeverity}
         autoHideDuration={HideDuration.FAST}
         onClose={() => setSnackbarOpen(false)}
-      /> */}
+      />
       <SearchToolCreateDialog
         open={openToolCreationDialog}
         onExit={() => setOpenToolCreationDialog(false)}
-        onCreate={() => {}}
+        onCreate={(tool) => handleCreateToolSubmit(tool)}
       />
 
       <SearchToolUpdateDialog
@@ -221,50 +227,41 @@ const SearchToolManagementPage = () => {
           setToolToUpdate(null);
           setOpenToolUpdateDialog(false);
         }}
-        onUpdate={handleUpdateTool}
+        onUpdate={(tool) => handleUpdateToolSubmit(tool)}
       />
       {toolIdToDelete && (
         <ConfirmDialog
           open={true}
           onClose={() => setToolIdToDelete(null)}
-          title={t('confirmPromptDeleteTitle')}
-          message={t('deletePromptConfirm')}
+          title={t('confirmToolDeleteTitle')}
+          message={t('deleteToolConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={
-            () => {}
-            // 	async () => {
-            //     await deletePromptTrigger(promptIdToDelete);
-            //     setPromptIdToDelete(null);
-            //   }
-          }
+          onDelete={async () => {
+            await deleteToolTrigger(toolIdToDelete);
+            setToolIdToDelete(null);
+          }}
         />
       )}
       <Typography variant="h4">{t('searchTools')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '90%' }}>
         <Button
           variant="contained"
-          onClick={
-            () => {
-              setOpenToolCreationDialog(true);
-            }
-            // navigate(RoutePaths.CREATE_PROMPT)
-          }
+          onClick={() => setOpenToolCreationDialog(true)}
         >
           {t('createSearchTool')}
         </Button>
       </Box>
-      {/* {prompts.isLoading || prompts.isFetching || deletePrompt.isLoading ? (
+      {tools.isLoading ||
+      tools.isFetching ||
+      deleteTool.isLoading ||
+      createTool.isLoading ? (
         <Loading />
       ) : (
         <Box sx={{ height: 500, width: '90%' }}>
           <DataGridTable rows={rows} columns={columns} />
         </Box>
-      )} */}
-
-      <Box sx={{ height: 500, width: '90%' }}>
-        <DataGridTable rows={rows} columns={columns} />
-      </Box>
+      )}
     </Stack>
   );
 };
