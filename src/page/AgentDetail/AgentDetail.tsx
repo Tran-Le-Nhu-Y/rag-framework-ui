@@ -10,7 +10,7 @@ export default function AgentDetailPage() {
   // Fake agent data
   const fakeAgent = {
     id: 'agent-001',
-    name: 'Shrimp Disease Advisor',
+    name: 'ShrimpAgent Alpha',
     description:
       'This agent helps detect white spot disease and gives treatment advice.',
     recognitionModel: 'White Spot Detector v1.0',

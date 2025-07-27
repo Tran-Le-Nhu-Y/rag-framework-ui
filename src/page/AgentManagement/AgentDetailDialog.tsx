@@ -23,9 +23,9 @@ export default function AgentDetailDialog({
 
   const fakeAgent = {
     id: 'agent-001',
-    name: 'Shrimp Disease Advisor',
+    name: 'ShrimpAgent Alpha',
     description:
-      'This agent helps detect white spot disease and gives treatment advice. This agent helps detect white spot disease and gives treatment advice. This agent helps detect white spot disease and gives treatment advice.',
+      'An agent for detecting white spot disease.This agent helps detect white spot disease and gives treatment advice.',
     recognitionModel: 'White Spot Detector v1.0',
     language: 'English',
     chatModel: 'Gemini-Pro-1.5',

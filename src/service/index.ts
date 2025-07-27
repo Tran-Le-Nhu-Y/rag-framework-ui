@@ -83,3 +83,18 @@ import {
   useGetTokenByIdMutation as useGetTokenById,
 } from './file';
 export { useGetFileById, useDeleteFile, usePostFile, useGetTokenById };
+
+import {
+  useCreateToolMutation as useCreateTool,
+  useGetToolByIdQuery as useGetToolById,
+  useGetToolsQuery as useGetTools,
+  useDeleteToolMutation as useDeleteTool,
+  useUpdateToolMutation as useUpdateTool,
+} from './tool';
+export {
+  useCreateTool,
+  useGetToolById,
+  useGetTools,
+  useDeleteTool,
+  useUpdateTool,
+};

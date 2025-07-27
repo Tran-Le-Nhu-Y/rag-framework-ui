@@ -17,8 +17,8 @@ const fakeAgents = [
     name: 'ShrimpAgent Alpha',
     description: 'An agent for detecting white spot disease.',
     language: 'en',
-    image_recognizer_id: 'model_1',
-    retriever_ids: ['retriever_1'],
+    image_recognizer_id: 'White Spot Detector v1.0',
+    retriever_ids: ['BM25 Retriever'],
     tool_ids: ['tool_1', 'tool_2'],
     mcp_server_ids: ['mcp_1'],
     llm_id: 'llm_1',
@@ -88,15 +88,15 @@ const AgentManagementPage = () => {
     },
     {
       field: 'image_recognizer_id',
-      headerName: t('imageRecognizer'),
-      width: 150,
+      headerName: t('cnnModelConfig'),
+      width: 180,
       align: 'center',
       headerAlign: 'center',
     },
     {
       field: 'retriever_ids',
-      headerName: t('retrievers'),
-      width: 150,
+      headerName: t('retrieverModelConfig'),
+      width: 180,
       align: 'center',
       headerAlign: 'center',
       renderCell: (params) => params.value?.join(', ') || '-',
@@ -106,7 +106,7 @@ const AgentManagementPage = () => {
       field: 'actions',
       headerName: t('actions'),
       type: 'actions',
-      width: 200,
+      width: 180,
       getActions: (params) => [
         <GridActionsCellItem
           icon={
