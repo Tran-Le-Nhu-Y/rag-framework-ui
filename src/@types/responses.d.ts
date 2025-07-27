@@ -85,3 +85,10 @@ declare interface FileResponse {
   mime_type?: string | null;
   created_at: string;
 }
+
+declare interface ToolResponse {
+  id: string;
+  name: string;
+  type: string;
+  max_results: number;
+}

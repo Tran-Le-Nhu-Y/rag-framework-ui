@@ -31,3 +31,7 @@ declare interface GetBM25Query {
   offset?: number?;
   limit?: number?;
 }
+declare interface GetToolQuery {
+  offset?: number?;
+  limit?: number?;
+}

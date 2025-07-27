@@ -126,3 +126,16 @@ declare interface UpdateBM25FileOnlyRequest {
   id: string;
   removal_words_file_id: string;
 }
+
+declare interface CreateToolRequest {
+  name: string;
+  type: string;
+  max_results: number;
+}
+
+declare interface UpdateToolRequest {
+  id: string;
+  name: string;
+  type: string;
+  max_results: number;
+}
