@@ -219,46 +219,6 @@ export default function CNNModelCreationPage() {
     }
   };
 
-  function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    const file = files[0];
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      try {
-        const content = event.target?.result;
-        if (!content || typeof content !== 'string') return;
-
-        const parsed = JSON.parse(content);
-
-        // Validate format: must be an array of { name: string, description: string }
-        if (
-          Array.isArray(parsed) &&
-          parsed.every(
-            (item) =>
-              typeof item.name === 'string' &&
-              typeof item.description === 'string'
-          )
-        ) {
-          setOutputClasses(parsed);
-        } else {
-          setSnackbarMessage(t('invalidOutputClassFormat'));
-          setSnackbarSeverity(SnackbarSeverity.ERROR);
-          setSnackbarOpen(true);
-        }
-      } catch (error) {
-        console.log(error);
-        setSnackbarMessage(t('invalidFileFormat'));
-        setSnackbarSeverity(SnackbarSeverity.ERROR);
-        setSnackbarOpen(true);
-      }
-    };
-
-    reader.readAsText(file);
-  }
-
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={1}>
       <Typography variant="h4">{t('createRecognitionModel')}</Typography>
@@ -345,7 +305,6 @@ export default function CNNModelCreationPage() {
               display="flex"
               flexWrap="wrap"
               alignItems="center"
-              gap={2}
               sx={{
                 position: 'absolute',
                 top: 0,
@@ -357,67 +316,66 @@ export default function CNNModelCreationPage() {
             >
               <Typography variant="body1">
                 <strong>{t('outputClassRecognitionModelDescription')}</strong>
-                <IconButton color="primary" onClick={handleOpenHelpDialog}>
-                  <HelpOutlineIcon />
-                </IconButton>
+                <Tooltip title={t('configFileInstructionTitle')}>
+                  <IconButton color="primary" onClick={handleOpenHelpDialog}>
+                    <HelpOutlineIcon />
+                  </IconButton>
+                </Tooltip>
                 :
               </Typography>
-              {/* <InputFileUpload
-                onFilesChange={(files) => {
-                  if (!files || files.length === 0) return;
 
-                  const file = files[0];
-                  const reader = new FileReader();
-
-                  reader.onload = (event) => {
-                    try {
-                      const content = event.target?.result;
-                      if (!content || typeof content !== 'string') return;
-
-                      const parsed = JSON.parse(content);
-
-                      // Validate format: must be an array of { name: string, description: string }
-                      if (
-                        Array.isArray(parsed) &&
-                        parsed.every(
-                          (item) =>
-                            typeof item.name === 'string' &&
-                            typeof item.description === 'string'
-                        )
-                      ) {
-                        setOutputClasses(parsed);
-                      } else {
-                        setSnackbarMessage(t('invalidOutputClassFormat'));
-                        setSnackbarSeverity(SnackbarSeverity.ERROR);
-                        setSnackbarOpen(true);
-                      }
-                    } catch (error) {
-                      console.log(error);
-                      setSnackbarMessage(t('invalidFileFormat'));
-                      setSnackbarSeverity(SnackbarSeverity.ERROR);
-                      setSnackbarOpen(true);
-                    }
-                  };
-
-                  reader.readAsText(file);
-                }}
-                acceptedFileTypes={['.json', '.txt']}
-              /> */}
               <label htmlFor="upload-output-class-file">
                 <input
                   id="upload-output-class-file"
                   type="file"
                   accept=".json,.txt"
                   hidden
-                  onChange={handleFileUpload}
+                  onChange={(event) => {
+                    const files = event.target.files;
+                    if (!files || files.length === 0) return;
+
+                    const file = files[0];
+                    const reader = new FileReader();
+
+                    reader.onload = (event) => {
+                      try {
+                        const content = event.target?.result;
+                        if (!content || typeof content !== 'string') return;
+
+                        const parsed = JSON.parse(content);
+
+                        // Validate format: must be an array of { name: string, description: string }
+                        if (
+                          Array.isArray(parsed) &&
+                          parsed.every(
+                            (item) =>
+                              typeof item.name === 'string' &&
+                              typeof item.description === 'string'
+                          )
+                        ) {
+                          setOutputClasses(parsed);
+                        } else {
+                          setSnackbarMessage(t('invalidOutputClassFormat'));
+                          setSnackbarSeverity(SnackbarSeverity.ERROR);
+                          setSnackbarOpen(true);
+                        }
+                      } catch (error) {
+                        console.log(error);
+                        setSnackbarMessage(t('invalidFileFormat'));
+                        setSnackbarSeverity(SnackbarSeverity.ERROR);
+                        setSnackbarOpen(true);
+                      }
+                    };
+                    // Reset lại input sau khi load
+                    event.target.value = '';
+                    reader.readAsText(file);
+                  }}
                 />
-                <Button
-                  variant="outlined"
-                  component="span"
-                  startIcon={<UploadFileIcon />}
-                >
-                  {t('uploadOutputClassFile')}
-                </Button>
+                <Tooltip title={t('uploadOutputClassFile')}>
+                  <IconButton component="span">
+                    <UploadFileIcon color="primary" />
+                  </IconButton>
+                </Tooltip>
               </label>
             </Box>
 
@@ -498,6 +456,10 @@ export default function CNNModelCreationPage() {
                       fullWidth
                       size="small"
                       type="number"
+                      inputProps={{
+                        min: 0,
+                        step: 1,
+                      }}
                       label="Target Size"
                       value={config.target_size}
                       onChange={(e) => {
@@ -527,6 +489,11 @@ export default function CNNModelCreationPage() {
                     <TextField
                       fullWidth
                       size="small"
+                      type="number"
+                      inputProps={{
+                        min: 0,
+                        step: 1,
+                      }}
                       label="Max Size"
                       value={config.max_size}
                       onChange={(e) => {
@@ -623,7 +590,7 @@ export default function CNNModelCreationPage() {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleCreateSubmit()}
+            onClick={handleCreateSubmit}
           >
             {t('confirm')}
           </Button>

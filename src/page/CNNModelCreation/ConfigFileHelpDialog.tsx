@@ -33,8 +33,8 @@ export default function ConfigFileHelpDialog({
                 marginTop: '10px',
               }}
             >
-              {`{
-  "classes": [
+              {`
+  "[
     {
       "name": "Tên lớp 1",
       "description": "Mô tả lớp 1"
@@ -44,7 +44,7 @@ export default function ConfigFileHelpDialog({
       "description": "Mô tả lớp 2"
     }
   ]
-}`}
+`}
             </pre>
             <Typography variant="body2" mt={2}>
               🔹 <strong>"name"</strong>: Tên nhãn (label) của lớp mô hình nhận

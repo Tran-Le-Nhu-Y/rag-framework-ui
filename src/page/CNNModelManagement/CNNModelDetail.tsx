@@ -105,28 +105,6 @@ export default function CNNModelDetailDialog({
 
           <Stack direction={'row'} spacing={2} alignItems={'center'}>
             <Typography fontWeight="bold">{t('modelFile')}:</Typography>
-            {/* <Paper
-              variant="outlined"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                p: 1.5,
-                pl: 2,
-                backgroundColor: '#f9f9f9',
-              }}
-            >
-              <DescriptionIcon color="action" />
-              <Typography flexGrow={1}>{modelFileDetail.data?.name}</Typography>
-              <Tooltip title={t('download')}>
-                <IconButton
-                  color="primary"
-                  onClick={() => handleDownloadFile()}
-                >
-                  <DownloadIcon />
-                </IconButton>
-              </Tooltip>
-            </Paper> */}
 
             {modelFileDetail.isLoading ? (
               <Typography variant="body1">{t('loading')}</Typography>
@@ -142,43 +120,6 @@ export default function CNNModelDetailDialog({
             )}
           </Stack>
 
-          {/* Class description file (if uploaded) */}
-          {/* {recognizer.classDescriptionFileName && (
-            <Stack direction={'row'} spacing={2} alignItems={'center'}>
-              <Typography fontWeight="bold">
-                {t('classDescriptionFile')}:
-              </Typography>
-              <Paper
-                variant="outlined"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 2,
-                  p: 1,
-                  pl: 2,
-                  backgroundColor: '#f9f9f9',
-                }}
-              >
-                <DescriptionIcon color="action" />
-                <Typography flexGrow={1}>
-                  {recognizer.classDescriptionFileName}
-                </Typography>
-                <Link
-                  href={recognizer.classDescriptionFileUrl}
-                  target="_blank"
-                  rel="noopener"
-                  underline="none"
-                >
-                  <Tooltip title={t('download')}>
-                    <IconButton color="primary">
-                      <DownloadIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Link>
-              </Paper>
-            </Stack>
-          )} */}
-
           {/* Classes */}
 
           {recognizer.output_classes && (
@@ -189,8 +130,8 @@ export default function CNNModelDetailDialog({
               </Typography>
               <Stack pl={2} spacing={1}>
                 {recognizer.output_classes.map((cls, index) => (
-                  <Stack key={index} direction="row" spacing={2}>
-                    <Typography>{`- ${cls.name}`}</Typography>
+                  <Stack key={index} direction="row" spacing={1}>
+                    <Typography>{`- ${cls.name}`}:</Typography>
                     <Typography color="text.secondary">
                       {cls.description}
                     </Typography>

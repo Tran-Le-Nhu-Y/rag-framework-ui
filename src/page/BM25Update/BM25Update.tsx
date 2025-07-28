@@ -110,6 +110,7 @@ export default function BM25UpdatePage() {
     }
   }, [updateBM25.isError, updateBM25.isSuccess, navigate, t]);
 
+  const oldFileIdToDelete = fileDetail.data?.id;
   const [newFile, setNewFile] = useState<File | null>(null); // New File => upload
   const [isRemoveOldFile, setIsRemoveOldFile] = useState(false); // remove file
   const [deleteFileTrigger] = useDeleteFile();
@@ -132,8 +133,8 @@ export default function BM25UpdatePage() {
     try {
       let updatedFileId = bm25.removal_words_file_id;
       // Step 1: Delete old file (if any)
-      if (isRemoveOldFile && bm25.removal_words_file_id) {
-        await deleteFileTrigger(bm25.removal_words_file_id).unwrap();
+      if (isRemoveOldFile) {
+        await deleteFileTrigger(oldFileIdToDelete!).unwrap();
         updatedFileId = '';
       }
 
