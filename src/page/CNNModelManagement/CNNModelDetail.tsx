@@ -7,60 +7,65 @@ import {
   Divider,
   Stack,
   Typography,
-  Link,
-  Paper,
-  IconButton,
-  Tooltip,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import DescriptionIcon from '@mui/icons-material/Description';
-import DownloadIcon from '@mui/icons-material/Download';
-
-// Fake data
-const fakeModel = {
-  name: 'AnimalClassifierV1',
-  description: 'Model to classify animal images into various categories',
-  type: 'CNN',
-  minProbability: 0.6,
-  maxResults: 10,
-  modelFileName: 'animal_model.tflite',
-  modelFileUrl: '/downloads/animal_model.tflite',
-  classDescriptionFileName: 'classes_description.txt',
-  classDescriptionFileUrl: '/downloads/classes_description.txt',
-  classes: [
-    { className: 'Cat', classDescription: 'Small domesticated feline' },
-    { className: 'Dog', classDescription: 'Domestic dog, canine' },
-    { className: 'Elephant', classDescription: 'Large herbivorous mammal' },
-  ],
-  preprocessing: [
-    {
-      type: 'resize',
-      targetsize: '224x224',
-      interpolation: 'bilinear',
-      maxsize: '256x256',
-    },
-    {
-      type: 'pad',
-      padding: '10',
-      fill: 'black',
-      mode: 'constant',
-    },
-    {
-      type: 'grayscale',
-      num_output_channels: '1',
-    },
-  ],
-};
+import type { ImageRecognizer } from '../../@types/entities';
+import { useGetFileById, useGetTokenById } from '../../service';
+import { useState, useEffect } from 'react';
+import { AppSnackbar } from '../../component';
+import { downloadFile } from '../../service/api';
+import { SnackbarSeverity, HideDuration } from '../../util';
+import { FilePreviewCard } from '../../component/FilePreviewCard';
 
 export default function CNNModelDetailDialog({
   open,
+  recognizer,
   onExit,
 }: {
   open: boolean;
+  recognizer: ImageRecognizer | null;
   onExit: () => void;
 }) {
   const { t } = useTranslation();
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
+  const modelFileId = recognizer?.model_file_id ?? '';
+  const modelFileDetail = useGetFileById(modelFileId!, {
+    skip: !modelFileId,
+  });
+  useEffect(() => {
+    if (modelFileDetail.isError) {
+      setSnackbarMessage(t('fileLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [modelFileDetail, modelFileDetail.data, modelFileDetail.isError, t]);
+
+  const [getTokenById] = useGetTokenById();
+  const handleDownloadFile = async () => {
+    if (!modelFileId || !modelFileDetail.data) return;
+
+    try {
+      const token = await getTokenById(modelFileId).unwrap();
+
+      const link = document.createElement('a');
+      link.href = downloadFile(token);
+      link.download = modelFileDetail.data.name;
+      link.setAttribute('target', '_blank');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      setSnackbarMessage(t('fileLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  };
+  if (!recognizer || !recognizer.preprocessing_configs) return null;
   return (
     <Dialog open={open} onClose={onExit} fullWidth maxWidth="sm">
       <DialogTitle sx={{ textAlign: 'center' }}>
@@ -71,21 +76,28 @@ export default function CNNModelDetailDialog({
 
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1, mb: 1 }}>
+          <AppSnackbar
+            open={snackbarOpen}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+            autoHideDuration={HideDuration.FAST}
+            onClose={() => setSnackbarOpen(false)}
+          />
           {/* Basic Info */}
           <Stack direction="row" spacing={2}>
             <Typography fontWeight="bold">
               {t('recognitionModelName')}:
             </Typography>
-            <Typography>{fakeModel.name}</Typography>
+            <Typography>{recognizer.name}</Typography>
           </Stack>
 
           <Stack direction="row" spacing={2}>
             <Typography fontWeight="bold">{t('minProbability')}:</Typography>
-            <Typography>{fakeModel.minProbability}</Typography>
+            <Typography>{recognizer.min_probability}</Typography>
           </Stack>
           <Stack direction="row" spacing={2}>
             <Typography fontWeight="bold">{t('maxResults')}:</Typography>
-            <Typography>{fakeModel.maxResults}</Typography>
+            <Typography>{recognizer.max_results}</Typography>
           </Stack>
 
           {/* Model file */}
@@ -93,7 +105,7 @@ export default function CNNModelDetailDialog({
 
           <Stack direction={'row'} spacing={2} alignItems={'center'}>
             <Typography fontWeight="bold">{t('modelFile')}:</Typography>
-            <Paper
+            {/* <Paper
               variant="outlined"
               sx={{
                 display: 'flex',
@@ -105,24 +117,33 @@ export default function CNNModelDetailDialog({
               }}
             >
               <DescriptionIcon color="action" />
-              <Typography flexGrow={1}>{fakeModel.modelFileName}</Typography>
-              <Link
-                href={fakeModel.modelFileName}
-                target="_blank"
-                rel="noopener"
-                underline="none"
-              >
-                <Tooltip title={t('download')}>
-                  <IconButton color="primary">
-                    <DownloadIcon />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-            </Paper>
+              <Typography flexGrow={1}>{modelFileDetail.data?.name}</Typography>
+              <Tooltip title={t('download')}>
+                <IconButton
+                  color="primary"
+                  onClick={() => handleDownloadFile()}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+            </Paper> */}
+
+            {modelFileDetail.isLoading ? (
+              <Typography variant="body1">{t('loading')}</Typography>
+            ) : modelFileDetail.data ? (
+              <FilePreviewCard
+                file={modelFileDetail.data}
+                onDownload={handleDownloadFile}
+              />
+            ) : (
+              <Typography variant="body1" fontStyle="italic">
+                N/A
+              </Typography>
+            )}
           </Stack>
 
           {/* Class description file (if uploaded) */}
-          {fakeModel.classDescriptionFileName && (
+          {/* {recognizer.classDescriptionFileName && (
             <Stack direction={'row'} spacing={2} alignItems={'center'}>
               <Typography fontWeight="bold">
                 {t('classDescriptionFile')}:
@@ -140,10 +161,10 @@ export default function CNNModelDetailDialog({
               >
                 <DescriptionIcon color="action" />
                 <Typography flexGrow={1}>
-                  {fakeModel.classDescriptionFileName}
+                  {recognizer.classDescriptionFileName}
                 </Typography>
                 <Link
-                  href={fakeModel.classDescriptionFileUrl}
+                  href={recognizer.classDescriptionFileUrl}
                   target="_blank"
                   rel="noopener"
                   underline="none"
@@ -156,22 +177,22 @@ export default function CNNModelDetailDialog({
                 </Link>
               </Paper>
             </Stack>
-          )}
+          )} */}
 
           {/* Classes */}
 
-          {!fakeModel.classDescriptionFileName && (
+          {recognizer.output_classes && (
             <>
               <Divider />
               <Typography fontWeight="bold">
                 {t('outputClassRecognitionModelDescription')}:
               </Typography>
               <Stack pl={2} spacing={1}>
-                {fakeModel.classes.map((cls, index) => (
+                {recognizer.output_classes.map((cls, index) => (
                   <Stack key={index} direction="row" spacing={2}>
-                    <Typography>{`- ${cls.className}`}</Typography>
+                    <Typography>{`- ${cls.name}`}</Typography>
                     <Typography color="text.secondary">
-                      {cls.classDescription}
+                      {cls.description}
                     </Typography>
                   </Stack>
                 ))}
@@ -185,13 +206,13 @@ export default function CNNModelDetailDialog({
             {t('preprocessing_configs')}:
           </Typography>
           <Stack pl={2} spacing={1}>
-            {fakeModel.preprocessing.map((config, index) => {
+            {recognizer.preprocessing_configs.map((config, index) => {
               switch (config.type) {
                 case 'resize':
                   return (
                     <Typography key={index}>
-                      • Resize → Target: {config.targetsize}, Max:{' '}
-                      {config.maxsize}, Interpolation: {config.interpolation}
+                      • Resize → Target: {config.target_size}, Max:{' '}
+                      {config.max_size}, Interpolation: {config.interpolation}
                     </Typography>
                   );
                 case 'pad':

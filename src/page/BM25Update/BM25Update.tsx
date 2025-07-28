@@ -111,7 +111,7 @@ export default function BM25UpdatePage() {
   }, [updateBM25.isError, updateBM25.isSuccess, navigate, t]);
 
   const [newFile, setNewFile] = useState<File | null>(null); // New File => upload
-  const [isRemoveOldFile, setIsRemoveOldFile] = useState(false); // delete file
+  const [isRemoveOldFile, setIsRemoveOldFile] = useState(false); // remove file
   const [deleteFileTrigger] = useDeleteFile();
   const handleUpdateBM25Submit = async () => {
     // Validate required fields

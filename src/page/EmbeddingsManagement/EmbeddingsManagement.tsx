@@ -1,5 +1,10 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import { AppSnackbar, ConfirmDialog, DataGridTable } from '../../component';
+import {
+  AppSnackbar,
+  ConfirmDialog,
+  DataGridTable,
+  Loading,
+} from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
@@ -116,7 +121,7 @@ const EmbeddingsManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteChatModel(params.row.id)}
+          onClick={() => handleDeleteEmbeddingModel(params.row.id)}
         />,
       ],
     },
@@ -140,7 +145,7 @@ const EmbeddingsManagementPage = () => {
     }
   }, [embeddingModel.data?.content, embeddingModel.isError, t]);
 
-  //delete chat model
+  //delete embedding model
   const [deleteEmbeddingModelTrigger, deleteEmbeddingModel] =
     useDeleteEmbeddingModel();
   useEffect(() => {
@@ -156,7 +161,7 @@ const EmbeddingsManagementPage = () => {
     }
   }, [deleteEmbeddingModel.isError, deleteEmbeddingModel.isSuccess, t]);
 
-  const handleDeleteChatModel = (embeddingModelId: string) => {
+  const handleDeleteEmbeddingModel = (embeddingModelId: string) => {
     setEmbeddingModelIdToDelete(embeddingModelId);
   };
 
@@ -192,9 +197,16 @@ const EmbeddingsManagementPage = () => {
           {t('embeddingCreation')}
         </Button>
       </Box>
-      <Box sx={{ height: 400, width: '90%' }}>
-        <DataGridTable rows={rows} columns={columns} />
-      </Box>
+
+      {embeddingModel.isLoading ||
+      embeddingModel.isFetching ||
+      deleteEmbeddingModel.isLoading ? (
+        <Loading />
+      ) : (
+        <Box sx={{ height: 400, width: '90%' }}>
+          <DataGridTable rows={rows} columns={columns} />
+        </Box>
+      )}
       <EmbeddingsDetailDialog
         open={openEmbeddingModelDetailDialog}
         onExit={() => {

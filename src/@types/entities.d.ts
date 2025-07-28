@@ -151,7 +151,7 @@ declare interface ImagePad {
 
 declare interface ImageGrayscale {
   type: 'grayscale';
-  num_output_channels: 1 | 3;
+  num_output_channels: number;
 }
 
 declare interface Tool {
