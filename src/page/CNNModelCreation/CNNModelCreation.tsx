@@ -11,145 +11,235 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import { isValidLength, TextLength } from '../../util';
-import { InputFileUpload, SelectForm } from '../../component';
+import { useEffect, useState } from 'react';
+import {
+  HideDuration,
+  isValidLength,
+  RoutePaths,
+  SnackbarSeverity,
+  TextLength,
+} from '../../util';
+import { AppSnackbar, InputFileUpload, SelectForm } from '../../component';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ConfigFileHelpDialog from './ConfigFileHelpDialog';
 import type { Data } from '../../component/SelectForm';
+import { useCreateRecognizer, usePostFile } from '../../service';
+import type {
+  ImageGrayscale,
+  ImagePad,
+  ImageRecognizer,
+  ImageResize,
+  OutputClass,
+} from '../../@types/entities';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
-type DynamicField = {
-  className: string;
-  classDescription: string;
-};
-// type PreprocessingType = 'ImageResize' | 'ImagePad' | 'ImageGrayscale';
-
-type ImageResizeConfig = {
-  type: 'resize';
-  targetsize: string;
-  interpolation: string;
-  maxsize: string;
-};
-
-type ImagePadConfig = {
-  type: 'pad';
-  padding: string;
-  fill: string;
-  mode: string;
-};
-
-type ImageGrayscaleConfig = {
-  type: 'grayscale';
-  num_output_channels: string;
-};
 type PreprocessingConfig =
-  | ImageResizeConfig
-  | ImagePadConfig
-  | ImageGrayscaleConfig;
+  | Partial<ImageResize>
+  | Partial<ImagePad>
+  | Partial<ImageGrayscale>;
+
+const preprocessingTypes: Data[] = [
+  { label: 'ImageResize', value: 'resize' },
+  { label: 'ImagePad', value: 'pad' },
+  { label: 'ImageGrayscale', value: 'grayscale' },
+];
+
+const interpolationTypes: Data[] = [
+  { label: 'Nearest', value: 'nearest' },
+  { label: 'Nearest Exact', value: 'nearest-exact' },
+  { label: 'Bilinear', value: 'bilinear' },
+  { label: 'Bicubic', value: 'bicubic' },
+];
+
+const modes: Data[] = [
+  { label: 'Constant', value: 'constant' },
+  { label: 'Edge', value: 'edge' },
+  { label: 'Reflect', value: 'reflect' },
+  { label: 'Symmetric', value: 'symmetric' },
+];
+const numOutputChannels = [
+  { label: '1', value: '1' },
+  { label: '3', value: '3' },
+];
 
 export default function CNNModelCreationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [minProbability, setMinProbability] = useState('');
-  const [maxResults, setMaxResults] = useState('');
-  const [dynamicFields, setDynamicFields] = useState<DynamicField[]>([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
+
+  const [selectedPreprocessingType, setSelectedPreprocessingType] =
+    useState<Data | null>(null);
+  const [outputClasses, setOutputClasses] = useState<OutputClass[]>([]);
   const [openHelpDialog, setOpenHelpDialog] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [preprocessingConfigs, setPreprocessingConfigs] = useState<
     PreprocessingConfig[]
   >([]);
+  const [newFile, setNewFile] = useState<File | null>(null);
+  const [imageRecognizer, setImageRecognizer] = useState<ImageRecognizer>({
+    id: '',
+    name: '',
+    type: 'image',
+    model_file_id: '',
+    min_probability: 0,
+    max_results: 4,
+    output_classes: [
+      {
+        name: '',
+        description: '',
+      },
+    ],
+    preprocessing_configs: [
+      {
+        type: 'resize',
+        target_size: 0,
+        interpolation: 'bilinear',
+        max_size: 0,
+      },
+      {
+        type: 'pad',
+        padding: 0,
+        fill: 0,
+        mode: 'constant',
+      },
+      {
+        type: 'grayscale',
+        num_output_channels: 3,
+      },
+    ],
+  });
 
-  const preprocessingTypes: Data[] = [
-    { label: 'ImageResize', value: 'resize' },
-    { label: 'ImagePad', value: 'pad' },
-    { label: 'ImageGrayscale', value: 'grayscale' },
-  ];
-
-  const interpolationTypes: Data[] = [
-    { label: 'Nearest', value: 'nearest' },
-    { label: 'Nearest Exact', value: 'nearest-exact' },
-    { label: 'Bilinear', value: 'bilinear' },
-    { label: 'Bicubic', value: 'bicubic' },
-  ];
-
-  const modes: Data[] = [
-    { label: 'constant', value: 'constant' },
-    { label: 'edge', value: 'edge' },
-    { label: 'reflect', value: 'reflect' },
-    { label: 'symmetric', value: 'symmetric' },
-  ];
   const availableTypes = preprocessingTypes.filter(
     (type) => !preprocessingConfigs.some((config) => config.type === type.value)
   );
-  const handleAddPreprocessing = (selected: Data | null) => {
-    if (!selected) return;
-
-    const newConfig: PreprocessingConfig =
-      selected.value === 'resize'
-        ? {
-            type: 'resize',
-            targetsize: '',
-            interpolation: '',
-            maxsize: '',
-          }
-        : selected.value === 'pad'
-        ? { type: 'pad', padding: '', fill: '', mode: '' }
-        : { type: 'grayscale', num_output_channels: '' };
-
-    setPreprocessingConfigs((prev) => [...prev, newConfig]);
-    setOpenDialog(false);
-  };
 
   const handleAddField = () => {
-    setDynamicFields((prev) => [
-      ...prev,
-      { className: '', classDescription: '' },
-    ]);
+    setOutputClasses((prev) => [...prev, { name: '', description: '' }]);
   };
   const handleRemoveField = (index: number) => {
-    setDynamicFields((prev) => prev.filter((_, i) => i !== index));
+    setOutputClasses((prev) => prev.filter((_, i) => i !== index));
   };
   const handleFieldChange = (
     index: number,
-    key: 'className' | 'classDescription',
+    key: 'name' | 'description',
     value: string
   ) => {
-    const updatedFields = [...dynamicFields];
+    const updatedFields = [...outputClasses];
     updatedFields[index][key] = value;
-    setDynamicFields(updatedFields);
+    setOutputClasses(updatedFields);
   };
 
-  const handleCancel = () => {
-    navigate(-1);
-  };
   const handleOpenHelpDialog = () => {
     setOpenHelpDialog(true);
+  };
+
+  const updateFieldRecoginzer = (key: string, value: string) => {
+    setImageRecognizer((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const [createRecognizerTrigger, createRecognizer] = useCreateRecognizer();
+  useEffect(() => {
+    if (createRecognizer.isError) {
+      setSnackbarMessage(t('createCNNFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [createRecognizer.isError, t]);
+
+  const [postFile] = usePostFile();
+  const handleCreateSubmit = async () => {
+    // Validate required fields
+    if (!imageRecognizer.name.trim()) {
+      setSnackbarMessage(t('cnnNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+
+    if (!newFile && !imageRecognizer.model_file_id) {
+      setSnackbarMessage(t('cnnModelRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!outputClasses || outputClasses.length === 0) {
+      setSnackbarMessage(t('outputClassRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    for (let i = 0; i < outputClasses.length; i++) {
+      const output = outputClasses[i];
+      if (!output.name.trim()) {
+        setSnackbarMessage(t('outputClassNameRequired'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return;
+      }
+      if (output.description.trim().length < 10) {
+        setSnackbarMessage(t('outputClassDescriptionRequired'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return;
+      }
+    }
+    try {
+      let fileId = imageRecognizer.model_file_id;
+
+      if (newFile && !fileId) {
+        fileId = await postFile({ file: newFile }).unwrap();
+      }
+
+      const payload: CreateImageRecognizerRequest = {
+        name: imageRecognizer.name,
+        min_probability: imageRecognizer.min_probability,
+        max_results: imageRecognizer.max_results,
+        model_file_id: fileId,
+        type: imageRecognizer.type,
+        output_classes: outputClasses,
+        preprocessing_configs: preprocessingConfigs,
+      };
+      await createRecognizerTrigger(payload);
+      setSnackbarMessage(t('createCNNSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+      setTimeout(() => {
+        navigate(RoutePaths.CNN);
+      }, 1000);
+    } catch {
+      setSnackbarMessage(t('createCNNFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
   };
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={1}>
       <Typography variant="h4">{t('createRecognitionModel')}</Typography>
       <Stack spacing={1} width="100%">
-        <Stack direction={'row'} spacing={2} width="100%">
+        <Stack direction={'row'} spacing={2} width="100%" alignItems={'center'}>
           <TextField
             fullWidth
             size="small"
-            helperText={t('hyperTextMedium')}
+            //helperText={t('hyperTextMedium')}
             label={t('recognitionModelName')}
-            value={name}
+            value={imageRecognizer.name}
             onChange={(e) => {
               const newValue = e.target.value;
-              if (isValidLength(newValue, TextLength.MEDIUM)) setName(newValue);
+              if (isValidLength(newValue, TextLength.MEDIUM))
+                updateFieldRecoginzer('name', newValue);
             }}
             placeholder={`${t('enter')} ${t(
               'recognitionModelName'
             ).toLowerCase()}...`}
           />
-          <Stack direction={'row'} spacing={2} width="60%">
+          <Stack direction={'row'} spacing={2} width="100%" alignItems="center">
             <TextField
               fullWidth
               size="small"
@@ -160,8 +250,10 @@ export default function CNNModelCreationPage() {
                 max: 1,
                 step: 0.1,
               }}
-              value={minProbability}
-              onChange={(e) => setMinProbability(e.target.value)}
+              value={imageRecognizer.min_probability}
+              onChange={(e) =>
+                updateFieldRecoginzer('min_probability', e.target.value)
+              }
               placeholder={`${t('enter')} ${t(
                 'minProbability'
               ).toLowerCase()}...`}
@@ -176,16 +268,22 @@ export default function CNNModelCreationPage() {
                 max: 50,
                 step: 1,
               }}
-              value={maxResults}
-              onChange={(e) => setMaxResults(e.target.value)}
+              value={imageRecognizer.max_results}
+              onChange={(e) =>
+                updateFieldRecoginzer('max_results', e.target.value)
+              }
               placeholder={`${t('enter')} ${t('maxResults').toLowerCase()}...`}
             />
             <Stack>
               <Tooltip title={t('add_mageRecognitionModelConfigFile')}>
                 <span>
                   <InputFileUpload
-                    onFilesChange={() => {}}
-                    acceptedFileTypes={['.pt', '.pth']}
+                    onFilesChange={(files) => {
+                      if (!files || files.length === 0) return;
+                      setNewFile(files[0]);
+                    }}
+                    // acceptedFileTypes={['.pt', '.pth']}
+                    acceptedFileTypes={['.txt']}
                   />
                 </span>
               </Tooltip>
@@ -207,7 +305,6 @@ export default function CNNModelCreationPage() {
               display="flex"
               flexWrap="wrap"
               alignItems="center"
-              gap={2}
               sx={{
                 position: 'absolute',
                 top: 0,
@@ -219,39 +316,87 @@ export default function CNNModelCreationPage() {
             >
               <Typography variant="body1">
                 <strong>{t('outputClassRecognitionModelDescription')}</strong>
-                <IconButton color="primary" onClick={handleOpenHelpDialog}>
-                  <HelpOutlineIcon />
-                </IconButton>
+                <Tooltip title={t('configFileInstructionTitle')}>
+                  <IconButton color="primary" onClick={handleOpenHelpDialog}>
+                    <HelpOutlineIcon />
+                  </IconButton>
+                </Tooltip>
                 :
               </Typography>
-              <InputFileUpload
-                onFilesChange={() => {}}
-                acceptedFileTypes={['.json']}
-              />
+
+              <label htmlFor="upload-output-class-file">
+                <input
+                  id="upload-output-class-file"
+                  type="file"
+                  accept=".json,.txt"
+                  hidden
+                  onChange={(event) => {
+                    const files = event.target.files;
+                    if (!files || files.length === 0) return;
+
+                    const file = files[0];
+                    const reader = new FileReader();
+
+                    reader.onload = (event) => {
+                      try {
+                        const content = event.target?.result;
+                        if (!content || typeof content !== 'string') return;
+
+                        const parsed = JSON.parse(content);
+
+                        // Validate format: must be an array of { name: string, description: string }
+                        if (
+                          Array.isArray(parsed) &&
+                          parsed.every(
+                            (item) =>
+                              typeof item.name === 'string' &&
+                              typeof item.description === 'string'
+                          )
+                        ) {
+                          setOutputClasses(parsed);
+                        } else {
+                          setSnackbarMessage(t('invalidOutputClassFormat'));
+                          setSnackbarSeverity(SnackbarSeverity.ERROR);
+                          setSnackbarOpen(true);
+                        }
+                      } catch (error) {
+                        console.log(error);
+                        setSnackbarMessage(t('invalidFileFormat'));
+                        setSnackbarSeverity(SnackbarSeverity.ERROR);
+                        setSnackbarOpen(true);
+                      }
+                    };
+                    // Reset lại input sau khi load
+                    event.target.value = '';
+                    reader.readAsText(file);
+                  }}
+                />
+                <Tooltip title={t('uploadOutputClassFile')}>
+                  <IconButton component="span">
+                    <UploadFileIcon color="primary" />
+                  </IconButton>
+                </Tooltip>
+              </label>
             </Box>
 
-            {dynamicFields.map((field, index) => (
+            {outputClasses.map((field, index) => (
               <Stack key={index} direction="row" spacing={2} pb={2}>
                 <Stack direction={'row'} spacing={1} sx={{ width: '100%' }}>
                   <TextField
                     label={t('className')}
                     size="small"
-                    value={field.className}
+                    value={field.name}
                     onChange={(e) =>
-                      handleFieldChange(index, 'className', e.target.value)
+                      handleFieldChange(index, 'name', e.target.value)
                     }
                     sx={{ width: '30%' }}
                   />
                   <TextField
                     label={t('classDescription')}
-                    value={field.classDescription}
+                    value={field.description}
                     size="small"
                     onChange={(e) =>
-                      handleFieldChange(
-                        index,
-                        'classDescription',
-                        e.target.value
-                      )
+                      handleFieldChange(index, 'description', e.target.value)
                     }
                     sx={{ width: '70%' }}
                   />
@@ -288,123 +433,6 @@ export default function CNNModelCreationPage() {
             </IconButton>
           </Stack>
           <Stack spacing={1}>
-            {/* {preprocessingConfigs.map((config, index) => (
-              <Box
-                key={index}
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <IconButton
-                  color="error"
-                  aria-label="delete-preprocessing"
-                  onClick={() => {
-                    setPreprocessingConfigs((prev) =>
-                      prev.filter((_, i) => i !== index)
-                    );
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-                {config.type === 'resize' && (
-                  <Stack>
-                    <Typography variant="subtitle1">Image Resize:</Typography>
-                    <Stack spacing={1} direction={'row'} width={'100%'}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label="Target Size"
-                        value={config.targetsize}
-                        onChange={(e) => {
-                          const updated = [...preprocessingConfigs];
-                          (updated[index] as ImageResizeConfig).targetsize =
-                            e.target.value;
-                          setPreprocessingConfigs(updated);
-                        }}
-                      />
-                      <SelectForm
-                        label={t('Interpolation')}
-                        dataList={interpolationTypes}
-                        onChange={(val) => handleAddPreprocessing(val as Data)}
-                      />
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label="Max Size"
-                        value={config.maxsize}
-                        onChange={(e) => {
-                          const updated = [...preprocessingConfigs];
-                          (updated[index] as ImageResizeConfig).maxsize =
-                            e.target.value;
-                          setPreprocessingConfigs(updated);
-                        }}
-                      />
-                    </Stack>
-                  </Stack>
-                )}
-
-                {config.type === 'pad' && (
-                  <Stack>
-                    <Typography variant="subtitle1">Image Pad:</Typography>
-                    <Stack spacing={1} direction={'row'} width={'100%'}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label="Padding"
-                        value={config.padding}
-                        onChange={(e) => {
-                          const updated = [...preprocessingConfigs];
-                          (updated[index] as ImagePadConfig).padding =
-                            e.target.value;
-                          setPreprocessingConfigs(updated);
-                        }}
-                      />
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label="Fill"
-                        value={config.fill}
-                        onChange={(e) => {
-                          const updated = [...preprocessingConfigs];
-                          (updated[index] as ImagePadConfig).fill =
-                            e.target.value;
-                          setPreprocessingConfigs(updated);
-                        }}
-                      />
-                      <SelectForm
-                        label={t('mode')}
-                        dataList={modes}
-                        onChange={(val) => handleAddPreprocessing(val as Data)}
-                      />
-                    </Stack>
-                  </Stack>
-                )}
-
-                {config.type === 'grayscale' && (
-                  <Stack
-                    spacing={1}
-                    direction={'row'}
-                    width={'100%'}
-                    alignItems={'center'}
-                  >
-                    <Typography variant="subtitle1">
-                      Image Grayscale:
-                    </Typography>
-                    <TextField
-                      size="small"
-                      label="Num Output Channels"
-                      value={config.num_output_channels}
-                      onChange={(e) => {
-                        const updated = [...preprocessingConfigs];
-                        (
-                          updated[index] as ImageGrayscaleConfig
-                        ).num_output_channels = e.target.value;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
-                  </Stack>
-                )}
-              </Box>
-            ))} */}
             {preprocessingConfigs.map((config, index) => (
               <Stack
                 direction={'row'}
@@ -427,21 +455,32 @@ export default function CNNModelCreationPage() {
                     <TextField
                       fullWidth
                       size="small"
+                      type="number"
+                      inputProps={{
+                        min: 0,
+                        step: 1,
+                      }}
                       label="Target Size"
-                      value={config.targetsize}
+                      value={config.target_size}
                       onChange={(e) => {
                         const updated = [...preprocessingConfigs];
-                        (updated[index] as ImageResizeConfig).targetsize =
-                          e.target.value;
+                        (updated[index] as ImageResize).target_size = Number(
+                          e.target.value
+                        );
                         setPreprocessingConfigs(updated);
                       }}
                     />
                     <SelectForm
                       label={t('Interpolation')}
                       dataList={interpolationTypes}
+                      value={
+                        interpolationTypes.find(
+                          (item) => item.value === config.interpolation
+                        ) || null
+                      }
                       onChange={(val) => {
                         const updated = [...preprocessingConfigs];
-                        (updated[index] as ImageResizeConfig).interpolation = (
+                        (updated[index] as ImageResize).interpolation = (
                           val as Data
                         ).value;
                         setPreprocessingConfigs(updated);
@@ -450,12 +489,18 @@ export default function CNNModelCreationPage() {
                     <TextField
                       fullWidth
                       size="small"
+                      type="number"
+                      inputProps={{
+                        min: 0,
+                        step: 1,
+                      }}
                       label="Max Size"
-                      value={config.maxsize}
+                      value={config.max_size}
                       onChange={(e) => {
                         const updated = [...preprocessingConfigs];
-                        (updated[index] as ImageResizeConfig).maxsize =
-                          e.target.value;
+                        (updated[index] as ImageResize).max_size = Number(
+                          e.target.value
+                        );
                         setPreprocessingConfigs(updated);
                       }}
                     />
@@ -471,8 +516,9 @@ export default function CNNModelCreationPage() {
                       value={config.padding}
                       onChange={(e) => {
                         const updated = [...preprocessingConfigs];
-                        (updated[index] as ImagePadConfig).padding =
-                          e.target.value;
+                        (updated[index] as ImagePad).padding = Number(
+                          e.target.value
+                        );
                         setPreprocessingConfigs(updated);
                       }}
                     />
@@ -483,19 +529,21 @@ export default function CNNModelCreationPage() {
                       value={config.fill}
                       onChange={(e) => {
                         const updated = [...preprocessingConfigs];
-                        (updated[index] as ImagePadConfig).fill =
-                          e.target.value;
+                        (updated[index] as ImagePad).fill = Number(
+                          e.target.value
+                        );
                         setPreprocessingConfigs(updated);
                       }}
                     />
                     <SelectForm
                       label={t('mode')}
                       dataList={modes}
+                      value={
+                        modes.find((item) => item.value === config.mode) || null
+                      }
                       onChange={(val) => {
                         const updated = [...preprocessingConfigs];
-                        (updated[index] as ImagePadConfig).mode = (
-                          val as Data
-                        ).value;
+                        (updated[index] as ImagePad).mode = (val as Data).value;
                         setPreprocessingConfigs(updated);
                       }}
                     />
@@ -504,16 +552,19 @@ export default function CNNModelCreationPage() {
 
                 {config.type === 'grayscale' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
-                    <TextField
-                      sx={{ width: '33%' }}
-                      size="small"
-                      label="Num Output Channels"
-                      value={config.num_output_channels}
-                      onChange={(e) => {
+                    <SelectForm
+                      label={t('selectNumOutputChannels')}
+                      dataList={numOutputChannels}
+                      value={
+                        numOutputChannels.find(
+                          (item) =>
+                            Number(item.value) === config.num_output_channels
+                        ) || null
+                      }
+                      onChange={(val) => {
                         const updated = [...preprocessingConfigs];
-                        (
-                          updated[index] as ImageGrayscaleConfig
-                        ).num_output_channels = e.target.value;
+                        (updated[index] as ImageGrayscale).num_output_channels =
+                          Number((val as Data).value);
                         setPreprocessingConfigs(updated);
                       }}
                     />
@@ -536,13 +587,17 @@ export default function CNNModelCreationPage() {
         </Stack>
 
         <Box mt={3} display="flex" justifyContent="center" gap={2}>
-          <Button variant="contained" color="primary" onClick={() => {}}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCreateSubmit}
+          >
             {t('confirm')}
           </Button>
           <Button
             variant="outlined"
             color="info"
-            onClick={() => handleCancel()}
+            onClick={() => navigate(RoutePaths.CNN)}
           >
             {t('cancel')}
           </Button>
@@ -556,15 +611,50 @@ export default function CNNModelCreationPage() {
         <DialogTitle>{t('selectPreprocessingType')}</DialogTitle>
         <DialogContent>
           {availableTypes.length > 0 ? (
-            <SelectForm
-              dataList={availableTypes}
-              onChange={(val) => handleAddPreprocessing(val as Data)}
-            />
+            <Stack spacing={2}>
+              <SelectForm
+                dataList={availableTypes}
+                value={selectedPreprocessingType}
+                onChange={(val) => setSelectedPreprocessingType(val as Data)}
+              />
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (!selectedPreprocessingType) return;
+
+                  const selected = selectedPreprocessingType.value;
+                  const newConfig: PreprocessingConfig =
+                    selected === 'resize'
+                      ? {
+                          type: 'resize',
+                          target_size: 0,
+                          interpolation: 'bilinear',
+                          max_size: 0,
+                        }
+                      : selected === 'pad'
+                      ? { type: 'pad', padding: 0, fill: 0, mode: 'constant' }
+                      : { type: 'grayscale', num_output_channels: 3 };
+
+                  setPreprocessingConfigs((prev) => [...prev, newConfig]);
+                  setSelectedPreprocessingType(null);
+                  setOpenDialog(false);
+                }}
+              >
+                {t('confirm')}
+              </Button>
+            </Stack>
           ) : (
             <Typography>{t('noMorePreprocessingTypesAvailable')}</Typography>
           )}
         </DialogContent>
       </Dialog>
+      <AppSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        autoHideDuration={HideDuration.FAST}
+        onClose={() => setSnackbarOpen(false)}
+      />
     </Stack>
   );
 }

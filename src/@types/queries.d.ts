@@ -35,3 +35,7 @@ declare interface GetToolQuery {
   offset?: number?;
   limit?: number?;
 }
+declare interface GetImageRecognizerQuery {
+  offset?: number?;
+  limit?: number?;
+}

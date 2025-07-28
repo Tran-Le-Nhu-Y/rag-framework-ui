@@ -91,10 +91,26 @@ import {
   useDeleteToolMutation as useDeleteTool,
   useUpdateToolMutation as useUpdateTool,
 } from './tool';
+
 export {
   useCreateTool,
   useGetToolById,
   useGetTools,
   useDeleteTool,
   useUpdateTool,
+};
+import {
+  useCreateRecognizerMutation as useCreateRecognizer,
+  useUpdateRecognizerMutation as useUpdateRecognizer,
+  useGetRecognizerByIdQuery as useGetRecognizerById,
+  useDeleteRecognizerMutation as useDeleteRecognizer,
+  useGetRecognizerQuery as useGetRecognizer,
+} from './recognizer';
+
+export {
+  useCreateRecognizer,
+  useUpdateRecognizer,
+  useGetRecognizerById,
+  useDeleteRecognizer,
+  useGetRecognizer,
 };
