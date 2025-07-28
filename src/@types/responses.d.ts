@@ -92,3 +92,14 @@ declare interface ToolResponse {
   type: string;
   max_results: number;
 }
+
+declare interface ImageRecognizerResponse {
+  id: string;
+  name: string;
+  type: string;
+  model_file_id: string;
+  min_probability: number;
+  max_results?: number;
+  output_classes: OutputClass[];
+  preprocessing_configs: PreprocessingConfig[] | null;
+}
