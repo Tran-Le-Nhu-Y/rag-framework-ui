@@ -114,3 +114,20 @@ export {
   useDeleteRecognizer,
   useGetRecognizer,
 };
+
+import {
+  useCreateAgentMutation as useCreateAgent,
+  useGetAgentByIdQuery as useGetAgentById,
+  useGetAgentsQuery as useGetAgents,
+  useDeleteAgentMutation as useDeleteAgent,
+  useUpdateAgentMutation as useUpdateAgent,
+  useGetAgentTokenByIdMutation as useGetAgentTokenById,
+} from './agent';
+export {
+  useCreateAgent,
+  useGetAgentById,
+  useGetAgents,
+  useDeleteAgent,
+  useUpdateAgent,
+  useGetAgentTokenById,
+};

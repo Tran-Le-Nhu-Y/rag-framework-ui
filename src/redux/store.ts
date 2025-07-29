@@ -7,6 +7,7 @@ import { retrieverApi } from '../service/retriever';
 import { fileApi } from '../service/file';
 import { toolApi } from '../service/tool';
 import { recognizerApi } from '../service/recognizer';
+import { agentApi } from '../service/agent';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     [fileApi.reducerPath]: fileApi.reducer,
     [toolApi.reducerPath]: toolApi.reducer,
     [recognizerApi.reducerPath]: recognizerApi.reducer,
+    [agentApi.reducerPath]: agentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -28,7 +30,8 @@ export const store = configureStore({
       retrieverApi.middleware,
       fileApi.middleware,
       toolApi.middleware,
-      recognizerApi.middleware
+      recognizerApi.middleware,
+      agentApi.middleware
     ),
 });
 

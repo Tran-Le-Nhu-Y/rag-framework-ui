@@ -140,13 +140,6 @@ const SearchToolManagementPage = () => {
 
   //create tool
   const [createToolTrigger, createTool] = useCreateTool();
-  useEffect(() => {
-    if (createTool.isError) {
-      setSnackbarMessage(t('createToolFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-  }, [createTool.isError, createTool.isSuccess, t]);
 
   const handleCreateToolSubmit = async (createTool: Tool) => {
     try {

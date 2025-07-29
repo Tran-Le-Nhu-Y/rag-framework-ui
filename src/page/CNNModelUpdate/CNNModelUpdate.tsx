@@ -178,7 +178,7 @@ export default function CNNModelUpdatePage() {
       }
     }
     if (recognizerDetail.isError) {
-      setSnackbarMessage(t('bm25LoadingError'));
+      setSnackbarMessage(t('cnnLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }

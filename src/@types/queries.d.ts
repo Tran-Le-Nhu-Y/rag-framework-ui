@@ -39,3 +39,7 @@ declare interface GetImageRecognizerQuery {
   offset?: number?;
   limit?: number?;
 }
+declare interface GetAgentQuery {
+  offset?: number?;
+  limit?: number?;
+}

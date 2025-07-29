@@ -48,22 +48,7 @@ export default function BM25CreationPage() {
     removal_words_file_id: '',
   });
 
-  const [createBM25Trigger, createBM25] = useCreateBM25();
-  useEffect(() => {
-    if (createBM25.isError) {
-      setSnackbarMessage(t('createStoreFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (createBM25.isSuccess) {
-      setSnackbarMessage(t('createStoreSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      setTimeout(() => {
-        navigate(RoutePaths.BM25);
-      }, 1000);
-    }
-  }, [createBM25.isError, createBM25.isSuccess, navigate, t]);
-
+  const [createBM25Trigger] = useCreateBM25();
   const handleCreateBM25Submit = async () => {
     // Validate required fields
     if (!bm25.name.trim()) {
@@ -93,6 +78,12 @@ export default function BM25CreationPage() {
       };
 
       await createBM25Trigger(newBM25);
+      setSnackbarMessage(t('createBM25Success'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+      setTimeout(() => {
+        navigate(RoutePaths.BM25);
+      }, 1000);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage(t('createBM25Failed'));

@@ -97,7 +97,7 @@ export default function VectorStoreUpdatePage() {
       }
     }
     if (vectorStoreDetail.isError) {
-      setSnackbarMessage(t('embeddingModelLoadingError'));
+      setSnackbarMessage(t('vectorStoreLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }

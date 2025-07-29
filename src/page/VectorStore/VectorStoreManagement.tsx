@@ -37,7 +37,7 @@ const VectorStoreManagementPage = () => {
   const [viewedVectorStore, setViewedVectorStore] =
     useState<ChromaRetriever | null>(null);
 
-  // Fetch all prompts
+  // Fetch all vector store
   const [vectorStoreQuery] = useState<GetVectorStoreQuery>({
     offset: 0,
     limit: 40,

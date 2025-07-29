@@ -16,7 +16,6 @@ import RootLayout from './layout/RootLayout.tsx';
 
 import {
   AgentCreationPage,
-  AgentDetailPage,
   AgentManagementPage,
   AgentUpdatePage,
   BM25CreationPage,
@@ -52,7 +51,6 @@ const router = createBrowserRouter(
       <Route path={RoutePaths.AGENT} element={<AgentManagementPage />} />
       <Route path={RoutePaths.CREATE_AGENT} element={<AgentCreationPage />} />
       <Route path={RoutePaths.UPDATE_AGENT} element={<AgentUpdatePage />} />
-      <Route path={RoutePaths.AGENT_DETAIL} element={<AgentDetailPage />} />
       <Route
         path={RoutePaths.CHATMODEL}
         element={<ChatModelManagementPage />}
