@@ -3,8 +3,8 @@ declare interface Agent {
   name: string; // [1, 100] characters
   description?: string | null;
   language: string;
-  image_recognizer_id: string; // required, ≥ 1 character
-  retriever_ids: string[]; // required, ≥ 1 item
+  image_recognizer_id: string | null; // required, ≥ 1 character
+  retriever_ids: string[] | null; // required, ≥ 1 item
   tool_ids?: string[] | null;
   mcp_server_ids?: string[] | null;
   llm_id: string;

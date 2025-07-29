@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   HideDuration,
   isValidLength,
@@ -60,19 +60,7 @@ export default function MCPCreationPage() {
     return acc;
   }, {} as Record<string, string>);
 
-  const [createMCPTrigger, createMCP] = useCreateMCP();
-  useEffect(() => {
-    if (createMCP.isError) {
-      setSnackbarMessage(t('createMCPFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (createMCP.isSuccess) {
-      setSnackbarMessage(t('createMCPSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      navigate(RoutePaths.PROMPT);
-    }
-  }, [createMCP.isError, createMCP.isSuccess, navigate, t]);
+  const [createMCPTrigger] = useCreateMCP();
 
   const handleCreateMCPSubmit = async () => {
     try {

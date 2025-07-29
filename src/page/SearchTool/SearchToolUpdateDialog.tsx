@@ -7,7 +7,6 @@ import {
   MenuItem,
   Stack,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -51,8 +50,8 @@ export default function SearchToolUpdateDialog({
 
   return (
     <Dialog open={open} onClose={onExit} fullWidth>
-      <DialogTitle sx={{ textAlign: 'center' }}>
-        <Typography variant="h4">{t('updateSearchTool')}</Typography>
+      <DialogTitle variant="h4" sx={{ textAlign: 'center' }}>
+        {t('updateSearchTool')}
       </DialogTitle>
       <DialogContent>
         <Stack spacing={3} mt={2}>

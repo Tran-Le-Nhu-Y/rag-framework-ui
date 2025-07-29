@@ -76,6 +76,7 @@ export default function MCPUpdatePage() {
     setHeaders(newHeaders);
   };
 
+  //get mcp
   const mcp = useGetMCPById(mcpId!, { skip: !mcpId });
   useEffect(() => {
     if (mcp.data) {

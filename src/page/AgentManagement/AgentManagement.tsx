@@ -1,5 +1,10 @@
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
-import { ConfirmDialog, DataGridTable } from '../../component';
+import {
+  AppSnackbar,
+  ConfirmDialog,
+  DataGridTable,
+  Loading,
+} from '../../component';
 import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
@@ -7,44 +12,31 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { RoutePaths } from '../../util';
-import { useState } from 'react';
+import {
+  HideDuration,
+  PathHolders,
+  RoutePaths,
+  SnackbarSeverity,
+} from '../../util';
+import { useEffect, useMemo, useState } from 'react';
 import AgentDetailDialog from './AgentDetailDialog';
-
-const fakeAgents = [
-  {
-    id: '1',
-    name: 'ShrimpAgent Alpha',
-    description: 'An agent for detecting white spot disease.',
-    language: 'en',
-    image_recognizer_id: 'White Spot Detector v1.0',
-    retriever_ids: ['BM25 Retriever'],
-    tool_ids: ['tool_1', 'tool_2'],
-    mcp_server_ids: ['mcp_1'],
-    llm_id: 'llm_1',
-    prompt_id: 'prompt_1',
-    createdAt: '2024-05-01',
-    updatedAt: '2024-06-01',
-  },
-  {
-    id: '2',
-    name: 'Tôm AI Pro',
-    description: 'Hỗ trợ chẩn đoán bệnh cho tôm.',
-    language: 'vi',
-    image_recognizer_id: 'model_2',
-    retriever_ids: ['retriever_2'],
-    tool_ids: null,
-    mcp_server_ids: ['mcp_2', 'mcp_3'],
-    llm_id: 'llm_2',
-    prompt_id: 'prompt_2',
-    createdAt: '2024-05-02',
-    updatedAt: '2024-06-02',
-  },
-];
+import {
+  useDeleteAgent,
+  useGetAgents,
+  useGetAgentTokenById,
+} from '../../service';
+import type { Agent } from '../../@types/entities';
+import { downloadFile } from '../../service/api';
 
 const AgentManagementPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<SnackbarSeverity>('success');
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [viewedAgent, setViewedAgent] = useState<Agent | null>(null);
   const [agentIdToDelete, setAgentIdToDelete] = useState<string | null>(null);
   //   const handleExport = (agent: any) => {
   //     const blob = new Blob([JSON.stringify(agent, null, 2)], {
@@ -59,8 +51,35 @@ const AgentManagementPage = () => {
   //     document.body.removeChild(a);
   //     URL.revokeObjectURL(url);
   //   };
-  const [detailOpen, setDetailOpen] = useState(false);
-  const columns: GridColDef<(typeof fakeAgents)[number]>[] = [
+  // Fetch all agents
+  const [agentQuery] = useState<GetAgentQuery>({
+    offset: 0,
+    limit: 40,
+  });
+  const agents = useGetAgents(agentQuery!, {
+    skip: !agentQuery,
+  });
+  useEffect(() => {
+    if (agents.isError) {
+      setSnackbarMessage(t('agentsLoadingError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  }, [agents.isError, t]);
+
+  const rows = useMemo(() => {
+    if (agents.isError) return [];
+    if (agents.data?.content)
+      return agents.data.content.map(
+        (agent) =>
+          ({
+            ...agent,
+            id: agent.id,
+          } as Agent)
+      );
+    else return [];
+  }, [agents.data?.content, agents.isError]);
+  const columns: GridColDef<Agent>[] = [
     {
       field: 'name',
       headerName: t('agentName'),
@@ -115,7 +134,7 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('export')}
-          onClick={() => {}}
+          onClick={() => handleExport(params.row.id)}
         />,
         <GridActionsCellItem
           icon={
@@ -124,7 +143,10 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('see')}
-          onClick={() => setDetailOpen(true)}
+          onClick={() => {
+            setViewedAgent(params.row);
+            setDetailOpen(true);
+          }}
         />,
         <GridActionsCellItem
           icon={
@@ -133,7 +155,14 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('update')}
-          onClick={() => navigate(RoutePaths.UPDATE_AGENT)}
+          onClick={() =>
+            navigate(
+              RoutePaths.UPDATE_AGENT.replace(
+                `:${PathHolders.AGENT_ID}`,
+                params.row.id
+              )
+            )
+          }
         />,
         <GridActionsCellItem
           icon={
@@ -142,18 +171,60 @@ const AgentManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteAgent(params.row.id)}
+          onClick={() => setAgentIdToDelete(params.row.id)}
         />,
       ],
     },
   ];
 
-  const handleDeleteAgent = (agentlId: string) => {
-    setAgentIdToDelete(agentlId);
+  //delete agent
+  const [deleteAgentTrigger, deleteAgent] = useDeleteAgent();
+  const handleDeleteAgent = async (id: string) => {
+    try {
+      await deleteAgentTrigger(id);
+      setAgentIdToDelete(null);
+      setSnackbarMessage(t('deleteAgentSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error:', error);
+      setSnackbarMessage(t('deleteAgentFailed'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
+  };
+
+  //export Agent File Config
+  const [getTokenById] = useGetAgentTokenById();
+  const handleExport = async (agentId: string) => {
+    if (!agentId) return;
+
+    try {
+      const token = await getTokenById(agentId).unwrap();
+
+      const link = document.createElement('a');
+      link.href = downloadFile(token);
+      link.setAttribute('target', '_blank');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      setSnackbarMessage(t('exportFileError'));
+      setSnackbarSeverity(SnackbarSeverity.ERROR);
+      setSnackbarOpen(true);
+    }
   };
 
   return (
     <Stack justifyContent="center" alignItems="center" spacing={2}>
+      <AppSnackbar
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        autoHideDuration={HideDuration.FAST}
+        onClose={() => setSnackbarOpen(false)}
+      />
       {agentIdToDelete && (
         <ConfirmDialog
           open={true}
@@ -162,7 +233,7 @@ const AgentManagementPage = () => {
           message={t('deleteAgentConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={() => {}}
+          onDelete={() => handleDeleteAgent(agentIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('agentList')}</Typography>
@@ -175,14 +246,20 @@ const AgentManagementPage = () => {
           {t('createAgent')}
         </Button>
       </Box>
-
-      <Box sx={{ height: 500, width: '90%' }}>
-        <DataGridTable rows={fakeAgents} columns={columns} />
-      </Box>
-      <AgentDetailDialog
-        open={detailOpen}
-        onClose={() => setDetailOpen(false)}
-      />
+      {agents.isLoading || agents.isFetching || deleteAgent.isLoading ? (
+        <Loading />
+      ) : (
+        <Box sx={{ height: 500, width: '90%' }}>
+          <DataGridTable rows={rows} columns={columns} />
+        </Box>
+      )}
+      {viewedAgent && (
+        <AgentDetailDialog
+          agent={viewedAgent}
+          open={detailOpen}
+          onClose={() => setDetailOpen(false)}
+        />
+      )}
     </Stack>
   );
 };

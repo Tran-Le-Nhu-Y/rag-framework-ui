@@ -33,7 +33,7 @@ const MCPManagementPage = () => {
   const [mcpIdToDelete, setMCPIdToDelete] = useState<string | null>(null);
   const [viewedMCP, setViewedMCP] = useState<MCPStreamableServer | null>(null);
 
-  // Fetch all prompts
+  // Fetch all MCP
   const [mcpQuery] = useState<GetMCPQuery>({
     offset: 0,
     limit: 40,
