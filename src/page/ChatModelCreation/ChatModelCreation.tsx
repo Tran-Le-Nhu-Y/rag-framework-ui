@@ -52,7 +52,6 @@ export default function ChatModelCreationPage() {
   const [maxRetries, setMaxRetries] = useState<number>(6);
   const [timeout, setTimeoutVal] = useState<number | null>(null);
   const safetyOptions = [
-    'UNSPECIFIED',
     'DEROGATORY',
     'TOXICITY',
     'VIOLENCE',
@@ -230,31 +229,35 @@ export default function ChatModelCreationPage() {
               </Stack>
 
               <Stack direction={'row'} spacing={2} width="100%">
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={t('topK')}
-                  type="number"
-                  inputProps={{
-                    min: 0,
-                    step: 1,
-                  }}
-                  value={topK ?? ''}
-                  onChange={(e) => setTopK(Number(e.target.value) || null)}
-                />
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={t('topP') + ' [0-1]'}
-                  type="number"
-                  inputProps={{
-                    min: 0,
-                    max: 1,
-                    step: 0.1,
-                  }}
-                  value={topP ?? ''}
-                  onChange={(e) => setTopP(Number(e.target.value) || null)}
-                />
+                <Tooltip title={t('topKDescription')}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label={t('topK')}
+                    type="number"
+                    inputProps={{
+                      min: 0,
+                      step: 1,
+                    }}
+                    value={topK ?? ''}
+                    onChange={(e) => setTopK(Number(e.target.value) || null)}
+                  />
+                </Tooltip>
+                <Tooltip title={t('topPDescription')}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label={t('topP') + ' [0-1]'}
+                    type="number"
+                    inputProps={{
+                      min: 0,
+                      max: 1,
+                      step: 0.1,
+                    }}
+                    value={topP ?? ''}
+                    onChange={(e) => setTopP(Number(e.target.value) || null)}
+                  />
+                </Tooltip>
               </Stack>
 
               {/* Dynamic fields */}

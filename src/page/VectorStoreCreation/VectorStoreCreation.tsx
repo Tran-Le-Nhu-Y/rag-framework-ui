@@ -66,22 +66,7 @@ export default function VectorStoreCreationPage() {
     return acc;
   }, {} as Record<string, string>);
 
-  const [createVectorStoreTrigger, createStore] = useCreateVectorStore();
-  useEffect(() => {
-    if (createStore.isError) {
-      setSnackbarMessage(t('createStoreFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (createStore.isSuccess) {
-      setSnackbarMessage(t('createStoreSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      setTimeout(() => {
-        navigate(RoutePaths.VECTOR_STORE);
-      }, 1000);
-    }
-  }, [createStore.isError, createStore.isSuccess, navigate, t]);
-
+  const [createVectorStoreTrigger] = useCreateVectorStore();
   const handleCreateVectorStoreSubmit = async () => {
     try {
       const connection =
@@ -105,7 +90,13 @@ export default function VectorStoreCreationPage() {
         ...(connection && { connection }),
       };
 
-      await createVectorStoreTrigger(newStore);
+      await createVectorStoreTrigger(newStore).unwrap();
+      setSnackbarMessage(t('createStoreSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+      setTimeout(() => {
+        navigate(RoutePaths.VECTOR_STORE);
+      }, 1000);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage(t('createStoreFailed'));

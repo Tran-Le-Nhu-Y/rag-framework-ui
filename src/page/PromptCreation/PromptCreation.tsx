@@ -1,6 +1,6 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   HideDuration,
   isValidLength,
@@ -21,21 +21,15 @@ export default function PromptCreationPage() {
     useState<SnackbarSeverity>('success');
   const [name, setName] = useState('');
   const [respond, setRespond] = useState('');
-  const [createPromptTrigger, createPrompt] = useCreatePrompt();
-  useEffect(() => {
-    if (createPrompt.isError) {
-      setSnackbarMessage(t('createPromptError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (createPrompt.isSuccess) {
-      setSnackbarMessage(t('createPromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      navigate(RoutePaths.PROMPT);
-    }
-  }, [createPrompt.isError, createPrompt.isSuccess, navigate, t]);
-
+  const [createPromptTrigger] = useCreatePrompt();
   const handleCreatePromptSubmit = async () => {
+    if (name.trim().length === 0) {
+      setSnackbarMessage(t('promptNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       const newPrompt: CreatePromptRequest = {
         promptName: name,
@@ -55,7 +49,6 @@ export default function PromptCreationPage() {
       setSnackbarMessage(t('createPromptError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
-      return;
     }
   };
 

@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   HideDuration,
   isValidLength,
@@ -144,14 +144,6 @@ export default function CNNModelCreationPage() {
   };
 
   const [createRecognizerTrigger, createRecognizer] = useCreateRecognizer();
-  useEffect(() => {
-    if (createRecognizer.isError) {
-      setSnackbarMessage(t('createCNNFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-  }, [createRecognizer.isError, t]);
-
   const [postFile] = usePostFile();
   const handleCreateSubmit = async () => {
     // Validate required fields
@@ -283,7 +275,7 @@ export default function CNNModelCreationPage() {
                       setNewFile(files[0]);
                     }}
                     // acceptedFileTypes={['.pt', '.pth']}
-                    acceptedFileTypes={['.txt']}
+                    acceptedFileTypes={[]}
                   />
                 </span>
               </Tooltip>
@@ -590,6 +582,7 @@ export default function CNNModelCreationPage() {
           <Button
             variant="contained"
             color="primary"
+            loading={createRecognizer.isLoading}
             onClick={handleCreateSubmit}
           >
             {t('confirm')}
@@ -597,6 +590,7 @@ export default function CNNModelCreationPage() {
           <Button
             variant="outlined"
             color="info"
+            disabled={createRecognizer.isLoading}
             onClick={() => navigate(RoutePaths.CNN)}
           >
             {t('cancel')}

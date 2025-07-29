@@ -9,7 +9,7 @@ import { GridActionsCellItem, type GridColDef } from '@mui/x-data-grid';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Tool } from '../../@types/entities';
 import SearchToolCreateDialog from './SearchToolCreationDialog';
 import SearchToolUpdateDialog from './SearchToolUpdateDialog';
@@ -106,18 +106,19 @@ const SearchToolManagementPage = () => {
     }
   }, [tools.isError, t]);
 
-  const [rows, setRows] = useState<Tool[]>([]);
-  useEffect(() => {
-    if (tools.data?.content) {
-      const mappedRows: Tool[] = tools.data.content.map((tool) => ({
-        id: tool.id,
-        name: tool.name,
-        type: tool.type,
-        max_results: tool.max_results,
-      }));
-      setRows(mappedRows);
-    }
-  }, [tools.data, t, setRows]);
+  const rows = useMemo(() => {
+    if (tools.isError) return [];
+    if (!tools.data?.content) return [];
+    return tools.data.content.map(
+      (tool) =>
+        ({
+          id: tool.id,
+          name: tool.name,
+          type: tool.type,
+          max_results: tool.max_results,
+        } as Tool)
+    );
+  }, [tools.data?.content, tools.isError]);
 
   //delete tool
   const [deleteToolTrigger, deleteTool] = useDeleteTool();
@@ -168,10 +169,6 @@ const SearchToolManagementPage = () => {
   const [updateToolTrigger] = useUpdateTool();
 
   const handleUpdateToolSubmit = async (updateTool: Tool) => {
-    setRows((prev) =>
-      prev.map((tool) => (tool.id === updateTool.id ? updateTool : tool))
-    );
-
     if (!updateTool.name.trim()) {
       setSnackbarMessage(t('toolNameRequired'));
       setSnackbarSeverity(SnackbarSeverity.WARNING);

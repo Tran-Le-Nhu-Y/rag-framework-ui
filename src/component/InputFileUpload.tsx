@@ -55,6 +55,7 @@ export const InputFileUpload: React.FC<InputFileUploadProps> = ({
 
   //Check file type
   const isAcceptedFile = (file: File, accepted: string[]) => {
+    if (accepted.length === 0) return true;
     const fileName = file.name.toLowerCase();
     return accepted.some(
       (type) => fileName.endsWith(type) || file.type === type
@@ -63,9 +64,12 @@ export const InputFileUpload: React.FC<InputFileUploadProps> = ({
 
   // Handle file upload
   const selectFileHandler = (selectedFiles: File[]) => {
-    const validFiles = selectedFiles.filter((file) =>
-      isAcceptedFile(file, acceptedFileTypes)
-    );
+    const validFiles =
+      acceptedFileTypes.length !== 0
+        ? selectedFiles.filter((file) =>
+            isAcceptedFile(file, acceptedFileTypes)
+          )
+        : selectedFiles;
 
     if (validFiles.length === 0) {
       alert(`Only files of type: ${acceptedFileTypes.join(', ')} are allowed.`);

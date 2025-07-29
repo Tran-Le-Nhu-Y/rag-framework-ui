@@ -1,6 +1,6 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   HideDuration,
   isValidLength,
@@ -135,7 +135,6 @@ export default function AgentCreationPage() {
   }, [recognizers.data?.content, recognizers.isError, t]);
 
   // get all vector store
-  const [retrieverList, setRetrieverList] = useState<Data[]>([]);
   const [vectorStoreQuery] = useState<GetVectorStoreQuery>({
     offset: 0,
     limit: 40,
@@ -144,21 +143,22 @@ export default function AgentCreationPage() {
     skip: !vectorStoreQuery,
   });
   useEffect(() => {
-    if (vectorStores.data?.content) {
-      const mappedList: Data[] = vectorStores.data.content.map(
-        (item: ChromaRetriever) => ({
-          label: item.name,
-          value: item.id,
-        })
-      );
-      setRetrieverList(mappedList);
-    }
     if (vectorStores.isError) {
       setSnackbarMessage(t('vectorStoresLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [vectorStores.isError, t, vectorStores.data?.content]);
+  }, [vectorStores.isError, t]);
+  const vsData = useMemo(() => {
+    if (!vectorStores.data?.content) return [];
+    return vectorStores.data.content.map(
+      (item: ChromaRetriever) =>
+        ({
+          label: item.name,
+          value: item.id,
+        } as Data)
+    );
+  }, [vectorStores.data?.content]);
 
   // GET all bm25s
   const [bm25Query] = useState<GetBM25Query>({
@@ -169,21 +169,19 @@ export default function AgentCreationPage() {
     skip: !bm25Query,
   });
   useEffect(() => {
-    if (bm25s.data?.content) {
-      const mappedList: Data[] = bm25s.data.content.map(
-        (item: BM25Retriever) => ({
-          label: item.name,
-          value: item.id,
-        })
-      );
-      setRetrieverList(mappedList);
-    }
     if (bm25s.isError) {
       setSnackbarMessage(t('bm25sLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [bm25s.data?.content, bm25s.isError, t]);
+  }, [bm25s.isError, t]);
+  const bm25Data = useMemo(() => {
+    if (!bm25s.data?.content) return [];
+    return bm25s.data.content.map((item: BM25Retriever) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  }, [bm25s.data?.content]);
 
   // GET all MCP
   const [mcpList, setMCPList] = useState<Data[]>([]);
@@ -386,8 +384,8 @@ export default function AgentCreationPage() {
               <SelectForm
                 label={t('selectRetrievers')}
                 multiple={true}
-                dataList={retrieverList}
-                value={retrieverList.filter((item) =>
+                dataList={[...bm25Data, ...vsData]}
+                value={[...bm25Data, ...vsData].filter((item) =>
                   agent.retriever_ids?.includes(item.value)
                 )}
                 onChange={(selected) =>
