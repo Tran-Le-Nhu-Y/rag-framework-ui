@@ -83,14 +83,14 @@ const AgentManagementPage = () => {
     {
       field: 'name',
       headerName: t('agentName'),
-      width: 200,
+      width: 250,
       align: 'center',
       headerAlign: 'center',
     },
     {
       field: 'description',
       headerName: t('agentDescription'),
-      width: 250,
+      width: 400,
       headerAlign: 'center',
       renderCell: (params) => (
         <Tooltip title={params.value || ''}>
@@ -101,26 +101,24 @@ const AgentManagementPage = () => {
     {
       field: 'language',
       headerName: t('language'),
-      width: 120,
+      width: 150,
       align: 'center',
       headerAlign: 'center',
+      renderCell: (params) => {
+        return (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <Typography>{params.value == 'en' ? t('en') : t('vi')}</Typography>
+          </Box>
+        );
+      },
     },
-    {
-      field: 'image_recognizer_id',
-      headerName: t('cnnModelConfig'),
-      width: 180,
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'retriever_ids',
-      headerName: t('retrieverModelConfig'),
-      width: 180,
-      align: 'center',
-      headerAlign: 'center',
-      renderCell: (params) => params.value?.join(', ') || '-',
-    },
-
     {
       field: 'actions',
       headerName: t('actions'),

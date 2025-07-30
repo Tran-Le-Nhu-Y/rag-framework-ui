@@ -92,7 +92,7 @@
   "agentNameRequired": "Tên cấu hình AI Agent không được bỏ trống",
   "promptRequired": "Cấu hình Prompt không được bỏ trống",
   "llmModelRequired": "Cấu hình Chat Model không được bỏ trống",
-  "languageRequired": "Ngôn ngữ không được bỏ trống",
+  "languageRequired": "Trường ngôn ngữ không được bỏ trống",
   "agentLoadingError": "Lỗi tải dữ liệu cấu hình AI Agent",
 
   "searchToolConfig": "Quản lý cấu hình Search Tool",
@@ -282,6 +282,8 @@
   "headerValue": "Giá trị Header",
   "addHeader": "Thêm Header",
   "selectMcpTypeRequired": "Không được để trống trường này",
+  "mcpNameRequired": "Tên cấu hình MCP không được bỏ trống",
+  "urlRequired": "Trường URL không được để trống",
   "mcpsLoadingError": "Lỗi tải danh sách cấu hình MCP",
   "deleteMCPFailed": "Xóa cấu hình MCP thất bại",
   "deleteMCPSuccess": "Xóa cấu hình MCP thành công",
