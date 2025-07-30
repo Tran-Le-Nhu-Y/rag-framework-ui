@@ -29,6 +29,12 @@ export default function PromptCreationPage() {
       setSnackbarOpen(true);
       return;
     }
+    if (respond.trim().length === 0) {
+      setSnackbarMessage(t('respondPromptRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
 
     try {
       const newPrompt: CreatePromptRequest = {

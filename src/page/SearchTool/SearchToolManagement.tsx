@@ -143,6 +143,13 @@ const SearchToolManagementPage = () => {
   const [createToolTrigger, createTool] = useCreateTool();
 
   const handleCreateToolSubmit = async (createTool: Tool) => {
+    // Validate required fields
+    if (!createTool.name.trim()) {
+      setSnackbarMessage(t('toolNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const newTool: CreateToolRequest = {
         name: createTool.name,
@@ -166,7 +173,7 @@ const SearchToolManagementPage = () => {
   };
 
   //update tool
-  const [updateToolTrigger] = useUpdateTool();
+  const [updateToolTrigger, updateTool] = useUpdateTool();
 
   const handleUpdateToolSubmit = async (updateTool: Tool) => {
     if (!updateTool.name.trim()) {
@@ -245,7 +252,8 @@ const SearchToolManagementPage = () => {
       {tools.isLoading ||
       tools.isFetching ||
       deleteTool.isLoading ||
-      createTool.isLoading ? (
+      createTool.isLoading ||
+      updateTool.isLoading ? (
         <Loading />
       ) : (
         <Box sx={{ height: 500, width: '90%' }}>

@@ -16,6 +16,7 @@ declare interface PromptResponse {
 
 declare interface ChatModelResponse {
   id: string;
+  name: string;
   model_name: string;
   provider: string;
   temperature: number;

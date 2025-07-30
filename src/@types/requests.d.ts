@@ -10,6 +10,7 @@ declare interface UpdatePromptRequest {
 }
 
 declare interface CreateChatModelRequest {
+  name: string;
   model_name: string;
   provider: string;
   temperature: number;

@@ -1,6 +1,6 @@
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   HideDuration,
   isValidLength,
@@ -39,7 +39,6 @@ export default function EmbeddingCreationPage() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
-
   type EmbeddingModelState =
     | Partial<HuggingFaceEmbeddings>
     | Partial<GoogleGenAIEmbeddings>;
@@ -49,17 +48,27 @@ export default function EmbeddingCreationPage() {
     setEmbeddingModel((prev) => ({ ...prev, [key]: value }));
   };
 
-  const [createEmbeddingModelTrigger, createEmbeddingModel] =
-    useCreateEmbeddingModel();
-  useEffect(() => {
-    if (createEmbeddingModel.isError) {
-      setSnackbarMessage(t('createEmbeddingModelError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-  }, [createEmbeddingModel.isError, t]);
-
+  const [createEmbeddingModelTrigger] = useCreateEmbeddingModel();
   const handleSubmit = async () => {
+    // Validate required fields
+    if (!embeddingModel.name?.trim()) {
+      setSnackbarMessage(t('embeddingNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!embeddingModel.model_name?.trim()) {
+      setSnackbarMessage(t('embeddingModelNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!embeddingModel.type?.trim()) {
+      setSnackbarMessage(t('embeddingModelTyprRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     const payload: CreateEmbeddingRequest = {
       ...(embeddingModel as Embeddings),
     };
@@ -73,7 +82,7 @@ export default function EmbeddingCreationPage() {
         navigate(RoutePaths.EMBEDDINGS);
       }, 1000);
     } catch {
-      setSnackbarMessage(t('updateChatModelFail'));
+      setSnackbarMessage(t('createEmbeddingModelError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }

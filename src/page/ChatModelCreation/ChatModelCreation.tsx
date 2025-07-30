@@ -29,6 +29,7 @@ export default function ChatModelCreationPage() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<SnackbarSeverity>('success');
+  const [configName, setConfigName] = useState('');
   const [modelName, setModelName] = useState('');
   const [provider, setProvider] = useState<string>('');
   const [temperature, setTemperature] = useState<number>(0.5);
@@ -115,25 +116,25 @@ export default function ChatModelCreationPage() {
     }
   }, [provider]);
 
-  const [createChatModelTrigger, chatModel] = useCreateChatModel();
-  useEffect(() => {
-    if (chatModel.isError) {
-      setSnackbarMessage(t('createPromptError'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (chatModel.isSuccess) {
-      setSnackbarMessage(t('createPromptSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      setTimeout(() => {
-        navigate(RoutePaths.CHATMODEL);
-      }, 1000);
-    }
-  }, [chatModel.isError, chatModel.isSuccess, navigate, t]);
+  const [createChatModelTrigger] = useCreateChatModel();
 
   const handleCreateChatModelSubmit = async () => {
+    // Validate required fields
+    if (!configName.trim()) {
+      setSnackbarMessage(t('configNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!modelName.trim()) {
+      setSnackbarMessage(t('chatModelNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const base = {
+        name: configName,
         model_name: modelName,
         provider: provider,
         temperature: temperature,
@@ -174,7 +175,9 @@ export default function ChatModelCreationPage() {
       setSnackbarMessage(t('createChatModelSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
-      navigate(RoutePaths.CHATMODEL);
+      setTimeout(() => {
+        navigate(RoutePaths.CHATMODEL);
+      }, 1000);
     } catch (error) {
       console.error('Creating chat model error:', error);
       setSnackbarMessage(t('createChatModelError'));
@@ -204,6 +207,21 @@ export default function ChatModelCreationPage() {
                 <TextField
                   fullWidth
                   size="small"
+                  helperText={t('hyperTextLong')}
+                  label={t('configName')}
+                  value={configName}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (isValidLength(newValue, TextLength.LONG))
+                      setConfigName(newValue);
+                  }}
+                  placeholder={`${t('enter')} ${t(
+                    'modelName'
+                  ).toLowerCase()}...`}
+                />
+                <TextField
+                  fullWidth
+                  size="small"
                   helperText={t('hyperTextMedium')}
                   label={t('modelName')}
                   value={modelName}
@@ -216,6 +234,9 @@ export default function ChatModelCreationPage() {
                     'modelName'
                   ).toLowerCase()}...`}
                 />
+              </Stack>
+
+              <Stack direction={'row'} spacing={2} width="100%">
                 <SelectForm
                   label={t('selectModelType')}
                   dataList={providerList}
@@ -226,9 +247,6 @@ export default function ChatModelCreationPage() {
                     setProvider((selected as Data | null)?.value || '');
                   }}
                 />
-              </Stack>
-
-              <Stack direction={'row'} spacing={2} width="100%">
                 <Tooltip title={t('topKDescription')}>
                   <TextField
                     fullWidth

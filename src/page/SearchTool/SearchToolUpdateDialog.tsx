@@ -45,7 +45,6 @@ export default function SearchToolUpdateDialog({
 
   const handleSubmit = () => {
     onUpdate(form);
-    onExit();
   };
 
   return (

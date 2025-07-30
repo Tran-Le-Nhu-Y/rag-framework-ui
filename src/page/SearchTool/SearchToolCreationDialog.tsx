@@ -39,7 +39,6 @@ export default function SearchToolCreateDialog({
   const handleSubmit = () => {
     onCreate(form);
     setForm({ id: '', name: '', type: 'duckduckgo_search', max_results: 4 });
-    onExit();
   };
 
   return (

@@ -41,6 +41,7 @@ declare type ChatModel = OllamaChatModelPublic | GoogleGenAIChatModelPublic;
 
 declare interface BaseChatModel {
   id: string;
+  name: string;
   model_name: string;
   provider: string;
   temperature: number;

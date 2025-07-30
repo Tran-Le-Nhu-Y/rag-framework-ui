@@ -7,6 +7,7 @@ import type {
 function toEntity(response: ChatModelResponse): ChatModel {
   const baseFields = {
     id: response.id,
+    name: response.name,
     model_name: response.model_name,
     provider: response.provider,
     temperature: response.temperature,

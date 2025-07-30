@@ -27,7 +27,7 @@ import type { Data } from '../../component/SelectForm';
 
 const modeList: Data[] = [
   { label: 'Persistent', value: 'persistent' },
-  { label: 'remote', value: 'remote' },
+  { label: 'Remote', value: 'remote' },
 ];
 
 export default function VectorStoreCreationPage() {
@@ -68,6 +68,19 @@ export default function VectorStoreCreationPage() {
 
   const [createVectorStoreTrigger] = useCreateVectorStore();
   const handleCreateVectorStoreSubmit = async () => {
+    // Validate required fields
+    if (!vectorStore.name.trim()) {
+      setSnackbarMessage(t('storeNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!vectorStore.embeddings_id) {
+      setSnackbarMessage(t('embeddingRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const connection =
         vectorStore.mode === 'remote' && vectorStore.connection

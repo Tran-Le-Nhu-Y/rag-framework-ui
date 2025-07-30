@@ -174,8 +174,14 @@ export default function CNNModelCreationPage() {
         setSnackbarOpen(true);
         return;
       }
-      if (output.description.trim().length < 10) {
+      if (!output.description.trim()) {
         setSnackbarMessage(t('outputClassDescriptionRequired'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return;
+      }
+      if (output.description.trim().length < 10) {
+        setSnackbarMessage(t('outputClassDescriptionTooShortRequired'));
         setSnackbarSeverity(SnackbarSeverity.WARNING);
         setSnackbarOpen(true);
         return;

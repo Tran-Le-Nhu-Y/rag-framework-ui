@@ -27,7 +27,6 @@ import type { Data } from '../../component/SelectForm';
 
 const typeList: Data[] = [
   { label: 'Streamable HTTP', value: 'streamable_http' },
-  { label: 'Stdio', value: 'stdio' },
 ];
 
 export default function MCPCreationPage() {
@@ -61,8 +60,20 @@ export default function MCPCreationPage() {
   }, {} as Record<string, string>);
 
   const [createMCPTrigger] = useCreateMCP();
-
   const handleCreateMCPSubmit = async () => {
+    // Validate required fields
+    if (!streamableServer.name.trim()) {
+      setSnackbarMessage(t('mcpNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!streamableServer.url) {
+      setSnackbarMessage(t('urlRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const fullServerData: MCPStreamableServer = {
         ...streamableServer,
