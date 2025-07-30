@@ -150,6 +150,7 @@
   "missingModelType": "Thiếu loại mô hình",
   "configNameRequired": "Tên cấu hình Chat Model không được bỏ trống",
   "chatModelNameRequired": "Tên mô hình Chat Model không được bỏ trống",
+  "cannotDeleteChatModel": "Không thể xóa vì cấu hình Chat Model này đang được AI Agent sử dụng",
 
   "createChatModel": "Tạo cấu hình",
   "createChatModelSuccess": "Tạo Chat Model thành công",

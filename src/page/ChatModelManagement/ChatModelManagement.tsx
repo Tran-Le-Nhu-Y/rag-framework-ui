@@ -25,6 +25,7 @@ import {
 } from '../../service';
 import ChatModelDetailDialog from './ChatModelDetail';
 import type { BaseChatModel, ChatModel } from '../../@types/entities';
+import { DeleteError } from '../../util/errors';
 
 const ChatModelManagementPage = () => {
   const { t } = useTranslation();
@@ -139,7 +140,7 @@ const ChatModelManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteChatModel(params.row.id)}
+          onClick={() => setChatModelIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -165,21 +166,29 @@ const ChatModelManagementPage = () => {
 
   //delete chat model
   const [deleteChatModelTrigger, deleteChatModel] = useDeleteChatModel();
-  useEffect(() => {
-    if (deleteChatModel.isError) {
-      setSnackbarMessage(t('deleteChatModelFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteChatModel.isSuccess) {
+  const handleDeleteChatModel = async (id: string) => {
+    try {
+      await deleteChatModelTrigger(id).unwrap();
+      setChatModelIdToDelete(null);
       setSnackbarMessage(t('deleteChatModelSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteChatModel'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteChatModelFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteChatModel.isError, deleteChatModel.isSuccess, t]);
-
-  const handleDeleteChatModel = (chatModelId: string) => {
-    setChatModelIdToDelete(chatModelId);
   };
 
   return (
@@ -199,10 +208,7 @@ const ChatModelManagementPage = () => {
           message={t('deleteChatModelConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteChatModelTrigger(chatModelIdToDelete);
-            setChatModelIdToDelete(null);
-          }}
+          onDelete={() => handleDeleteChatModel(chatModelIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('chatModelList')}</Typography>
@@ -215,7 +221,10 @@ const ChatModelManagementPage = () => {
         </Button>
       </Box>
 
-      {chatModels.isLoading || chatModels.isFetching || chatModels.isLoading ? (
+      {chatModels.isLoading ||
+      chatModels.isFetching ||
+      chatModels.isLoading ||
+      deleteChatModel.isLoading ? (
         <Loading />
       ) : (
         <Box sx={{ height: 400, width: '90%' }}>
