@@ -157,6 +157,7 @@ export default function EmbeddingUpdatePage() {
             />
             <SelectForm
               label={t('selectTypeModel')}
+              isClearable={false}
               dataList={typeList}
               value={
                 typeList.find((item) => item.value === embeddingModel.type) ||

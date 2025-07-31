@@ -10,9 +10,11 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import {
   HideDuration,
+  isValidLength,
   PathHolders,
   RoutePaths,
   SnackbarSeverity,
+  TextLength,
 } from '../../util';
 import { AppSnackbar, SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
@@ -135,6 +137,19 @@ export default function ChatModelUpdatePage() {
         }
       });
     }
+    // Validate required fields
+    if (!chatModel.name?.trim()) {
+      setSnackbarMessage(t('configNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!chatModel.model_name?.trim()) {
+      setSnackbarMessage(t('chatModelNameRequired'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
 
     const payload: UpdateChatModelRequest = {
       ...(chatModel as ChatModel),
@@ -179,17 +194,40 @@ export default function ChatModelUpdatePage() {
                 <TextField
                   fullWidth
                   size="small"
-                  helperText={t('hyperTextMedium')}
-                  label={t('modelName')}
-                  value={chatModel.model_name || ''}
-                  onChange={(e) => updateModel('model_name', e.target.value)}
+                  helperText={t('hyperTextLong')}
+                  label={t('configName')}
+                  value={chatModel.name}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (isValidLength(newValue, TextLength.LONG))
+                      updateModel('name', newValue);
+                  }}
                   placeholder={`${t('enter')} ${t(
                     'modelName'
                   ).toLowerCase()}...`}
                 />
+                <TextField
+                  fullWidth
+                  size="small"
+                  helperText={t('hyperTextMedium')}
+                  label={t('modelName')}
+                  value={chatModel.model_name || ''}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    if (isValidLength(newValue, TextLength.LONG))
+                      updateModel('model_name', newValue);
+                  }}
+                  placeholder={`${t('enter')} ${t(
+                    'modelName'
+                  ).toLowerCase()}...`}
+                />
+              </Stack>
+
+              <Stack direction={'row'} spacing={2} width="100%">
                 <SelectForm
                   label={t('selectModelType')}
                   dataList={providerList}
+                  isClearable={false}
                   value={
                     providerList.find(
                       (item) => item.value === chatModel.type
@@ -202,9 +240,6 @@ export default function ChatModelUpdatePage() {
                     );
                   }}
                 />
-              </Stack>
-
-              <Stack direction={'row'} spacing={2} width="100%">
                 <TextField
                   fullWidth
                   size="small"
