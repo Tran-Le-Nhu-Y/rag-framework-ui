@@ -296,7 +296,7 @@ export default function CNNModelUpdatePage() {
     <Stack justifyContent={'center'} alignItems="center" spacing={1}>
       <Typography variant="h4">{t('updateRecognitionModel')}</Typography>
       <Stack spacing={1} width="100%">
-        <Stack direction={'row'} spacing={2} width="100%" alignItems={'center'}>
+        <Stack direction={'row'} spacing={1} width="100%" alignItems={'center'}>
           <TextField
             fullWidth
             size="small"
@@ -312,42 +312,55 @@ export default function CNNModelUpdatePage() {
               'recognitionModelName'
             ).toLowerCase()}...`}
           />
-          <Stack direction={'row'} spacing={2} width="100%" alignItems="center">
-            <TextField
-              fullWidth
-              size="small"
-              label={t('minProbability')}
-              type="number"
-              inputProps={{
-                min: 0,
-                max: 1,
-                step: 0.1,
-              }}
-              value={imageRecognizer.min_probability}
-              onChange={(e) =>
-                updateFieldRecoginzer('min_probability', e.target.value)
-              }
-              placeholder={`${t('enter')} ${t(
-                'minProbability'
-              ).toLowerCase()}...`}
-            />
-            <TextField
-              fullWidth
-              size="small"
-              label={t('maxResults')}
-              type="number"
-              inputProps={{
-                min: 1,
-                max: 50,
-                step: 1,
-              }}
-              value={imageRecognizer.max_results}
-              onChange={(e) =>
-                updateFieldRecoginzer('max_results', e.target.value)
-              }
-              placeholder={`${t('enter')} ${t('maxResults').toLowerCase()}...`}
-            />
-            <Stack>
+          <Stack direction={'row'} spacing={1} width="100%" alignItems="center">
+            <Stack direction={'row'} spacing={1} width="55%">
+              <TextField
+                sx={{ width: '50%' }}
+                size="small"
+                label={t('minProbability')}
+                type="number"
+                inputProps={{
+                  min: 0,
+                  max: 1,
+                  step: 0.1,
+                }}
+                value={imageRecognizer.min_probability}
+                onChange={(e) =>
+                  updateFieldRecoginzer('min_probability', e.target.value)
+                }
+                placeholder={`${t('enter')} ${t(
+                  'minProbability'
+                ).toLowerCase()}...`}
+              />
+              <TextField
+                sx={{ width: '50%' }}
+                size="small"
+                label={t('maxResults')}
+                type="number"
+                inputProps={{
+                  min: 1,
+                  max: 50,
+                  step: 1,
+                }}
+                value={imageRecognizer.max_results}
+                onChange={(e) =>
+                  updateFieldRecoginzer('max_results', e.target.value)
+                }
+                placeholder={`${t('enter')} ${t(
+                  'maxResults'
+                ).toLowerCase()}...`}
+              />
+            </Stack>
+
+            <Stack
+              direction={'row'}
+              spacing={1}
+              width="100%"
+              alignItems="center"
+            >
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('mageRecognitionModelConfigFile')}:
+              </Typography>
               {fileDetail.isLoading ? (
                 <Typography variant="body1">{t('loading')}</Typography>
               ) : fileData ? (
@@ -381,8 +394,7 @@ export default function CNNModelUpdatePage() {
                         setIsRemoveOldFile(true);
                         setNewFile(null);
                       }}
-                      acceptedFileTypes={['.txt']}
-                      // acceptedFileTypes={['.pt', '.pth']}
+                      acceptedFileTypes={[]}
                     />
                   </span>
                 </Tooltip>
@@ -673,26 +685,28 @@ export default function CNNModelUpdatePage() {
 
                 {config.type === 'grayscale' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
-                    <SelectForm
-                      label={t('selectNumOutputChannels')}
-                      dataList={numOutputChannels}
-                      value={
-                        numOutputChannels.find(
-                          (item) =>
-                            Number(item.value) === config.num_output_channels
-                        ) || null
-                      }
-                      onChange={(val) => {
-                        const value = Number((val as Data).value);
-                        const updated = [...preprocessingConfigs];
-                        const current = {
-                          ...(updated[index] as ImageGrayscale),
-                        };
-                        current.num_output_channels = value;
-                        updated[index] = current;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
+                    <Box width={'33%'}>
+                      <SelectForm
+                        label={t('selectNumOutputChannels')}
+                        dataList={numOutputChannels}
+                        value={
+                          numOutputChannels.find(
+                            (item) =>
+                              Number(item.value) === config.num_output_channels
+                          ) || null
+                        }
+                        onChange={(val) => {
+                          const value = Number((val as Data).value);
+                          const updated = [...preprocessingConfigs];
+                          const current = {
+                            ...(updated[index] as ImageGrayscale),
+                          };
+                          current.num_output_channels = value;
+                          updated[index] = current;
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                    </Box>
                   </Stack>
                 )}
                 <IconButton

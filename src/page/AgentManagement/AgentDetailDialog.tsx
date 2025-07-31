@@ -280,7 +280,7 @@ export default function AgentDetailDialog({
           {t('export')}
         </Button>
         <Button onClick={onClose} variant="outlined">
-          {t('close')}
+          {t('exit')}
         </Button>
       </DialogActions>
     </Dialog>

@@ -162,20 +162,20 @@ export default function ChatModelDetailDialog({
                 <Stack spacing={2} width="100%">
                   <Stack direction={'row'} spacing={1}>
                     <Typography variant="body1" fontWeight={'bold'}>
-                      {t('maxRetries')}:
+                      {t('timeout')}:
                     </Typography>
                     <Typography variant="body1" fontWeight={500}>
-                      {chatModel.max_retries || 'N/A'}
+                      {chatModel.timeout || 'N/A'}
                     </Typography>
                   </Stack>
                 </Stack>
               </Stack>
               <Stack direction={'row'} spacing={1}>
                 <Typography variant="body1" fontWeight={'bold'}>
-                  {t('timeout')}:
+                  {t('maxRetries')}:
                 </Typography>
                 <Typography variant="body1" fontWeight={500}>
-                  {chatModel.timeout || 'N/A'}
+                  {chatModel.max_retries || 'N/A'}
                 </Typography>
               </Stack>
               <Typography variant="body1" fontWeight={'bold'}>

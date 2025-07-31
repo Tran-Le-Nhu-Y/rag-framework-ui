@@ -255,6 +255,7 @@ export default function VectorStoreUpdatePage() {
             />
 
             <SelectForm
+              isDisable={true}
               label={t('mode')}
               dataList={modeList}
               value={

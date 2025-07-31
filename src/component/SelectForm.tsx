@@ -18,6 +18,7 @@ type Props = {
   error?: boolean;
   helperText?: string;
   isClearable?: boolean;
+  isDisable?: boolean;
 };
 
 export default function SelectForm({
@@ -30,6 +31,7 @@ export default function SelectForm({
   error = false,
   helperText = '',
   isClearable = true,
+  isDisable = false,
 }: Props) {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<Data[]>([]);
@@ -45,6 +47,7 @@ export default function SelectForm({
   return (
     <Autocomplete
       multiple={multiple}
+      disabled={isDisable}
       sx={{ width: '100%' }}
       size="small"
       open={open}

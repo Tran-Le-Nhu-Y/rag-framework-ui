@@ -46,7 +46,11 @@ export default function PromptDetailDialog({
             <Typography variant="body1" fontWeight={'bold'}>
               {t('respond_prompt')}:
             </Typography>
-            <Typography variant="body1" fontWeight={500}>
+            <Typography
+              variant="body1"
+              fontWeight={500}
+              sx={{ textAlign: 'justify' }}
+            >
               {prompt?.respond_prompt || 'N/A'}
             </Typography>
             <Box mt={3} display="flex" justifyContent="center" gap={2}>

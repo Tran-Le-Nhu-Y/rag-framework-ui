@@ -221,7 +221,7 @@ export default function CNNModelCreationPage() {
     <Stack justifyContent={'center'} alignItems="center" spacing={1}>
       <Typography variant="h4">{t('createRecognitionModel')}</Typography>
       <Stack spacing={1} width="100%">
-        <Stack direction={'row'} spacing={2} width="100%" alignItems={'center'}>
+        <Stack direction={'row'} spacing={1} width="100%" alignItems={'center'}>
           <TextField
             fullWidth
             size="small"
@@ -237,42 +237,55 @@ export default function CNNModelCreationPage() {
               'recognitionModelName'
             ).toLowerCase()}...`}
           />
-          <Stack direction={'row'} spacing={2} width="100%" alignItems="center">
-            <TextField
-              fullWidth
-              size="small"
-              label={t('minProbability')}
-              type="number"
-              inputProps={{
-                min: 0,
-                max: 1,
-                step: 0.1,
-              }}
-              value={imageRecognizer.min_probability}
-              onChange={(e) =>
-                updateFieldRecoginzer('min_probability', e.target.value)
-              }
-              placeholder={`${t('enter')} ${t(
-                'minProbability'
-              ).toLowerCase()}...`}
-            />
-            <TextField
-              fullWidth
-              size="small"
-              label={t('maxResults')}
-              type="number"
-              inputProps={{
-                min: 1,
-                max: 50,
-                step: 1,
-              }}
-              value={imageRecognizer.max_results}
-              onChange={(e) =>
-                updateFieldRecoginzer('max_results', e.target.value)
-              }
-              placeholder={`${t('enter')} ${t('maxResults').toLowerCase()}...`}
-            />
-            <Stack>
+          <Stack direction={'row'} spacing={1} width="100%" alignItems="center">
+            <Stack direction={'row'} spacing={1} width="55%">
+              <TextField
+                sx={{ width: '50%' }}
+                size="small"
+                label={t('minProbability')}
+                type="number"
+                inputProps={{
+                  min: 0,
+                  max: 1,
+                  step: 0.1,
+                }}
+                value={imageRecognizer.min_probability}
+                onChange={(e) =>
+                  updateFieldRecoginzer('min_probability', e.target.value)
+                }
+                placeholder={`${t('enter')} ${t(
+                  'minProbability'
+                ).toLowerCase()}...`}
+              />
+              <TextField
+                sx={{ width: '50%' }}
+                size="small"
+                label={t('maxResults')}
+                type="number"
+                inputProps={{
+                  min: 1,
+                  max: 50,
+                  step: 1,
+                }}
+                value={imageRecognizer.max_results}
+                onChange={(e) =>
+                  updateFieldRecoginzer('max_results', e.target.value)
+                }
+                placeholder={`${t('enter')} ${t(
+                  'maxResults'
+                ).toLowerCase()}...`}
+              />
+            </Stack>
+
+            <Stack
+              direction={'row'}
+              spacing={1}
+              width="100%"
+              alignItems="center"
+            >
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('mageRecognitionModelConfigFile')}:
+              </Typography>
               <Tooltip title={t('add_mageRecognitionModelConfigFile')}>
                 <span>
                   <InputFileUpload
@@ -280,7 +293,6 @@ export default function CNNModelCreationPage() {
                       if (!files || files.length === 0) return;
                       setNewFile(files[0]);
                     }}
-                    // acceptedFileTypes={['.pt', '.pth']}
                     acceptedFileTypes={[]}
                   />
                 </span>
@@ -550,22 +562,25 @@ export default function CNNModelCreationPage() {
 
                 {config.type === 'grayscale' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
-                    <SelectForm
-                      label={t('selectNumOutputChannels')}
-                      dataList={numOutputChannels}
-                      value={
-                        numOutputChannels.find(
-                          (item) =>
-                            Number(item.value) === config.num_output_channels
-                        ) || null
-                      }
-                      onChange={(val) => {
-                        const updated = [...preprocessingConfigs];
-                        (updated[index] as ImageGrayscale).num_output_channels =
-                          Number((val as Data).value);
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
+                    <Box width={'33%'}>
+                      <SelectForm
+                        label={t('selectNumOutputChannels')}
+                        dataList={numOutputChannels}
+                        value={
+                          numOutputChannels.find(
+                            (item) =>
+                              Number(item.value) === config.num_output_channels
+                          ) || null
+                        }
+                        onChange={(val) => {
+                          const updated = [...preprocessingConfigs];
+                          (
+                            updated[index] as ImageGrayscale
+                          ).num_output_channels = Number((val as Data).value);
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                    </Box>
                   </Stack>
                 )}
                 <IconButton

@@ -225,6 +225,7 @@ export default function ChatModelUpdatePage() {
 
               <Stack direction={'row'} spacing={2} width="100%">
                 <SelectForm
+                  isDisable={true}
                   label={t('selectModelType')}
                   dataList={providerList}
                   isClearable={false}
