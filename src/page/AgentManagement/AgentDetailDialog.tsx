@@ -265,7 +265,7 @@ export default function AgentDetailDialog({
           </Stack>
 
           <Stack direction="row" spacing={1}>
-            <Typography fontWeight="bold">{t('promptConfig')}:</Typography>
+            <Typography fontWeight="bold">{t('searchTool')}:</Typography>
             <Typography>{toolNames || 'N/A'}</Typography>
           </Stack>
         </Stack>
