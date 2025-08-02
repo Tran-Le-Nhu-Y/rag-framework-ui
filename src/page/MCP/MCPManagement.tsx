@@ -11,7 +11,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDeleteMCP, useGetMCPs } from '../../service';
 import {
   HideDuration,
@@ -48,19 +48,18 @@ const MCPManagementPage = () => {
       setSnackbarOpen(true);
     }
   }, [mcps.isError, t]);
-
-  const [rows, setRows] = useState<MCPStreamableServer[]>([]);
-  useEffect(() => {
-    if (mcps.data?.content) {
-      const mappedRows: MCPStreamableServer[] = mcps.data.content.map(
-        (mcp) => ({
-          ...mcp,
-          id: mcp.id,
-        })
+  const rows = useMemo(() => {
+    if (mcps.isError) return [];
+    if (mcps.data?.content)
+      return mcps.data.content.map(
+        (mcp) =>
+          ({
+            ...mcp,
+            id: mcp.id,
+          } as MCPStreamableServer)
       );
-      setRows(mappedRows);
-    }
-  }, [mcps.data, t]);
+    else return [];
+  }, [mcps.data?.content, mcps.isError]);
 
   const columns: GridColDef<MCPStreamableServer>[] = [
     {

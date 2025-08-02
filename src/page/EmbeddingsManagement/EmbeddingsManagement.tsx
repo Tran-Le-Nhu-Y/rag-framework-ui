@@ -17,7 +17,7 @@ import {
   RoutePaths,
   SnackbarSeverity,
 } from '../../util';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useDeleteEmbeddingModel,
   useGetEmbeddingById,
@@ -126,7 +126,6 @@ const EmbeddingsManagementPage = () => {
       ],
     },
   ];
-  const [rows, setRows] = useState<Embeddings[]>([]);
   const [embeddingModelQuery] = useState<GetEmbeddingsQuery>({
     offset: 0,
     limit: 40,
@@ -135,15 +134,24 @@ const EmbeddingsManagementPage = () => {
     skip: !embeddingModelQuery,
   });
   useEffect(() => {
-    if (embeddingModel.data?.content) {
-      setRows(embeddingModel.data.content);
-    }
     if (embeddingModel.isError) {
       setSnackbarMessage(t('embeddingModelsLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
   }, [embeddingModel.data?.content, embeddingModel.isError, t]);
+  const rows = useMemo(() => {
+    if (embeddingModel.isError) return [];
+    if (embeddingModel.data?.content)
+      return embeddingModel.data.content.map(
+        (embedding) =>
+          ({
+            ...embedding,
+            id: embedding.id,
+          } as Embeddings)
+      );
+    else return [];
+  }, [embeddingModel.data?.content, embeddingModel.isError]);
 
   //delete embedding model
   const [deleteEmbeddingModelTrigger, deleteEmbeddingModel] =

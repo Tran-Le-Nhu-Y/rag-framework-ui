@@ -80,7 +80,7 @@ export const toolApi = createApi({
         },
       }),
       invalidatesTags() {
-        return [{ type: 'Tool' } as const];
+        return [{ type: 'PagingTool' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {

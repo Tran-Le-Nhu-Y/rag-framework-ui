@@ -79,7 +79,7 @@ export const retrieverApi = createApi({
         body: data,
       }),
       invalidatesTags() {
-        return [{ type: 'VectorStore' } as const];
+        return [{ type: 'PagingVectorStore' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {
@@ -170,7 +170,7 @@ export const retrieverApi = createApi({
         body: data,
       }),
       invalidatesTags() {
-        return [{ type: 'BM25' } as const];
+        return [{ type: 'PagingBM25' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {

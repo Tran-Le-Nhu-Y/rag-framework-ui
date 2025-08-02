@@ -74,7 +74,7 @@ export const mcpApi = createApi({
         body: data,
       }),
       invalidatesTags() {
-        return [{ type: 'MCP' } as const];
+        return [{ type: 'PagingMCP' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {

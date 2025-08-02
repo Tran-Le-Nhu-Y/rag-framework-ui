@@ -91,7 +91,7 @@ export const promptApi = createApi({
         },
       }),
       invalidatesTags() {
-        return [{ type: 'Prompt' } as const];
+        return [{ type: 'PagingPrompt' } as const];
       },
       transformResponse: (response: string) => response,
       transformErrorResponse(baseQueryReturnValue) {

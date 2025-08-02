@@ -11,7 +11,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PromptDetailDialog from './PromptDetail';
 import { useDeletePrompt, useGetPrompts } from '../../service';
 import {
@@ -49,17 +49,18 @@ const PromptManagementPage = () => {
     }
   }, [prompts.isError, t]);
 
-  const [rows, setRows] = useState<Prompt[]>([]);
-  useEffect(() => {
-    if (prompts.data?.content) {
-      const mappedRows: Prompt[] = prompts.data.content.map((prompt) => ({
-        id: prompt.id,
-        name: prompt.name,
-        respond_prompt: prompt.respond_prompt,
-      }));
-      setRows(mappedRows);
-    }
-  }, [prompts.data, t]);
+  const rows = useMemo(() => {
+    if (prompts.isError) return [];
+    if (prompts.data?.content)
+      return prompts.data.content.map(
+        (prompt) =>
+          ({
+            ...prompt,
+            id: prompt.id,
+          } as Prompt)
+      );
+    else return [];
+  }, [prompts.data?.content, prompts.isError]);
 
   const columns: GridColDef<Prompt>[] = [
     {

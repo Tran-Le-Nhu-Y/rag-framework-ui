@@ -38,19 +38,7 @@ const AgentManagementPage = () => {
   const [detailOpen, setDetailOpen] = useState(false);
   const [viewedAgent, setViewedAgent] = useState<Agent | null>(null);
   const [agentIdToDelete, setAgentIdToDelete] = useState<string | null>(null);
-  //   const handleExport = (agent: any) => {
-  //     const blob = new Blob([JSON.stringify(agent, null, 2)], {
-  //       type: 'application/json',
-  //     });
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = `${agent.name}-config.json`;
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //     URL.revokeObjectURL(url);
-  //   };
+
   // Fetch all agents
   const [agentQuery] = useState<GetAgentQuery>({
     offset: 0,

@@ -17,7 +17,7 @@ import {
   RoutePaths,
   SnackbarSeverity,
 } from '../../util';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useDeleteChatModel,
   useGetChatModelById,
@@ -145,7 +145,6 @@ const ChatModelManagementPage = () => {
       ],
     },
   ];
-  const [rows, setRows] = useState<ChatModel[]>([]);
   const [chatModelQuery] = useState<GetChatModelsQuery>({
     offset: 0,
     limit: 40,
@@ -154,15 +153,24 @@ const ChatModelManagementPage = () => {
     skip: !chatModelQuery,
   });
   useEffect(() => {
-    if (chatModels.data?.content) {
-      setRows(chatModels.data.content);
-    }
     if (chatModels.isError) {
       setSnackbarMessage(t('chatModelsLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
   }, [chatModels.data?.content, chatModels.isError, t]);
+  const rows = useMemo(() => {
+    if (chatModels.isError) return [];
+    if (chatModels.data?.content)
+      return chatModels.data.content.map(
+        (chatModel) =>
+          ({
+            ...chatModel,
+            id: chatModel.id,
+          } as ChatModel)
+      );
+    else return [];
+  }, [chatModels.data?.content, chatModels.isError]);
 
   //delete chat model
   const [deleteChatModelTrigger, deleteChatModel] = useDeleteChatModel();

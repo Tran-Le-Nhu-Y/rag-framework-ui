@@ -11,7 +11,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDeleteRetriever, useGetBM25s } from '../../service';
 import {
   HideDuration,
@@ -49,16 +49,18 @@ const BM25ManagementPage = () => {
     }
   }, [bm25s.isError, t]);
 
-  const [rows, setRows] = useState<BM25Retriever[]>([]);
-  useEffect(() => {
-    if (bm25s.data?.content) {
-      const mappedRows: BM25Retriever[] = bm25s.data.content.map((bm25) => ({
-        ...bm25,
-        id: bm25.id,
-      }));
-      setRows(mappedRows);
-    }
-  }, [bm25s.data, t]);
+  const rows = useMemo(() => {
+    if (bm25s.isError) return [];
+    if (bm25s.data?.content)
+      return bm25s.data.content.map(
+        (bm25) =>
+          ({
+            ...bm25,
+            id: bm25.id,
+          } as BM25Retriever)
+      );
+    else return [];
+  }, [bm25s.data?.content, bm25s.isError]);
 
   const columns: GridColDef<BM25Retriever>[] = [
     {

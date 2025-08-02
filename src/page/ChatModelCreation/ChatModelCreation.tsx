@@ -34,7 +34,7 @@ export default function ChatModelCreationPage() {
   const [provider, setProvider] = useState<string>('');
   const [temperature, setTemperature] = useState<number>(0.5);
   const [topK, setTopK] = useState<number | null>(40);
-  const [topP, setTopP] = useState<number | null>(null);
+  const [topP, setTopP] = useState<number | null>(0);
   const providerList: Data[] = [
     { label: 'Ollama', value: 'ollama' },
     { label: 'Google Gen AI', value: 'google_genai' },
