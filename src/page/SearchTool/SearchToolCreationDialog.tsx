@@ -7,6 +7,7 @@ import {
   MenuItem,
   Stack,
   TextField,
+  Tooltip,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -69,20 +70,23 @@ export default function SearchToolCreateDialog({
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            size="small"
-            label={t('maxResults')}
-            type="number"
-            value={form.max_results}
-            inputProps={{
-              min: 1,
-              step: 1,
-            }}
-            onChange={(e) =>
-              handleChange('max_results', Number(e.target.value))
-            }
-            fullWidth
-          />
+          <Tooltip title={t('searchToolMaxResultsTooltip')}>
+            <TextField
+              size="small"
+              label={t('maxResults')}
+              type="number"
+              value={form.max_results}
+              inputProps={{
+                min: 1,
+                step: 1,
+              }}
+              onChange={(e) =>
+                handleChange('max_results', Number(e.target.value))
+              }
+              fullWidth
+            />
+          </Tooltip>
+
           <Box display="flex" justifyContent="center" gap={2}>
             <Button variant="contained" onClick={handleSubmit}>
               {t('confirm')}

@@ -1,4 +1,11 @@
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import {
@@ -80,7 +87,7 @@ export default function EmbeddingCreationPage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.EMBEDDINGS);
-      }, 1000);
+      }, 500);
     } catch {
       setSnackbarMessage(t('createEmbeddingModelError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
@@ -118,20 +125,22 @@ export default function EmbeddingCreationPage() {
                 'embeddingModelName'
               ).toLowerCase()}...`}
             />
+            <Tooltip title={t('embeddingModelNameTooltip')} placement="top">
+              <TextField
+                type="text"
+                size="small"
+                placeholder={`${t('enter')} ${t('modelName').toLowerCase()}...`}
+                helperText={t('hyperTextMedium')}
+                label={t('modelName')}
+                value={embeddingModel.model_name}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (isValidLength(newValue, TextLength.MEDIUM))
+                    updateEmbeddingModel('model_name', newValue);
+                }}
+              />
+            </Tooltip>
 
-            <TextField
-              type="text"
-              size="small"
-              placeholder={`${t('enter')} ${t('modelName').toLowerCase()}...`}
-              helperText={t('hyperTextMedium')}
-              label={t('modelName')}
-              value={embeddingModel.model_name}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.MEDIUM))
-                  updateEmbeddingModel('model_name', newValue);
-              }}
-            />
             <SelectForm
               label={t('selectTypeModel')}
               dataList={typeList}

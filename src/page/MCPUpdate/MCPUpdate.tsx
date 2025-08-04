@@ -20,7 +20,7 @@ import {
 } from '../../util';
 import { useNavigate, useParams } from 'react-router';
 import { useGetMCPById, useUpdateMCP } from '../../service';
-import { AppSnackbar, SelectForm } from '../../component';
+import { AppSnackbar, Loading, SelectForm } from '../../component';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import type { MCPStreamableServer, MCPStreamType } from '../../@types/entities';
@@ -138,7 +138,7 @@ export default function MCPUpdatePage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.MCP);
-      }, 1000);
+      }, 500);
     } catch (error) {
       setSnackbarMessage(t('createMCPFailed'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
@@ -146,6 +146,7 @@ export default function MCPUpdatePage() {
       console.log(error);
     }
   };
+  if (mcp.isLoading) return <Loading />;
 
   return (
     <Stack spacing={1}>
@@ -197,62 +198,59 @@ export default function MCPUpdatePage() {
             />
           </Stack>
           <Stack spacing={2} direction={'row'} width={'100%'}>
-            <TextField
-              fullWidth
-              size="small"
-              helperText={t('hyperTextMedium')}
-              label={t('url')}
-              value={streamableServer.url}
-              onChange={(e) =>
-                setStreamableServer((prev) => ({
-                  ...prev,
-                  url: e.target.value,
-                }))
-              }
-              placeholder={`${t('enter')} ${t('url').toLowerCase()}...`}
-            />
+            <Tooltip title={t('urlTooltip')} placement="top">
+              <TextField
+                fullWidth
+                size="small"
+                helperText={t('hyperTextMedium')}
+                label={t('url')}
+                value={streamableServer.url}
+                onChange={(e) =>
+                  setStreamableServer((prev) => ({
+                    ...prev,
+                    url: e.target.value,
+                  }))
+                }
+                placeholder={`${t('enter')} ${t('url').toLowerCase()}...`}
+              />
+            </Tooltip>
 
-            <TextField
-              fullWidth
-              size="small"
-              placeholder={`${t('enter')} ${t('timeout').toLowerCase()}...`}
-              label={t('timeout')}
-              value={streamableServer.timeout}
-              type="number"
-              inputProps={{
-                min: 0,
-                step: 1,
-              }}
-              onChange={(e) =>
-                setStreamableServer((prev) => ({
-                  ...prev,
-                  timeout: Number(e.target.value),
-                }))
-              }
-            />
+            <Tooltip title={t('mcpTimeoutTooltip')} placement="top">
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                placeholder={`${t('enter')} ${t('timeout').toLowerCase()}...`}
+                label={t('timeout')}
+                value={streamableServer.timeout}
+                onChange={(e) =>
+                  setStreamableServer((prev) => ({
+                    ...prev,
+                    timeout: Number(e.target.value),
+                  }))
+                }
+              />
+            </Tooltip>
           </Stack>
           <Stack spacing={2} direction={'row'} width={'100%'}>
-            <TextField
-              fullWidth
-              size="small"
-              helperText={t('hyperTextMedium')}
-              label={t('sse_read_timeout')}
-              value={streamableServer.sse_read_timeout}
-              type="number"
-              inputProps={{
-                min: 0,
-                step: 1,
-              }}
-              onChange={(e) =>
-                setStreamableServer((prev) => ({
-                  ...prev,
-                  sse_read_timeout: Number(e.target.value),
-                }))
-              }
-              placeholder={`${t('enter')} ${t(
-                'sse_read_timeout'
-              ).toLowerCase()}...`}
-            />
+            <Tooltip title={t('sse_read_timeout_Tooltip')} placement="top">
+              <TextField
+                fullWidth
+                size="small"
+                helperText={t('hyperTextMedium')}
+                label={t('sse_read_timeout')}
+                value={streamableServer.sse_read_timeout}
+                onChange={(e) =>
+                  setStreamableServer((prev) => ({
+                    ...prev,
+                    sse_read_timeout: Number(e.target.value),
+                  }))
+                }
+                placeholder={`${t('enter')} ${t(
+                  'sse_read_timeout'
+                ).toLowerCase()}...`}
+              />
+            </Tooltip>
 
             <FormControlLabel
               sx={{ width: '100%' }}

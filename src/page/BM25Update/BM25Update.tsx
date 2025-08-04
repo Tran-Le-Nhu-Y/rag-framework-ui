@@ -5,6 +5,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +27,12 @@ import {
   usePostFile,
   useUpdateBM25,
 } from '../../service';
-import { AppSnackbar, InputFileUpload, SelectForm } from '../../component';
+import {
+  AppSnackbar,
+  InputFileUpload,
+  Loading,
+  SelectForm,
+} from '../../component';
 import type {
   BM25Retriever,
   Embeddings,
@@ -106,7 +112,7 @@ export default function BM25UpdatePage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.BM25);
-      }, 1000);
+      }, 500);
     }
   }, [updateBM25.isError, updateBM25.isSuccess, navigate, t]);
 
@@ -195,6 +201,7 @@ export default function BM25UpdatePage() {
     }
   }, [embeddingModel.data?.content, embeddingModel.isError, t]);
 
+  if (bm25Detail.isLoading || embeddingModel.isLoading) return <Loading />;
   return (
     <Stack spacing={1}>
       <AppSnackbar
@@ -228,25 +235,27 @@ export default function BM25UpdatePage() {
               }}
               placeholder={`${t('enter')} ${t('bm25Name').toLowerCase()}...`}
             />
-            <TextField
-              fullWidth
-              size="small"
-              label={t('weight')}
-              type="number"
-              inputProps={{
-                min: 0,
-                max: 1,
-                step: 0.1,
-              }}
-              value={bm25.weight ?? 0}
-              onChange={(e) =>
-                setBM25((prev) => ({
-                  ...prev,
-                  weight: Number(e.target.value),
-                }))
-              }
-              placeholder={`${t('enter')} ${t('weight').toLowerCase()}...`}
-            />
+            <Tooltip title={t('weightTooltip')} placement="top">
+              <TextField
+                fullWidth
+                size="small"
+                label={t('weight')}
+                type="number"
+                inputProps={{
+                  min: 0,
+                  max: 1,
+                  step: 0.1,
+                }}
+                value={bm25.weight ?? 0}
+                onChange={(e) =>
+                  setBM25((prev) => ({
+                    ...prev,
+                    weight: Number(e.target.value),
+                  }))
+                }
+                placeholder={`${t('enter')} ${t('weight').toLowerCase()}...`}
+              />
+            </Tooltip>
           </Stack>
 
           <Stack spacing={2} direction={'row'} width={'100%'}>

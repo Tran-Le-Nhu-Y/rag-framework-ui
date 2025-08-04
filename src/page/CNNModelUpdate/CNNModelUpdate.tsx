@@ -20,7 +20,12 @@ import {
   SnackbarSeverity,
   TextLength,
 } from '../../util';
-import { AppSnackbar, InputFileUpload, SelectForm } from '../../component';
+import {
+  AppSnackbar,
+  InputFileUpload,
+  Loading,
+  SelectForm,
+} from '../../component';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate, useParams } from 'react-router';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -279,7 +284,7 @@ export default function CNNModelUpdatePage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.CNN);
-      }, 1000);
+      }, 500);
       // Reset file state
       setNewFile(null);
       setIsRemoveOldFile(false);
@@ -291,6 +296,7 @@ export default function CNNModelUpdatePage() {
       setSnackbarOpen(true);
     }
   };
+  if (recognizerDetail.isLoading) return <Loading />;
 
   return (
     <Stack justifyContent={'center'} alignItems="center" spacing={1}>
@@ -314,42 +320,46 @@ export default function CNNModelUpdatePage() {
           />
           <Stack direction={'row'} spacing={1} width="100%" alignItems="center">
             <Stack direction={'row'} spacing={1} width="55%">
-              <TextField
-                sx={{ width: '50%' }}
-                size="small"
-                label={t('minProbability')}
-                type="number"
-                inputProps={{
-                  min: 0,
-                  max: 1,
-                  step: 0.1,
-                }}
-                value={imageRecognizer.min_probability}
-                onChange={(e) =>
-                  updateFieldRecoginzer('min_probability', e.target.value)
-                }
-                placeholder={`${t('enter')} ${t(
-                  'minProbability'
-                ).toLowerCase()}...`}
-              />
-              <TextField
-                sx={{ width: '50%' }}
-                size="small"
-                label={t('maxResults')}
-                type="number"
-                inputProps={{
-                  min: 1,
-                  max: 50,
-                  step: 1,
-                }}
-                value={imageRecognizer.max_results}
-                onChange={(e) =>
-                  updateFieldRecoginzer('max_results', e.target.value)
-                }
-                placeholder={`${t('enter')} ${t(
-                  'maxResults'
-                ).toLowerCase()}...`}
-              />
+              <Tooltip title={t('minProbabilityTooltip')} placement="top">
+                <TextField
+                  sx={{ width: '50%' }}
+                  size="small"
+                  label={t('minProbability')}
+                  type="number"
+                  inputProps={{
+                    min: 0,
+                    max: 1,
+                    step: 0.1,
+                  }}
+                  value={imageRecognizer.min_probability}
+                  onChange={(e) =>
+                    updateFieldRecoginzer('min_probability', e.target.value)
+                  }
+                  placeholder={`${t('enter')} ${t(
+                    'minProbability'
+                  ).toLowerCase()}...`}
+                />
+              </Tooltip>
+              <Tooltip title={t('maxResultsTooltip')} placement="top">
+                <TextField
+                  sx={{ width: '50%' }}
+                  size="small"
+                  label={t('maxResults')}
+                  type="number"
+                  inputProps={{
+                    min: 1,
+                    max: 50,
+                    step: 1,
+                  }}
+                  value={imageRecognizer.max_results}
+                  onChange={(e) =>
+                    updateFieldRecoginzer('max_results', e.target.value)
+                  }
+                  placeholder={`${t('enter')} ${t(
+                    'maxResults'
+                  ).toLowerCase()}...`}
+                />
+              </Tooltip>
             </Stack>
 
             <Stack
@@ -494,24 +504,28 @@ export default function CNNModelUpdatePage() {
             {outputClasses.map((field, index) => (
               <Stack key={index} direction="row" spacing={2} pb={2}>
                 <Stack direction={'row'} spacing={1} sx={{ width: '100%' }}>
-                  <TextField
-                    label={t('className')}
-                    size="small"
-                    value={field.name}
-                    onChange={(e) =>
-                      handleFieldChange(index, 'name', e.target.value)
-                    }
-                    sx={{ width: '30%' }}
-                  />
-                  <TextField
-                    label={t('classDescription')}
-                    value={field.description}
-                    size="small"
-                    onChange={(e) =>
-                      handleFieldChange(index, 'description', e.target.value)
-                    }
-                    sx={{ width: '70%' }}
-                  />
+                  <Tooltip title={t('classNameTooltip')}>
+                    <TextField
+                      label={t('className')}
+                      size="small"
+                      value={field.name}
+                      onChange={(e) =>
+                        handleFieldChange(index, 'name', e.target.value)
+                      }
+                      sx={{ width: '30%' }}
+                    />
+                  </Tooltip>
+                  <Tooltip title={t('classDescriptionTooltip')}>
+                    <TextField
+                      label={t('classDescription')}
+                      value={field.description}
+                      size="small"
+                      onChange={(e) =>
+                        handleFieldChange(index, 'description', e.target.value)
+                      }
+                      sx={{ width: '70%' }}
+                    />
+                  </Tooltip>
                 </Stack>
 
                 <IconButton
@@ -544,7 +558,7 @@ export default function CNNModelUpdatePage() {
               </Tooltip>
             </IconButton>
           </Stack>
-          <Stack spacing={1}>
+          <Stack spacing={2}>
             {preprocessingConfigs.map((config, index) => (
               <Stack
                 direction={'row'}
@@ -564,107 +578,108 @@ export default function CNNModelUpdatePage() {
 
                 {config.type === 'resize' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      type="number"
-                      inputProps={{
-                        min: 0,
-                        step: 1,
-                      }}
-                      label="Target Size"
-                      value={config.target_size}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        const updated = [...preprocessingConfigs];
-                        const current = {
-                          ...(updated[index] as ImageResize),
-                        };
-                        current.target_size = value;
-                        updated[index] = current;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
-                    <SelectForm
-                      label={t('Interpolation')}
-                      dataList={interpolationTypes}
-                      value={
-                        interpolationTypes.find(
-                          (item) => item.value === config.interpolation
-                        ) || null
-                      }
-                      onChange={(val) => {
-                        const value = (val as Data).value;
-                        const updated = [...preprocessingConfigs];
-                        const current = {
-                          ...(updated[index] as ImageResize),
-                        };
-                        current.interpolation = value;
-                        updated[index] = current;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      type="number"
-                      inputProps={{
-                        min: 0,
-                        step: 1,
-                      }}
-                      label="Max Size"
-                      value={config.max_size}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        const updated = [...preprocessingConfigs];
-                        const current = {
-                          ...(updated[index] as ImageResize),
-                        };
-                        current.max_size = value;
-                        updated[index] = current;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
+                    <Stack sx={{ width: '33%' }}>
+                      <Tooltip title={t('targetSizeTooltip')}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          type="number"
+                          inputProps={{
+                            min: 0,
+                            step: 1,
+                          }}
+                          label={t('targetSize')}
+                          value={config.target_size}
+                          onChange={(e) => {
+                            const updated = [...preprocessingConfigs];
+                            (updated[index] as ImageResize).target_size =
+                              Number(e.target.value);
+                            setPreprocessingConfigs(updated);
+                          }}
+                        />
+                      </Tooltip>
+                    </Stack>
+
+                    <Stack sx={{ width: '33%' }}>
+                      <Tooltip title={t('InterpolationTooltip')}>
+                        <span>
+                          <SelectForm
+                            label={t('Interpolation')}
+                            dataList={interpolationTypes}
+                            value={
+                              interpolationTypes.find(
+                                (item) => item.value === config.interpolation
+                              ) || null
+                            }
+                            onChange={(val) => {
+                              const updated = [...preprocessingConfigs];
+                              (updated[index] as ImageResize).interpolation = (
+                                val as Data
+                              ).value;
+                              setPreprocessingConfigs(updated);
+                            }}
+                          />
+                        </span>
+                      </Tooltip>
+                    </Stack>
+
+                    {/* <TextField
+										  fullWidth
+										  size="small"
+										  type="number"
+										  inputProps={{
+											min: 0,
+											step: 1,
+										  }}
+										  label="Max Size"
+										  value={config.max_size}
+										  onChange={(e) => {
+											const updated = [...preprocessingConfigs];
+											(updated[index] as ImageResize).max_size = Number(
+											  e.target.value
+											);
+											setPreprocessingConfigs(updated);
+										  }}
+										/> */}
                   </Stack>
                 )}
 
                 {config.type === 'pad' && (
                   <Stack spacing={1} direction={'row'} width={'100%'}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label="Padding"
-                      value={config.padding}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        const updated = [...preprocessingConfigs];
-                        const current = {
-                          ...(updated[index] as ImagePad),
-                        };
-                        current.padding = value;
-                        updated[index] = current;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label="Fill"
-                      type="number"
-                      value={config.fill}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        const updated = [...preprocessingConfigs];
-                        const current = {
-                          ...(updated[index] as ImagePad),
-                        };
-                        current.fill = value;
-                        updated[index] = current;
-                        setPreprocessingConfigs(updated);
-                      }}
-                    />
+                    <Tooltip title={t('paddingTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('padding')}
+                        value={config.padding}
+                        onChange={(e) => {
+                          const updated = [...preprocessingConfigs];
+                          (updated[index] as ImagePad).padding = Number(
+                            e.target.value
+                          );
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                    </Tooltip>
+
+                    <Tooltip title={t('fillTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('fill')}
+                        value={config.fill}
+                        onChange={(e) => {
+                          const updated = [...preprocessingConfigs];
+                          (updated[index] as ImagePad).fill = Number(
+                            e.target.value
+                          );
+                          setPreprocessingConfigs(updated);
+                        }}
+                      />
+                    </Tooltip>
+
                     <SelectForm
-                      label={t('mode')}
+                      label={t('paddingMode')}
                       dataList={modes}
                       value={
                         modes.find((item) => item.value === config.mode) || null

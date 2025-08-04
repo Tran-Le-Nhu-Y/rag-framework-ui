@@ -16,7 +16,7 @@ import {
   SnackbarSeverity,
   TextLength,
 } from '../../util';
-import { AppSnackbar, SelectForm } from '../../component';
+import { AppSnackbar, Loading, SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
 import { useNavigate, useParams } from 'react-router';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -164,15 +164,14 @@ export default function ChatModelUpdatePage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.CHATMODEL);
-      }, 1000);
+      }, 500);
     } catch {
       setSnackbarMessage(t('updateChatModelFail'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
   };
-  if (chatModelDetail.isLoading) return <Typography>Loading...</Typography>;
-
+  if (chatModelDetail.isLoading) return <Loading />;
   return (
     <Stack spacing={1}>
       <AppSnackbar
@@ -203,24 +202,26 @@ export default function ChatModelUpdatePage() {
                       updateModel('name', newValue);
                   }}
                   placeholder={`${t('enter')} ${t(
-                    'modelName'
+                    'configName'
                   ).toLowerCase()}...`}
                 />
-                <TextField
-                  fullWidth
-                  size="small"
-                  helperText={t('hyperTextMedium')}
-                  label={t('modelName')}
-                  value={chatModel.model_name || ''}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (isValidLength(newValue, TextLength.LONG))
-                      updateModel('model_name', newValue);
-                  }}
-                  placeholder={`${t('enter')} ${t(
-                    'modelName'
-                  ).toLowerCase()}...`}
-                />
+                <Tooltip title={t('modelNameTooltip')} placement="top">
+                  <TextField
+                    fullWidth
+                    size="small"
+                    helperText={t('hyperTextMedium')}
+                    label={t('modelName')}
+                    value={chatModel.model_name || ''}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      if (isValidLength(newValue, TextLength.LONG))
+                        updateModel('model_name', newValue);
+                    }}
+                    placeholder={`${t('enter')} ${t(
+                      'modelName'
+                    ).toLowerCase()}...`}
+                  />
+                </Tooltip>
               </Stack>
 
               <Stack direction={'row'} spacing={2} width="100%">
@@ -241,35 +242,39 @@ export default function ChatModelUpdatePage() {
                     );
                   }}
                 />
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={t('topK')}
-                  type="number"
-                  inputProps={{
-                    min: 0,
-                    step: 1,
-                  }}
-                  value={chatModel.top_k ?? ''}
-                  onChange={(e) =>
-                    updateModel('top_k', Number(e.target.value) || null)
-                  }
-                />
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={t('topP') + ' [0-1]'}
-                  type="number"
-                  inputProps={{
-                    min: 0,
-                    max: 1,
-                    step: 0.1,
-                  }}
-                  value={chatModel.top_p ?? ''}
-                  onChange={(e) =>
-                    updateModel('top_p', Number(e.target.value) || null)
-                  }
-                />
+                <Tooltip title={t('topKDescription')}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label={t('topK')}
+                    type="number"
+                    inputProps={{
+                      min: 0,
+                      step: 1,
+                    }}
+                    value={chatModel.top_k ?? ''}
+                    onChange={(e) =>
+                      updateModel('top_k', Number(e.target.value) || null)
+                    }
+                  />
+                </Tooltip>
+                <Tooltip title={t('topPDescription')}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label={t('topP') + ' [0-1]'}
+                    type="number"
+                    inputProps={{
+                      min: 0,
+                      max: 1,
+                      step: 0.1,
+                    }}
+                    value={chatModel.top_p ?? ''}
+                    onChange={(e) =>
+                      updateModel('top_p', Number(e.target.value) || null)
+                    }
+                  />
+                </Tooltip>
               </Stack>
 
               {/* Dynamic fields */}
@@ -282,21 +287,23 @@ export default function ChatModelUpdatePage() {
                     onChange={(e) => updateModel('base_url', e.target.value)}
                   />
                   <Stack direction={'row'} spacing={2} width="100%">
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('temperature') + ' [0-1]'}
-                      type="number"
-                      inputProps={{
-                        min: 0,
-                        max: 1,
-                        step: 0.1,
-                      }}
-                      value={chatModel.temperature ?? 0.8}
-                      onChange={(e) =>
-                        updateModel('temperature', Number(e.target.value))
-                      }
-                    />
+                    <Tooltip title={t('temperatureTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('temperature') + ' [0-1]'}
+                        type="number"
+                        inputProps={{
+                          min: 0,
+                          max: 1,
+                          step: 0.1,
+                        }}
+                        value={chatModel.temperature ?? 0.8}
+                        onChange={(e) =>
+                          updateModel('temperature', Number(e.target.value))
+                        }
+                      />
+                    </Tooltip>
 
                     <TextField
                       fullWidth
@@ -381,61 +388,69 @@ export default function ChatModelUpdatePage() {
               {chatModel.type === 'google_genai' && (
                 <>
                   <Stack direction={'row'} spacing={2} width="100%">
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('temperature') + ' [0-2]'}
-                      type="number"
-                      inputProps={{
-                        min: 0,
-                        max: 2,
-                        step: 0.1,
-                      }}
-                      value={chatModel.temperature ?? 0.5}
-                      onChange={(e) =>
-                        updateModel('temperature', Number(e.target.value))
-                      }
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('maxTokens')}
-                      type="number"
-                      inputProps={{ min: 10 }}
-                      value={chatModel.max_tokens ?? 1024}
-                      onChange={(e) =>
-                        updateModel(
-                          'max_tokens',
-                          Math.max(10, Number(e.target.value))
-                        )
-                      }
-                    />
+                    <Tooltip title={t('temperatureTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('temperature') + ' [0-2]'}
+                        type="number"
+                        inputProps={{
+                          min: 0,
+                          max: 2,
+                          step: 0.1,
+                        }}
+                        value={chatModel.temperature ?? 0.5}
+                        onChange={(e) =>
+                          updateModel('temperature', Number(e.target.value))
+                        }
+                      />
+                    </Tooltip>
+                    <Tooltip title={t('maxTokensTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('maxTokens')}
+                        type="number"
+                        inputProps={{ min: 10 }}
+                        value={chatModel.max_tokens ?? 1024}
+                        onChange={(e) =>
+                          updateModel(
+                            'max_tokens',
+                            Math.max(10, Number(e.target.value))
+                          )
+                        }
+                      />
+                    </Tooltip>
                   </Stack>
                   <Stack direction={'row'} spacing={2} width="100%">
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('maxRetries')}
-                      type="number"
-                      inputProps={{ min: 0 }}
-                      value={chatModel.max_retries ?? 6}
-                      onChange={(e) =>
-                        updateModel(
-                          'max_retries',
-                          Math.max(0, Number(e.target.value))
-                        )
-                      }
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('timeout')}
-                      type="number"
-                      value={chatModel.timeout ?? ''}
-                      onChange={(e) =>
-                        updateModel('timeout', Number(e.target.value) || null)
-                      }
-                    />
+                    <Tooltip title={t('maxRetriesTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('maxRetries')}
+                        type="number"
+                        inputProps={{ min: 0 }}
+                        value={chatModel.max_retries ?? 6}
+                        onChange={(e) =>
+                          updateModel(
+                            'max_retries',
+                            Math.max(0, Number(e.target.value))
+                          )
+                        }
+                      />
+                    </Tooltip>
+                    <Tooltip title={t('timeoutTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('timeout')}
+                        type="number"
+                        value={chatModel.timeout ?? ''}
+                        onChange={(e) =>
+                          updateModel('timeout', Number(e.target.value) || null)
+                        }
+                      />
+                    </Tooltip>
                   </Stack>
                   <Box
                     sx={{

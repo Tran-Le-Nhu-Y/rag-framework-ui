@@ -1,4 +1,11 @@
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import {
@@ -11,7 +18,7 @@ import {
 } from '../../util';
 import { useNavigate, useParams } from 'react-router';
 import { useGetEmbeddingById, useUpdateEmbeddingModel } from '../../service';
-import { AppSnackbar, SelectForm } from '../../component';
+import { AppSnackbar, Loading, SelectForm } from '../../component';
 import type { Data } from '../../component/SelectForm';
 import type {
   HuggingFaceEmbeddings,
@@ -101,14 +108,14 @@ export default function EmbeddingUpdatePage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.EMBEDDINGS);
-      }, 1000);
+      }, 500);
     } catch {
       setSnackbarMessage(t('updateEmbeddingModelFail'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
   };
-
+  if (embeddingModelDetail.isLoading) return <Loading />;
   return (
     <Stack spacing={1}>
       <AppSnackbar
@@ -140,21 +147,21 @@ export default function EmbeddingUpdatePage() {
               ).toLowerCase()}...`}
             />
 
-            <TextField
-              type="text"
-              size="small"
-              placeholder={`${t('enter')} ${t(
-                'respond_prompt'
-              ).toLowerCase()}...`}
-              label={t('modelName')}
-              value={embeddingModel.model_name || ''}
-              helperText={t('hyperTextVeryLong')}
-              onChange={(e) => {
-                const newValue = e.target.value;
-                if (isValidLength(newValue, TextLength.MEDIUM))
-                  updateEmbeddingModel('model_name', newValue);
-              }}
-            />
+            <Tooltip title={t('embeddingModelNameTooltip')} placement="top">
+              <TextField
+                type="text"
+                size="small"
+                placeholder={`${t('enter')} ${t('modelName').toLowerCase()}...`}
+                helperText={t('hyperTextMedium')}
+                label={t('modelName')}
+                value={embeddingModel.model_name}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (isValidLength(newValue, TextLength.MEDIUM))
+                    updateEmbeddingModel('model_name', newValue);
+                }}
+              />
+            </Tooltip>
             <SelectForm
               label={t('selectTypeModel')}
               isClearable={false}

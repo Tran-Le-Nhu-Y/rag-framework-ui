@@ -255,7 +255,7 @@ export default function AgentUpdatePage() {
   }, [tools.isError, t, tools.data?.content]);
 
   //update Agent
-  const [updateAgentTrigger] = useUpdateAgent();
+  const [updateAgentTrigger, updateAgent] = useUpdateAgent();
   const handleUpdateAgentSubmit = async () => {
     // Validate required fields
     if (!agent.name.trim()) {
@@ -304,7 +304,7 @@ export default function AgentUpdatePage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.AGENT);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage(t('createAgentFailed'));
@@ -492,10 +492,13 @@ export default function AgentUpdatePage() {
                 variant="contained"
                 color="primary"
                 onClick={handleUpdateAgentSubmit}
+                disabled={updateAgent.isSuccess}
+                loading={updateAgent.isLoading}
               >
                 {t('confirm')}
               </Button>
               <Button
+                disabled={updateAgent.isLoading || updateAgent.isSuccess}
                 variant="outlined"
                 color="info"
                 onClick={() => navigate(RoutePaths.AGENT)}

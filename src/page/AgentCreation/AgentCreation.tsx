@@ -234,7 +234,7 @@ export default function AgentCreationPage() {
   }, [tools.isError, t, tools.data?.content]);
 
   //create Agent
-  const [createAgentTrigger] = useCreateAgent();
+  const [createAgentTrigger, createAgent] = useCreateAgent();
   const handleCreateAgentSubmit = async () => {
     // Validate required fields
     if (!agent.name.trim()) {
@@ -282,7 +282,7 @@ export default function AgentCreationPage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.AGENT);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage(t('createAgentFailed'));
@@ -469,10 +469,13 @@ export default function AgentCreationPage() {
                 variant="contained"
                 color="primary"
                 onClick={handleCreateAgentSubmit}
+                loading={createAgent.isLoading}
+                disabled={createAgent.isSuccess}
               >
                 {t('confirm')}
               </Button>
               <Button
+                disabled={createAgent.isLoading || createAgent.isSuccess}
                 variant="outlined"
                 color="info"
                 onClick={() => navigate(RoutePaths.AGENT)}

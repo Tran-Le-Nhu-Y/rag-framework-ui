@@ -109,7 +109,7 @@ export default function VectorStoreCreationPage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.VECTOR_STORE);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage(t('createStoreFailed'));
@@ -354,25 +354,27 @@ export default function VectorStoreCreationPage() {
           )}
 
           <Stack spacing={2} direction={'row'} width={'100%'}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('weight')}
-              type="number"
-              inputProps={{
-                min: 0,
-                max: 1,
-                step: 0.1,
-              }}
-              value={vectorStore.weight}
-              onChange={(e) =>
-                setVectorStore((prev) => ({
-                  ...prev,
-                  weight: Number(e.target.value),
-                }))
-              }
-              placeholder={`${t('enter')} ${t('weight').toLowerCase()}...`}
-            />
+            <Tooltip title={t('weightTooltip')}>
+              <TextField
+                fullWidth
+                size="small"
+                label={t('weight')}
+                type="number"
+                inputProps={{
+                  min: 0,
+                  max: 1,
+                  step: 0.1,
+                }}
+                value={vectorStore.weight}
+                onChange={(e) =>
+                  setVectorStore((prev) => ({
+                    ...prev,
+                    weight: Number(e.target.value),
+                  }))
+                }
+                placeholder={`${t('enter')} ${t('weight').toLowerCase()}...`}
+              />
+            </Tooltip>
 
             <TextField
               fullWidth
@@ -425,34 +427,38 @@ export default function VectorStoreCreationPage() {
             />
           </Stack>
           <Stack spacing={2} direction={'row'} width={'100%'}>
-            <TextField
-              fullWidth
-              size="small"
-              label={t('tenant')}
-              value={vectorStore.tenant}
-              onChange={(e) =>
-                setVectorStore((prev) => ({
-                  ...prev,
-                  utenantrl: e.target.value,
-                }))
-              }
-              placeholder={`${t('enter')} ${t('tenant').toLowerCase()}...`}
-            />
+            <Tooltip title={t('tenantTooltip')}>
+              <TextField
+                fullWidth
+                size="small"
+                label={t('tenant')}
+                value={vectorStore.tenant}
+                onChange={(e) =>
+                  setVectorStore((prev) => ({
+                    ...prev,
+                    utenantrl: e.target.value,
+                  }))
+                }
+                placeholder={`${t('enter')} ${t('tenant').toLowerCase()}...`}
+              />
+            </Tooltip>
 
-            <TextField
-              fullWidth
-              size="small"
-              type="text"
-              placeholder={`${t('enter')} ${t('database').toLowerCase()}...`}
-              label={t('database')}
-              value={vectorStore.database}
-              onChange={(e) =>
-                setVectorStore((prev) => ({
-                  ...prev,
-                  database: e.target.value,
-                }))
-              }
-            />
+            <Tooltip title={t('databaseTooltip')}>
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                placeholder={`${t('enter')} ${t('database').toLowerCase()}...`}
+                label={t('database')}
+                value={vectorStore.database}
+                onChange={(e) =>
+                  setVectorStore((prev) => ({
+                    ...prev,
+                    database: e.target.value,
+                  }))
+                }
+              />
+            </Tooltip>
           </Stack>
 
           <Box display="flex" justifyContent="center" gap={2}>

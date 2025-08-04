@@ -36,8 +36,8 @@ export default function ChatModelCreationPage() {
   const [topK, setTopK] = useState<number | null>(40);
   const [topP, setTopP] = useState<number | null>(0);
   const providerList: Data[] = [
-    { label: 'Ollama', value: 'ollama' },
     { label: 'Google Gen AI', value: 'google_genai' },
+    { label: 'Ollama', value: 'ollama' },
   ];
 
   // ollama
@@ -177,7 +177,7 @@ export default function ChatModelCreationPage() {
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.CHATMODEL);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.error('Creating chat model error:', error);
       setSnackbarMessage(t('createChatModelError'));
@@ -219,21 +219,23 @@ export default function ChatModelCreationPage() {
                     'modelName'
                   ).toLowerCase()}...`}
                 />
-                <TextField
-                  fullWidth
-                  size="small"
-                  helperText={t('hyperTextMedium')}
-                  label={t('modelName')}
-                  value={modelName}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    if (isValidLength(newValue, TextLength.MEDIUM))
-                      setModelName(newValue);
-                  }}
-                  placeholder={`${t('enter')} ${t(
-                    'modelName'
-                  ).toLowerCase()}...`}
-                />
+                <Tooltip title={t('modelNameTooltip')} placement="top">
+                  <TextField
+                    fullWidth
+                    size="small"
+                    helperText={t('hyperTextMedium')}
+                    label={t('modelName')}
+                    value={modelName}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      if (isValidLength(newValue, TextLength.MEDIUM))
+                        setModelName(newValue);
+                    }}
+                    placeholder={`${t('enter')} ${t(
+                      'modelName'
+                    ).toLowerCase()}...`}
+                  />
+                </Tooltip>
               </Stack>
 
               <Stack direction={'row'} spacing={2} width="100%">
@@ -288,19 +290,21 @@ export default function ChatModelCreationPage() {
                     onChange={(e) => setBaseUrl(e.target.value)}
                   />
                   <Stack direction={'row'} spacing={2} width="100%">
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('temperature') + ' [0-1]'}
-                      type="number"
-                      inputProps={{
-                        min: 0,
-                        max: 1,
-                        step: 0.1,
-                      }}
-                      value={temperature}
-                      onChange={(e) => setTemperature(Number(e.target.value))}
-                    />
+                    <Tooltip title={t('temperatureTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('temperature') + ' [0-1]'}
+                        type="number"
+                        inputProps={{
+                          min: 0,
+                          max: 1,
+                          step: 0.1,
+                        }}
+                        value={temperature}
+                        onChange={(e) => setTemperature(Number(e.target.value))}
+                      />
+                    </Tooltip>
 
                     <TextField
                       fullWidth
@@ -370,53 +374,62 @@ export default function ChatModelCreationPage() {
               {provider === 'google_genai' && (
                 <>
                   <Stack direction={'row'} spacing={2} width="100%">
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('temperature') + ' [0-2]'}
-                      type="number"
-                      inputProps={{
-                        min: 0,
-                        max: 2,
-                        step: 0.1,
-                      }}
-                      value={temperature}
-                      onChange={(e) => setTemperature(Number(e.target.value))}
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('maxTokens')}
-                      type="number"
-                      inputProps={{ min: 10 }}
-                      value={maxTokens}
-                      onChange={(e) =>
-                        setMaxTokens(Math.max(10, Number(e.target.value)))
-                      }
-                    />
+                    <Tooltip title={t('temperatureTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('temperature') + ' [0-2]'}
+                        type="number"
+                        inputProps={{
+                          min: 0,
+                          max: 2,
+                          step: 0.1,
+                        }}
+                        value={temperature}
+                        onChange={(e) => setTemperature(Number(e.target.value))}
+                      />
+                    </Tooltip>
+
+                    <Tooltip title={t('maxTokensTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('maxTokens')}
+                        type="number"
+                        inputProps={{ min: 10 }}
+                        value={maxTokens}
+                        onChange={(e) =>
+                          setMaxTokens(Math.max(10, Number(e.target.value)))
+                        }
+                      />
+                    </Tooltip>
                   </Stack>
                   <Stack direction={'row'} spacing={2} width="100%">
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('maxRetries')}
-                      type="number"
-                      inputProps={{ min: 0 }}
-                      value={maxRetries}
-                      onChange={(e) =>
-                        setMaxRetries(Math.max(0, Number(e.target.value)))
-                      }
-                    />
-                    <TextField
-                      fullWidth
-                      size="small"
-                      label={t('timeout')}
-                      type="number"
-                      value={timeout ?? ''}
-                      onChange={(e) =>
-                        setTimeoutVal(Number(e.target.value) || null)
-                      }
-                    />
+                    <Tooltip title={t('maxRetriesTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('maxRetries')}
+                        type="number"
+                        inputProps={{ min: 0 }}
+                        value={maxRetries}
+                        onChange={(e) =>
+                          setMaxRetries(Math.max(0, Number(e.target.value)))
+                        }
+                      />
+                    </Tooltip>
+                    <Tooltip title={t('timeoutTooltip')}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label={t('timeout')}
+                        type="number"
+                        value={timeout ?? ''}
+                        onChange={(e) =>
+                          setTimeoutVal(Number(e.target.value) || null)
+                        }
+                      />
+                    </Tooltip>
                   </Stack>
                   <Box
                     sx={{
