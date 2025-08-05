@@ -3,6 +3,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { useTranslation } from 'react-i18next';
+import AgentCreationGuide from './AgentCreationGuide';
+import FileConfigGuide from './ClassFileConfigGuide';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -43,20 +45,32 @@ export default function UseGuidePage() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderColor: 'divider' }}>
+      <Box sx={{ borderColor: 'divider', width: '100%' }}>
         <Tabs
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
           centered
+          sx={{ width: '100%' }}
         >
-          <Tab label={t('agentCreationGuide')} {...a11yProps(0)} />
-          <Tab label={t('fileConfigCreationGuide')} {...a11yProps(1)} />
-          <Tab label={t('promptStructure')} {...a11yProps(2)} />
+          <Tab
+            sx={{ width: '100%' }}
+            label={t('agentCreationGuide')}
+            {...a11yProps(0)}
+          />
+          <Tab
+            sx={{ width: '100%' }}
+            label={t('classConfigFileGuide')}
+            {...a11yProps(1)}
+          />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}></CustomTabPanel>
-      <CustomTabPanel value={value} index={1}></CustomTabPanel>
+      <CustomTabPanel value={value} index={0}>
+        <AgentCreationGuide />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <FileConfigGuide />
+      </CustomTabPanel>
     </Box>
   );
 }

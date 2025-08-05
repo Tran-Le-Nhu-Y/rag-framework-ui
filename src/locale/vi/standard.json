@@ -361,6 +361,7 @@
   "numOutputChannelsTooltip": "Số lượng kênh màu đầu ra của ảnh đã được grayscale",
   "selectNumOutputChannels": "Chọn số kênh màu đầu ra",
   "configFileInstructionTitle": "Hướng dẫn cấu trúc tập tin thêm mô tả cho lớp",
+  "classConfigFileGuide": "Hướng dẫn cấu trúc tập tin mô tả lớp",
   "configFileInstructionContent": "File config là một file JSON mô tả thông tin đầu ra của mô hình...",
   "cnnNameRequired": "Tên cấu hình CNN Model không được để trống",
   "cnnModelRequired": "Thiếu tập tin mô hình",
