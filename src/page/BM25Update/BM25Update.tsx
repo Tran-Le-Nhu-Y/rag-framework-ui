@@ -101,21 +101,6 @@ export default function BM25UpdatePage() {
 
   // Handle Update
   const [updateBM25Trigger, updateBM25] = useUpdateBM25();
-  useEffect(() => {
-    if (updateBM25.isError) {
-      setSnackbarMessage(t('createBM25Failed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (updateBM25.isSuccess) {
-      setSnackbarMessage(t('updateBM25Success'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      setTimeout(() => {
-        navigate(RoutePaths.BM25);
-      }, 500);
-    }
-  }, [updateBM25.isError, updateBM25.isSuccess, navigate, t]);
-
   const oldFileIdToDelete = fileDetail.data?.id;
   const [newFile, setNewFile] = useState<File | null>(null); // New File => upload
   const [isRemoveOldFile, setIsRemoveOldFile] = useState(false); // remove file
@@ -163,13 +148,18 @@ export default function BM25UpdatePage() {
       };
 
       await updateBM25Trigger(payload);
-
+      setSnackbarMessage(t('updateBM25Success'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+      setTimeout(() => {
+        navigate(RoutePaths.BM25);
+      }, 500);
       // Reset file state
       setIsRemoveOldFile(false);
       setNewFile(null);
     } catch (error) {
       console.error('Error:', error);
-      setSnackbarMessage(t('createStoreFailed'));
+      setSnackbarMessage(t('updateBM25Failed'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
@@ -368,6 +358,8 @@ export default function BM25UpdatePage() {
               variant="contained"
               color="primary"
               onClick={() => handleUpdateBM25Submit()}
+              loading={updateBM25.isLoading}
+              disabled={updateBM25.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -375,6 +367,7 @@ export default function BM25UpdatePage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.BM25)}
+              disabled={updateBM25.isLoading || updateBM25.isSuccess}
             >
               {t('cancel')}
             </Button>

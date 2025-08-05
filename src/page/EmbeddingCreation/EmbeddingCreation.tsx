@@ -55,7 +55,8 @@ export default function EmbeddingCreationPage() {
     setEmbeddingModel((prev) => ({ ...prev, [key]: value }));
   };
 
-  const [createEmbeddingModelTrigger] = useCreateEmbeddingModel();
+  const [createEmbeddingModelTrigger, createEmbeddingModel] =
+    useCreateEmbeddingModel();
   const handleSubmit = async () => {
     // Validate required fields
     if (!embeddingModel.name?.trim()) {
@@ -178,6 +179,8 @@ export default function EmbeddingCreationPage() {
               variant="contained"
               color="primary"
               onClick={() => handleSubmit()}
+              loading={createEmbeddingModel.isLoading}
+              disabled={createEmbeddingModel.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -185,6 +188,9 @@ export default function EmbeddingCreationPage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.EMBEDDINGS)}
+              disabled={
+                createEmbeddingModel.isSuccess || createEmbeddingModel.isLoading
+              }
             >
               {t('cancel')}
             </Button>

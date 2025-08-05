@@ -21,7 +21,7 @@ export default function PromptCreationPage() {
     useState<SnackbarSeverity>('success');
   const [name, setName] = useState('');
   const [respond, setRespond] = useState('');
-  const [createPromptTrigger] = useCreatePrompt();
+  const [createPromptTrigger, createPrompt] = useCreatePrompt();
   const handleCreatePromptSubmit = async () => {
     if (name.trim().length === 0) {
       setSnackbarMessage(t('promptNameRequired'));
@@ -105,6 +105,8 @@ export default function PromptCreationPage() {
               variant="contained"
               color="primary"
               onClick={() => handleCreatePromptSubmit()}
+              loading={createPrompt.isLoading}
+              disabled={createPrompt.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -112,6 +114,7 @@ export default function PromptCreationPage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.PROMPT)}
+              disabled={createPrompt.isSuccess || createPrompt.isLoading}
             >
               {t('cancel')}
             </Button>

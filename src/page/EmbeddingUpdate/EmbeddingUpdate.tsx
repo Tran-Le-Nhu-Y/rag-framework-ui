@@ -57,6 +57,12 @@ export default function EmbeddingUpdatePage() {
     skip: !embeddingModelId,
   });
   useEffect(() => {
+    if (embeddingModelDetail.data) {
+      const embeddingModel = embeddingModelDetail.data;
+      setEmbeddingModel({
+        ...embeddingModel,
+      });
+    }
     if (embeddingModelDetail.isError) {
       setSnackbarMessage(t('embeddingModelLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
@@ -68,16 +74,8 @@ export default function EmbeddingUpdatePage() {
     setEmbeddingModel((prev) => ({ ...prev, [key]: value }));
   };
 
-  const [updateEmbeddingModelTrigger] = useUpdateEmbeddingModel();
-  useEffect(() => {
-    if (embeddingModelDetail.data) {
-      const embeddingModel = embeddingModelDetail.data;
-      setEmbeddingModel({
-        ...embeddingModel,
-      });
-    }
-  }, [embeddingModelDetail.data]);
-
+  const [updateEmbeddingModelTrigger, updateEmbedding] =
+    useUpdateEmbeddingModel();
   const handleSubmit = async () => {
     if (
       !embeddingModel.name ||
@@ -200,6 +198,8 @@ export default function EmbeddingUpdatePage() {
               variant="contained"
               color="primary"
               onClick={() => handleSubmit()}
+              loading={updateEmbedding.isLoading}
+              disabled={updateEmbedding.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -207,6 +207,7 @@ export default function EmbeddingUpdatePage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.EMBEDDINGS)}
+              disabled={updateEmbedding.isSuccess || updateEmbedding.isLoading}
             >
               {t('cancel')}
             </Button>

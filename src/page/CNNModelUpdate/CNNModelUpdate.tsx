@@ -214,7 +214,7 @@ export default function CNNModelUpdatePage() {
   const [deleteFileTrigger] = useDeleteFile(); // delete old file
   const [postFile] = usePostFile();
   //Update CNN Model
-  const [updateRecognizerTrigger] = useUpdateRecognizer();
+  const [updateRecognizerTrigger, updateRecognizer] = useUpdateRecognizer();
   const handleUpdateSubmit = async () => {
     // Validate required fields
     if (!imageRecognizer.name.trim()) {
@@ -745,6 +745,8 @@ export default function CNNModelUpdatePage() {
             variant="contained"
             color="primary"
             onClick={handleUpdateSubmit}
+            disabled={updateRecognizer.isSuccess}
+            loading={updateRecognizer.isLoading}
           >
             {t('confirm')}
           </Button>
@@ -752,6 +754,7 @@ export default function CNNModelUpdatePage() {
             variant="outlined"
             color="info"
             onClick={() => navigate(RoutePaths.CNN)}
+            disabled={updateRecognizer.isSuccess || updateRecognizer.isLoading}
           >
             {t('cancel')}
           </Button>

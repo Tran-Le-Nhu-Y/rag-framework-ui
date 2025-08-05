@@ -59,7 +59,7 @@ export default function MCPCreationPage() {
     return acc;
   }, {} as Record<string, string>);
 
-  const [createMCPTrigger] = useCreateMCP();
+  const [createMCPTrigger, createMCP] = useCreateMCP();
   const handleCreateMCPSubmit = async () => {
     // Validate required fields
     if (!streamableServer.name.trim()) {
@@ -303,6 +303,8 @@ export default function MCPCreationPage() {
               variant="contained"
               color="primary"
               onClick={() => handleCreateMCPSubmit()}
+              loading={createMCP.isLoading}
+              disabled={createMCP.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -310,6 +312,7 @@ export default function MCPCreationPage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.MCP)}
+              disabled={createMCP.isSuccess || createMCP.isLoading}
             >
               {t('cancel')}
             </Button>

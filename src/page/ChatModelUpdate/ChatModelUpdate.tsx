@@ -103,7 +103,7 @@ export default function ChatModelUpdatePage() {
   const chatModelDetail = useGetChatModelById(chatModelId!, {
     skip: !chatModelId,
   });
-  const [updateChatModelTrigger] = useUpdateChatModel();
+
   useEffect(() => {
     if (chatModelDetail.data) {
       const model = chatModelDetail.data;
@@ -127,7 +127,8 @@ export default function ChatModelUpdatePage() {
   ) => {
     setChatModel((prev) => ({ ...prev, [key]: value }));
   };
-
+  //update chat model
+  const [updateChatModelTrigger, updateChatModel] = useUpdateChatModel();
   const handleSubmit = async () => {
     const safety_settings: Record<string, string> = {};
     if (chatModel.type === 'google_genai') {
@@ -556,13 +557,20 @@ export default function ChatModelUpdatePage() {
           </Stack>
 
           <Box display="flex" justifyContent="center" gap={2}>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              loading={updateChatModel.isLoading}
+              disabled={updateChatModel.isSuccess}
+            >
               {t('confirm')}
             </Button>
             <Button
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.CHATMODEL)}
+              disabled={updateChatModel.isSuccess || updateChatModel.isLoading}
             >
               {t('cancel')}
             </Button>

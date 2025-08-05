@@ -10,7 +10,7 @@ import {
   TextLength,
 } from '../../util';
 import { useNavigate, useParams } from 'react-router';
-import { AppSnackbar } from '../../component';
+import { AppSnackbar, Loading } from '../../component';
 import { useGetPromptById, useUpdatePrompt } from '../../service';
 
 export default function PromptUpdatePage() {
@@ -26,21 +26,18 @@ export default function PromptUpdatePage() {
 
   const prompt = useGetPromptById(promptId!, { skip: !promptId });
   useEffect(() => {
+    if (prompt.data) {
+      setName(prompt.data.name);
+      setRespond(prompt.data.respond_prompt);
+    }
     if (prompt.isError) {
       setSnackbarMessage(t('promptLoadingError'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
     }
-  }, [prompt.isError, t]);
+  }, [prompt.data, prompt.isError, t]);
 
-  const [updatePromptTrigger] = useUpdatePrompt();
-  useEffect(() => {
-    if (prompt.data) {
-      setName(prompt.data.name);
-      setRespond(prompt.data.respond_prompt);
-    }
-  }, [prompt.data]);
-
+  const [updatePromptTrigger, updatePrompt] = useUpdatePrompt();
   const handleSubmit = async (data: {
     name: string;
     respondPrompt: string;
@@ -79,6 +76,7 @@ export default function PromptUpdatePage() {
     }
   };
 
+  if (prompt.isLoading) return <Loading />;
   return (
     <Stack spacing={1}>
       <AppSnackbar
@@ -131,6 +129,8 @@ export default function PromptUpdatePage() {
                   respondPrompt: respond,
                 })
               }
+              loading={updatePrompt.isLoading}
+              disabled={updatePrompt.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -138,6 +138,7 @@ export default function PromptUpdatePage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.PROMPT)}
+              disabled={updatePrompt.isSuccess || updatePrompt.isLoading}
             >
               {t('cancel')}
             </Button>

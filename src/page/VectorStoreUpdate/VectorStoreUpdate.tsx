@@ -114,21 +114,6 @@ export default function VectorStoreUpdatePage() {
   }, {} as Record<string, string>);
 
   const [updateVectorStoreTrigger, updateStore] = useUpdateVectorStore();
-  useEffect(() => {
-    if (updateStore.isError) {
-      setSnackbarMessage(t('updateStoreFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    } else if (updateStore.isSuccess) {
-      setSnackbarMessage(t('updateStoreSuccess'));
-      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
-      setSnackbarOpen(true);
-      setTimeout(() => {
-        navigate(RoutePaths.VECTOR_STORE);
-      }, 500);
-    }
-  }, [updateStore.isError, updateStore.isSuccess, navigate, t]);
-
   const handleUpdateVectorStoreSubmit = async () => {
     if (
       !vectorStore.name ||
@@ -164,6 +149,12 @@ export default function VectorStoreUpdatePage() {
       };
 
       await updateVectorStoreTrigger(payload);
+      setSnackbarMessage(t('updateStoreSuccess'));
+      setSnackbarSeverity(SnackbarSeverity.SUCCESS);
+      setSnackbarOpen(true);
+      setTimeout(() => {
+        navigate(RoutePaths.VECTOR_STORE);
+      }, 500);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage(t('updateStoreFailed'));
@@ -525,6 +516,8 @@ export default function VectorStoreUpdatePage() {
               variant="contained"
               color="primary"
               onClick={() => handleUpdateVectorStoreSubmit()}
+              loading={updateStore.isLoading}
+              disabled={updateStore.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -532,6 +525,7 @@ export default function VectorStoreUpdatePage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.VECTOR_STORE)}
+              disabled={updateStore.isSuccess || updateStore.isLoading}
             >
               {t('cancel')}
             </Button>

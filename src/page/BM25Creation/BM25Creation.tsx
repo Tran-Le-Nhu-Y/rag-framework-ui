@@ -49,7 +49,7 @@ export default function BM25CreationPage() {
     removal_words_file_id: '',
   });
 
-  const [createBM25Trigger] = useCreateBM25();
+  const [createBM25Trigger, createBM25] = useCreateBM25();
   const handleCreateBM25Submit = async () => {
     // Validate required fields
     if (!bm25.name.trim()) {
@@ -292,6 +292,8 @@ export default function BM25CreationPage() {
             <Button
               variant="contained"
               color="primary"
+              loading={createBM25.isLoading}
+              disabled={createBM25.isSuccess}
               onClick={() => handleCreateBM25Submit()}
             >
               {t('confirm')}
@@ -300,6 +302,7 @@ export default function BM25CreationPage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.BM25)}
+              disabled={createBM25.isSuccess || createBM25.isLoading}
             >
               {t('cancel')}
             </Button>

@@ -66,7 +66,7 @@ export default function VectorStoreCreationPage() {
     return acc;
   }, {} as Record<string, string>);
 
-  const [createVectorStoreTrigger] = useCreateVectorStore();
+  const [createVectorStoreTrigger, createVectorStore] = useCreateVectorStore();
   const handleCreateVectorStoreSubmit = async () => {
     // Validate required fields
     if (!vectorStore.name.trim()) {
@@ -466,12 +466,17 @@ export default function VectorStoreCreationPage() {
               variant="contained"
               color="primary"
               onClick={() => handleCreateVectorStoreSubmit()}
+              loading={createVectorStore.isLoading}
+              disabled={createVectorStore.isSuccess}
             >
               {t('confirm')}
             </Button>
             <Button
               variant="outlined"
               color="info"
+              disabled={
+                createVectorStore.isSuccess || createVectorStore.isLoading
+              }
               onClick={() => navigate(RoutePaths.VECTOR_STORE)}
             >
               {t('cancel')}

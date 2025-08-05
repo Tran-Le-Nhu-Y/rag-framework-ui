@@ -116,7 +116,7 @@ export default function ChatModelCreationPage() {
     }
   }, [provider]);
 
-  const [createChatModelTrigger] = useCreateChatModel();
+  const [createChatModelTrigger, createChatModel] = useCreateChatModel();
 
   const handleCreateChatModelSubmit = async () => {
     // Validate required fields
@@ -539,6 +539,8 @@ export default function ChatModelCreationPage() {
               variant="contained"
               color="primary"
               onClick={handleCreateChatModelSubmit}
+              loading={createChatModel.isLoading}
+              disabled={createChatModel.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -546,6 +548,7 @@ export default function ChatModelCreationPage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.CHATMODEL)}
+              disabled={createChatModel.isSuccess || createChatModel.isLoading}
             >
               {t('cancel')}
             </Button>

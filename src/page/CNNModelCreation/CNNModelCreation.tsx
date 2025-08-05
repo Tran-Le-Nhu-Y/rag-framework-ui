@@ -636,6 +636,7 @@ export default function CNNModelCreationPage() {
             variant="contained"
             color="primary"
             loading={createRecognizer.isLoading}
+            disabled={createRecognizer.isSuccess}
             onClick={handleCreateSubmit}
           >
             {t('confirm')}
@@ -643,7 +644,7 @@ export default function CNNModelCreationPage() {
           <Button
             variant="outlined"
             color="info"
-            disabled={createRecognizer.isLoading}
+            disabled={createRecognizer.isLoading || createRecognizer.isSuccess}
             onClick={() => navigate(RoutePaths.CNN)}
           >
             {t('cancel')}

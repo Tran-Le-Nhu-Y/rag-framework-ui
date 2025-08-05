@@ -93,8 +93,7 @@ export default function MCPUpdatePage() {
     }
   }, [mcp.data, mcp.isError, t]);
 
-  const [updateMCPTrigger] = useUpdateMCP();
-
+  const [updateMCPTrigger, updateMCP] = useUpdateMCP();
   const handleUpdateMCPSubmit = async () => {
     // Basic validation
     if (!streamableServer.name.trim()) {
@@ -328,6 +327,8 @@ export default function MCPUpdatePage() {
               variant="contained"
               color="primary"
               onClick={() => handleUpdateMCPSubmit()}
+              loading={updateMCP.isLoading}
+              disabled={updateMCP.isSuccess}
             >
               {t('confirm')}
             </Button>
@@ -335,6 +336,7 @@ export default function MCPUpdatePage() {
               variant="outlined"
               color="info"
               onClick={() => navigate(RoutePaths.MCP)}
+              disabled={updateMCP.isSuccess || updateMCP.isLoading}
             >
               {t('cancel')}
             </Button>
