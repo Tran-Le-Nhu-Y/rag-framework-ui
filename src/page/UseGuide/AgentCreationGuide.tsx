@@ -146,6 +146,26 @@ const AgentCreationGuide: React.FC = () => {
           imageSrc="public\images\Create_MCP.png"
           imageAlt="MCP"
         />
+        {/* Embedding Model */}
+        <ImageWithDescription
+          title="Embedding Model (Cần tạo cấu hình Embedding Model trước khi tạo Retriever)"
+          instructions={
+            <>
+              <Typography>
+                ➡ Vào trang “Quản lý cấu Embedding Model".
+              </Typography>
+              <Typography>➡ Chọn “Tạo cấu hình Embedding Model".</Typography>
+              <Typography>📌 Cần cung cấp các thông tin sau:</Typography>
+              <ul>
+                <li>Tên cấu hình Embedding Model</li>
+                <li>Tên mô hình Embedding Model</li>
+                <li>Loại cấu hình, loại tác vụ</li>
+              </ul>
+            </>
+          }
+          imageSrc="public\images\Create_Embedding_Model.png"
+          imageAlt="Embedding Model"
+        />
         {/* Retriever - Vector Store */}
         <ImageWithDescription
           title="📦 Retriever: Vector Store"
