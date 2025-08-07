@@ -52,19 +52,31 @@ export default function BM25CreationPage() {
   const [createBM25Trigger, createBM25] = useCreateBM25();
   const handleCreateBM25Submit = async () => {
     // Validate required fields
-    if (!bm25.name.trim()) {
-      setSnackbarMessage(t('bm25NameRequired'));
-      setSnackbarSeverity(SnackbarSeverity.WARNING);
-      setSnackbarOpen(true);
-      return;
-    }
+    const validate = () => {
+      if (!bm25.name.trim()) {
+        setSnackbarMessage(t('bm25NameRequired'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return false;
+      }
 
-    if (!bm25.embeddings_id) {
-      setSnackbarMessage(t('embeddingRequired'));
-      setSnackbarSeverity(SnackbarSeverity.WARNING);
-      setSnackbarOpen(true);
-      return;
-    }
+      if (!bm25.embeddings_id) {
+        setSnackbarMessage(t('embeddingRequired'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return false;
+      }
+      if (bm25.weight > 1) {
+        setSnackbarMessage(t('bm25WeightInvalid'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return false;
+      }
+
+      return true;
+    };
+
+    if (!validate()) return;
 
     try {
       const newBM25: CreateBM25RetrieverRequest = {

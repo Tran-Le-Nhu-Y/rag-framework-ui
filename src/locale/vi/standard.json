@@ -283,6 +283,7 @@
   "deleteFile": "Gỡ tập tin",
   "confirmRemoveFileTitle": "Xác nhận gỡ file",
   "confirmRemoveFileMessage": "Bạn có chắc chắn muốn gỡ file khỏi cấu hình?",
+  "cannotDeleteBM25": "Không thể xóa vì cấu hình BM25 này đang được cấu hình AI Agent sử dụng",
 
   "mcpManagement": "Quản lý cấu hình MCP",
   "mcpList": "Danh sách cấu hình MCP",

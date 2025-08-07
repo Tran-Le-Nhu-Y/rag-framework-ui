@@ -58,19 +58,26 @@ const ChatModelManagementPage = () => {
 
   const columns: GridColDef<BaseChatModel>[] = [
     {
-      field: 'model_name',
-      headerName: t('modelName'),
+      field: 'name',
+      headerName: t('configName'),
       type: 'string',
-      width: 250,
+      width: 230,
       headerAlign: 'center',
       align: 'center',
     },
-
+    {
+      field: 'model_name',
+      headerName: t('modelName'),
+      type: 'string',
+      width: 230,
+      headerAlign: 'center',
+      align: 'center',
+    },
     {
       field: 'temperature',
       headerName: t('temperature'),
       type: 'number',
-      width: 150,
+      width: 120,
       align: 'center',
       headerAlign: 'center',
     },
@@ -78,7 +85,7 @@ const ChatModelManagementPage = () => {
       field: 'top_k',
       headerName: t('topK'),
       type: 'number',
-      width: 150,
+      width: 100,
       align: 'center',
       headerAlign: 'center',
     },
@@ -86,7 +93,7 @@ const ChatModelManagementPage = () => {
       field: 'top_p',
       headerName: t('topP'),
       type: 'number',
-      width: 150,
+      width: 100,
       align: 'center',
       headerAlign: 'center',
     },
@@ -102,7 +109,7 @@ const ChatModelManagementPage = () => {
       field: 'actions',
       headerName: t('actions'),
       type: 'actions',
-      width: 250,
+      width: 180,
       getActions: (params) => [
         <GridActionsCellItem
           icon={

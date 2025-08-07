@@ -31,7 +31,6 @@ const typeList: Data[] = [
   { label: 'Google Gen AI', value: 'google_genai' },
 ];
 const taskTypeList: Data[] = [
-  { label: 'Task Type Unspecified', value: 'task_type_unspecified' },
   { label: 'Retrieval Query', value: 'retrieval_query' },
   { label: 'Retrieval Document', value: 'retrieval_document' },
   { label: 'Semantic Similarity', value: 'semantic_similarity' },

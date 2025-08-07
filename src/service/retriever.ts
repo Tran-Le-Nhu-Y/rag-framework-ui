@@ -4,6 +4,7 @@ import { axiosBaseQuery } from '../util';
 import type { BM25Retriever, ChromaRetriever } from '../@types/entities';
 import { toChromaVectorStoreEntity } from './mapper/chroma-retriever-mapper';
 import { toBM25Entity } from './mapper/bm25-mapper';
+import { DeleteError } from '../util/errors';
 
 const EXTENSION_URL = 'api/v1/retriever';
 export const retrieverApi = createApi({
@@ -211,7 +212,16 @@ export const retrieverApi = createApi({
         ];
       },
       transformErrorResponse(baseQueryReturnValue) {
-        return baseQueryReturnValue.status;
+        const status = baseQueryReturnValue.status;
+        const { message } = baseQueryReturnValue.data as { message: string };
+        if (
+          status === 406 &&
+          message.includes('Cannot delete chat model with id') &&
+          message.includes('. Agent with id ') &&
+          message.includes('is still using it.')
+        )
+          return DeleteError.BEING_USED;
+        return DeleteError.UNKNOWN_ERROR;
       },
     }),
   }),

@@ -33,16 +33,27 @@ export default function ChatModelDetailDialog({
           spacing={2}
           sx={{ mt: 1, mb: 1 }}
         >
+          <Stack spacing={2} sx={{ width: '100%' }}>
+            <Stack direction={'row'} spacing={1}>
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('configName')}:
+              </Typography>
+              <Typography variant="body1" fontWeight={500}>
+                {chatModel.name || 'N/A'}
+              </Typography>
+            </Stack>
+            <Stack direction={'row'} spacing={1}>
+              <Typography variant="body1" fontWeight={'bold'}>
+                {t('modelName')}:
+              </Typography>
+              <Typography variant="body1" fontWeight={500}>
+                {chatModel.model_name || 'N/A'}
+              </Typography>
+            </Stack>
+          </Stack>
+
           <Stack direction={'row'} spacing={2} width="100%">
             <Stack spacing={2} width="100%">
-              <Stack direction={'row'} spacing={1}>
-                <Typography variant="body1" fontWeight={'bold'}>
-                  {t('modelName')}:
-                </Typography>
-                <Typography variant="body1" fontWeight={500}>
-                  {chatModel.model_name || 'N/A'}
-                </Typography>
-              </Stack>
               <Stack direction={'row'} spacing={1}>
                 <Typography variant="body1" fontWeight={'bold'}>
                   {t('modelType')}:
@@ -61,14 +72,6 @@ export default function ChatModelDetailDialog({
               </Stack>
             </Stack>
             <Stack spacing={2} width="100%">
-              <Stack direction={'row'} spacing={1}>
-                <Typography variant="body1" fontWeight={'bold'}>
-                  {t('modelType')}:
-                </Typography>
-                <Typography variant="body1" fontWeight={500}>
-                  {chatModel.type || 'N/A'}
-                </Typography>
-              </Stack>
               <Stack direction={'row'} spacing={1}>
                 <Typography variant="body1" fontWeight={'bold'}>
                   {t('temperature')}:

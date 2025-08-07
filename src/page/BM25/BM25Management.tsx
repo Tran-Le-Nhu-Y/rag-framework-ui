@@ -21,6 +21,7 @@ import {
 } from '../../util';
 import type { BM25Retriever } from '../../@types/entities';
 import BM25DetailDialog from './BM25Detail';
+import { DeleteError } from '../../util/errors';
 
 const BM25ManagementPage = () => {
   const { t } = useTranslation();
@@ -175,21 +176,29 @@ const BM25ManagementPage = () => {
 
   //delete bm25
   const [deleteBM25Trigger, deleteBM25] = useDeleteRetriever();
-  useEffect(() => {
-    if (deleteBM25.isError) {
-      setSnackbarMessage(t('deleteBM25Failed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteBM25.isSuccess) {
+  const handleDeleteBM25 = async (bm25Id: string) => {
+    try {
+      await deleteBM25Trigger(bm25Id).unwrap();
+      setBM25IdToDelete(null);
       setSnackbarMessage(t('deleteBM25Success'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteBM25'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteBM25Failed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteBM25.isError, deleteBM25.isSuccess, t]);
-
-  const handleDeleteBM25 = (bm25Id: string) => {
-    setBM25IdToDelete(bm25Id);
   };
 
   return (
