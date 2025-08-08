@@ -244,7 +244,7 @@ export default function AgentCreationPage() {
       return;
     }
     if (!agent.language) {
-      setSnackbarMessage(t('agentNameRequired'));
+      setSnackbarMessage(t('languageRequired'));
       setSnackbarSeverity(SnackbarSeverity.WARNING);
       setSnackbarOpen(true);
       return;
@@ -317,6 +317,7 @@ export default function AgentCreationPage() {
           <Stack spacing={2} width="100%">
             <Stack width="100%" direction={'row'} spacing={2}>
               <TextField
+                required
                 fullWidth
                 size="small"
                 helperText={t('hyperTextMedium')}
@@ -330,15 +331,16 @@ export default function AgentCreationPage() {
                       name: newValue,
                     }));
                 }}
-                placeholder={`${t('enter')} ${t('agentName').toLowerCase()}...`}
+                placeholder={`${t('enter')} ${t('agentName')}...`}
               />
               <SelectForm
+                required
+                isClearable={false}
                 label={t('selectLanguage')}
                 dataList={languageList}
-                value={
-                  languageList.find((item) => item.value === agent.language) ||
-                  null
-                }
+                value={languageList.find(
+                  (item) => item.value === agent.language
+                )}
                 onChange={(selected) => {
                   setAgent((prev) => ({
                     ...prev,
@@ -368,6 +370,7 @@ export default function AgentCreationPage() {
             />
             <Stack spacing={2} direction={'row'} width="100%">
               <SelectForm
+                required
                 label={t('selectPrompt')}
                 dataList={promptList}
                 value={
@@ -415,6 +418,7 @@ export default function AgentCreationPage() {
                 }
               />
               <SelectForm
+                required
                 label={t('selectChatModel')}
                 dataList={chatModelList}
                 value={

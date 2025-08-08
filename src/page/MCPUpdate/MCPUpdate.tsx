@@ -132,14 +132,14 @@ export default function MCPUpdatePage() {
     try {
       await updateMCPTrigger(updatePayload).unwrap();
 
-      setSnackbarMessage(t('createMCPSuccess'));
+      setSnackbarMessage(t('updateMCPSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
       setTimeout(() => {
         navigate(RoutePaths.MCP);
       }, 500);
     } catch (error) {
-      setSnackbarMessage(t('createMCPFailed'));
+      setSnackbarMessage(t('updateMCPFailed'));
       setSnackbarSeverity(SnackbarSeverity.ERROR);
       setSnackbarOpen(true);
       console.log(error);

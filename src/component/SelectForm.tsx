@@ -14,6 +14,7 @@ type Props = {
   dataList: Data[];
   onChange?: (value: Data | Data[] | null) => void;
   loading?: boolean;
+  required?: boolean;
   multiple?: boolean;
   error?: boolean;
   helperText?: string;
@@ -26,6 +27,7 @@ export default function SelectForm({
   value = null,
   dataList,
   onChange,
+  required = false,
   loading = false,
   multiple = false, // default 1
   error = false,
@@ -65,6 +67,7 @@ export default function SelectForm({
       loading={loading}
       renderInput={(params) => (
         <TextField
+          required={required}
           {...params}
           label={label}
           error={error}

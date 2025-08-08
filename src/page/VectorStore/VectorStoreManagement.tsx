@@ -21,6 +21,7 @@ import {
 } from '../../util';
 import type { ChromaRetriever } from '../../@types/entities';
 import VectorStoreDetailDialog from './VectorStoreDetail';
+import { DeleteError } from '../../util/errors';
 
 const VectorStoreManagementPage = () => {
   const { t } = useTranslation();
@@ -151,7 +152,7 @@ const VectorStoreManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteStore(params.row.id)}
+          onClick={() => setVectorStoreIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -159,21 +160,29 @@ const VectorStoreManagementPage = () => {
 
   //delete VectorStore
   const [deleteVectorStoreTrigger, deleteVectorStore] = useDeleteRetriever();
-  useEffect(() => {
-    if (deleteVectorStore.isError) {
-      setSnackbarMessage(t('deleteStoreFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteVectorStore.isSuccess) {
+  const handleDeleteStore = async (storeId: string) => {
+    try {
+      await deleteVectorStoreTrigger(storeId).unwrap();
+      setVectorStoreIdToDelete(null);
       setSnackbarMessage(t('deleteStoreSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteVectorStore'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteStoreFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteVectorStore.isError, deleteVectorStore.isSuccess, t]);
-
-  const handleDeleteStore = (storeId: string) => {
-    setVectorStoreIdToDelete(storeId);
   };
 
   return (
@@ -193,10 +202,7 @@ const VectorStoreManagementPage = () => {
           message={t('deleteStoreConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteVectorStoreTrigger(vectorStoreIdToDelete);
-            setVectorStoreIdToDelete(null);
-          }}
+          onDelete={() => handleDeleteStore(vectorStoreIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('vectorStoreList')}</Typography>
