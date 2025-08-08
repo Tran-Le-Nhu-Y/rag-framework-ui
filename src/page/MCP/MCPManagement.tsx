@@ -21,6 +21,7 @@ import {
 } from '../../util';
 import MCPDetailDialog from './MCPDetail';
 import type { MCPStreamableServer } from '../../@types/entities';
+import { DeleteError } from '../../util/errors';
 
 const MCPManagementPage = () => {
   const { t } = useTranslation();
@@ -130,7 +131,7 @@ const MCPManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteMCP(params.row.id)}
+          onClick={() => setMCPIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -138,21 +139,29 @@ const MCPManagementPage = () => {
 
   //delete mcp
   const [deleteMCPTrigger, deleteMCP] = useDeleteMCP();
-  useEffect(() => {
-    if (deleteMCP.isError) {
-      setSnackbarMessage(t('deleteMCPFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteMCP.isSuccess) {
+  const handleDeleteMCP = async (mcpId: string) => {
+    try {
+      await deleteMCPTrigger(mcpId).unwrap();
+      setMCPIdToDelete(null);
       setSnackbarMessage(t('deleteMCPSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteMCP'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteMCPFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteMCP.isError, deleteMCP.isSuccess, t]);
-
-  const handleDeleteMCP = (mcpId: string) => {
-    setMCPIdToDelete(mcpId);
   };
 
   return (
@@ -172,10 +181,7 @@ const MCPManagementPage = () => {
           message={t('deleteMCPConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteMCPTrigger(mcpIdToDelete);
-            setMCPIdToDelete(null);
-          }}
+          onDelete={() => handleDeleteMCP(mcpIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('mcpList')}</Typography>

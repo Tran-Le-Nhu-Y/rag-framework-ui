@@ -3,6 +3,7 @@ import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/tool-mapper';
 import type { Tool } from '../@types/entities';
+import { DeleteError } from '../util/errors';
 
 const EXTENSION_URL = 'api/v1/tool';
 export const toolApi = createApi({
@@ -119,7 +120,16 @@ export const toolApi = createApi({
         ];
       },
       transformErrorResponse(baseQueryReturnValue) {
-        return baseQueryReturnValue.status;
+        const status = baseQueryReturnValue.status;
+        const { message } = baseQueryReturnValue.data as { message: string };
+        if (
+          status === 406 &&
+          message.includes('Cannot delete tool with id') &&
+          message.includes('. Agent with id ') &&
+          message.includes('is still using it.')
+        )
+          return DeleteError.BEING_USED;
+        return DeleteError.UNKNOWN_ERROR;
       },
     }),
   }),

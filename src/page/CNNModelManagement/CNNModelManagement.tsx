@@ -25,6 +25,7 @@ import {
   useGetRecognizerById,
 } from '../../service';
 import type { ImageRecognizer } from '../../@types/entities';
+import { DeleteError } from '../../util/errors';
 
 const CNNModelManagementPage = () => {
   const { t } = useTranslation();
@@ -127,7 +128,7 @@ const CNNModelManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteRecognizer(params.row.id)}
+          onClick={() => setRecognizerIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -170,21 +171,29 @@ const CNNModelManagementPage = () => {
 
   //delete cnn model
   const [deleteRecognizerTrigger, deleteRecognizer] = useDeleteRecognizer();
-  useEffect(() => {
-    if (deleteRecognizer.isError) {
-      setSnackbarMessage(t('deleteCNNFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteRecognizer.isSuccess) {
+  const handleDeleteRecognizer = async (recognizerId: string) => {
+    try {
+      await deleteRecognizerTrigger(recognizerId).unwrap();
+      setRecognizerIdToDelete(null);
       setSnackbarMessage(t('deleteCNNSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteCNN'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteCNNFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteRecognizer.isError, deleteRecognizer.isSuccess, t]);
-
-  const handleDeleteRecognizer = (recognizerId: string) => {
-    setRecognizerIdToDelete(recognizerId);
   };
 
   return (
@@ -204,10 +213,7 @@ const CNNModelManagementPage = () => {
           message={t('deleteCNNConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteRecognizerTrigger(recognizerIdToDelete);
-            setRecognizerIdToDelete(null);
-          }}
+          onDelete={() => handleDeleteRecognizer(recognizerIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('recognitionModelList')}</Typography>

@@ -25,6 +25,7 @@ import {
 } from '../../service';
 import EmbeddingsDetailDialog from './EmbeddingModelDetail';
 import type { Embeddings } from '../../@types/entities';
+import { DeleteError } from '../../util/errors';
 
 const EmbeddingsManagementPage = () => {
   const { t } = useTranslation();
@@ -121,7 +122,7 @@ const EmbeddingsManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteEmbeddingModel(params.row.id)}
+          onClick={() => setEmbeddingModelIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -156,21 +157,29 @@ const EmbeddingsManagementPage = () => {
   //delete embedding model
   const [deleteEmbeddingModelTrigger, deleteEmbeddingModel] =
     useDeleteEmbeddingModel();
-  useEffect(() => {
-    if (deleteEmbeddingModel.isError) {
-      setSnackbarMessage(t('deleteEmbeddingModelFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteEmbeddingModel.isSuccess) {
+  const handleDeleteEmbeddingModel = async (embeddingId: string) => {
+    try {
+      await deleteEmbeddingModelTrigger(embeddingId).unwrap();
+      setEmbeddingModelIdToDelete(null);
       setSnackbarMessage(t('deleteEmbeddingModelSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteEmbedding'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteEmbeddingModelFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteEmbeddingModel.isError, deleteEmbeddingModel.isSuccess, t]);
-
-  const handleDeleteEmbeddingModel = (embeddingModelId: string) => {
-    setEmbeddingModelIdToDelete(embeddingModelId);
   };
 
   return (
@@ -190,10 +199,7 @@ const EmbeddingsManagementPage = () => {
           message={t('deleteEmbeddingModelConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteEmbeddingModelTrigger(embeddingModelIdToDelete);
-            setEmbeddingModelIdToDelete(null);
-          }}
+          onDelete={() => handleDeleteEmbeddingModel(embeddingModelIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('embeddingModelList')}</Typography>

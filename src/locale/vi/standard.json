@@ -114,6 +114,7 @@
   "toolNameRequired": "Tên cấu hình Search Tool không được bỏ trống",
   "deleteToolFailed": "Xóa cấu hình Search Tool thất bại",
   "deleteToolSuccess": "Xóa cấu hình Search Tool thành công",
+  "cannotDeleteSearch": "Không thể xóa vì cấu hình Search Tool này đang được cấu hình AI Agent sử dụng",
 
   "vectorStoreConfig": "Cấu hình Vector Store",
   "vectorDBName": "Tên Vector Database",
@@ -198,6 +199,7 @@
   "embeddingNameRequired": "Tên cấu hình Embedding Model không được bỏ trống",
   "embeddingModelNameRequired": "Tên mô hình Embedding Model không được bỏ trống",
   "embeddingModelTyprRequired": "Loại Embedding Model không được bỏ trống",
+  "cannotDeleteEmbedding": "Không thể xóa vì cấu hình Embedding này đang được cấu hình Retriever sử dụng",
 
   "promptManagement": "Quản lý cấu hình Prompt",
   "promptList": "Danh sách Prompt",
@@ -219,6 +221,7 @@
   "updatePromptSuccess": "Cập nhật Prompt thành công",
   "updatePromptFailed": "Cập nhật Prompt thất bại",
   "promptNameRequired": "Tên Prompt không được để trống",
+  "cannotDeletePrompt": "Không thể xóa vì cấu hình Prompt này đang được cấu hình AI Agent sử dụng",
 
   "vectorStoreManagement": "Quản lý cấu hình Vector Store",
   "vectorStoreDetailInformation": "Thông tin chi tiết cấu hình Vector Store",
@@ -253,6 +256,7 @@
   "vectorStoreLoadingError": "Lỗi tải dữ liệu cấu hình Vector Store",
   "storeNameRequired": "Tên cấu hình Vector Store không được để trống",
   "weightRequired": "Trọng số không được để trống",
+  "cannotDeleteVectorStore": "Không thể xóa vì cấu hình Vector Store này đang được cấu hình AI Agent sử dụng",
 
   "bm25Management": "Quản lý cấu hình BM25",
   "bm25DetailInformation": "Thông tin chi tiết cấu hình BM25",
@@ -317,6 +321,7 @@
   "mcpLoadingError": "Lỗi tải dữ liệu cấu hình MCP",
   "confirmMCPDeleteTitle": "Xác nhận xóa cấu hình MCP",
   "deleteMCPConfirm": "Bạn có chắc chắn muốn xóa cấu hình MCP này không?",
+  "cannotDeleteMCP": "Không thể xóa vì cấu hình MCP này đang được cấu hình AI Agent sử dụng",
 
   "recognitionModelManagement": "Quản lý cấu hình CNN Model",
   "add_mageRecognitionModelConfigFile": "Thêm tập tin mô hình nhận diện hình ảnh",
@@ -381,5 +386,6 @@
   "createCNNFailed": "Tạo cấu hình CNN Model thất bại",
   "cnnLoadingError": "Lỗi tải dữ liệu cấu hình CNN Model",
   "confirmCNNDeleteTitle": "Xác nhận xóa cấu hình CNN Model",
-  "deleteCNNConfirm": "Bạn có chắc chắn muốn xóa cấu hình CNN Model này không?"
+  "deleteCNNConfirm": "Bạn có chắc chắn muốn xóa cấu hình CNN Model này không?",
+  "cannotDeleteCNN": "Không thể xóa vì cấu hình CNN này đang được cấu hình AI Agent sử dụng"
 }

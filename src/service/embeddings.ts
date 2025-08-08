@@ -3,6 +3,7 @@ import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/embeddings-mapper';
 import type { Embeddings } from '../@types/entities';
+import { DeleteError } from '../util/errors';
 
 const EXTENSION_URL = 'api/v1/embeddings';
 export const embeddingsApi = createApi({
@@ -117,7 +118,16 @@ export const embeddingsApi = createApi({
         ];
       },
       transformErrorResponse(baseQueryReturnValue) {
-        return baseQueryReturnValue.status;
+        const status = baseQueryReturnValue.status;
+        const { message } = baseQueryReturnValue.data as { message: string };
+        if (
+          status === 406 &&
+          message.includes('Cannot delete embedding model with id') &&
+          message.includes('. Retriever with id ') &&
+          message.includes('is still using it.')
+        )
+          return DeleteError.BEING_USED;
+        return DeleteError.UNKNOWN_ERROR;
       },
     }),
   }),

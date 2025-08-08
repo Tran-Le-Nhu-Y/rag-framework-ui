@@ -216,7 +216,7 @@ export const retrieverApi = createApi({
         const { message } = baseQueryReturnValue.data as { message: string };
         if (
           status === 406 &&
-          message.includes('Cannot delete chat model with id') &&
+          message.includes('Cannot delete retriever with id') &&
           message.includes('. Agent with id ') &&
           message.includes('is still using it.')
         )

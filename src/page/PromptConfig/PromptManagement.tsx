@@ -21,6 +21,7 @@ import {
   SnackbarSeverity,
 } from '../../util';
 import type { Prompt } from '../../@types/entities';
+import { DeleteError } from '../../util/errors';
 
 const PromptManagementPage = () => {
   const { t } = useTranslation();
@@ -128,7 +129,7 @@ const PromptManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeletePrompt(params.row.id)}
+          onClick={() => setPromptIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -136,21 +137,29 @@ const PromptManagementPage = () => {
 
   //delete prompt
   const [deletePromptTrigger, deletePrompt] = useDeletePrompt();
-  useEffect(() => {
-    if (deletePrompt.isError) {
-      setSnackbarMessage(t('deletePromptFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deletePrompt.isSuccess) {
+  const handleDeletePrompt = async (promptId: string) => {
+    try {
+      await deletePromptTrigger(promptId).unwrap();
+      setPromptIdToDelete(null);
       setSnackbarMessage(t('deletePromptSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeletePrompt'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deletePromptFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deletePrompt.isError, deletePrompt.isSuccess, t]);
-
-  const handleDeletePrompt = (promptId: string) => {
-    setPromptIdToDelete(promptId);
   };
 
   return (
@@ -170,10 +179,7 @@ const PromptManagementPage = () => {
           message={t('deletePromptConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deletePromptTrigger(promptIdToDelete);
-            setPromptIdToDelete(null);
-          }}
+          onDelete={() => handleDeletePrompt(promptIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('promptList')}</Typography>

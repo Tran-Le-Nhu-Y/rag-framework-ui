@@ -168,7 +168,7 @@ const BM25ManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteBM25(params.row.id)}
+          onClick={() => setBM25IdToDelete(params.row.id)}
         />,
       ],
     },
@@ -218,10 +218,7 @@ const BM25ManagementPage = () => {
           message={t('deleteBM25Confirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteBM25Trigger(bm25IdToDelete);
-            setBM25IdToDelete(null);
-          }}
+          onDelete={() => handleDeleteBM25(bm25IdToDelete)}
         />
       )}
       <Typography variant="h4">{t('bm25Management')}</Typography>

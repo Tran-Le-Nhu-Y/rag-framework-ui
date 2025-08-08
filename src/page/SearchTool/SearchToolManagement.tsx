@@ -20,6 +20,7 @@ import {
   useUpdateTool,
 } from '../../service';
 import { HideDuration, SnackbarSeverity } from '../../util';
+import { DeleteError } from '../../util/errors';
 
 const SearchToolManagementPage = () => {
   const { t } = useTranslation();
@@ -84,7 +85,7 @@ const SearchToolManagementPage = () => {
             </Tooltip>
           }
           label={t('delete')}
-          onClick={() => handleDeleteTool(params.row.id)}
+          onClick={() => setToolIdToDelete(params.row.id)}
         />,
       ],
     },
@@ -122,21 +123,29 @@ const SearchToolManagementPage = () => {
 
   //delete tool
   const [deleteToolTrigger, deleteTool] = useDeleteTool();
-  useEffect(() => {
-    if (deleteTool.isError) {
-      setSnackbarMessage(t('deleteToolFailed'));
-      setSnackbarSeverity(SnackbarSeverity.ERROR);
-      setSnackbarOpen(true);
-    }
-    if (deleteTool.isSuccess) {
+  const handleDeleteTool = async (toolId: string) => {
+    try {
+      await deleteToolTrigger(toolId).unwrap();
+      setToolIdToDelete(null);
       setSnackbarMessage(t('deleteToolSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
+    } catch (error) {
+      switch (error) {
+        case DeleteError.BEING_USED: {
+          setSnackbarMessage(t('cannotDeleteSearch'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+        case DeleteError.UNKNOWN_ERROR: {
+          setSnackbarMessage(t('deleteToolFailed'));
+          setSnackbarSeverity(SnackbarSeverity.ERROR);
+          setSnackbarOpen(true);
+          break;
+        }
+      }
     }
-  }, [deleteTool.isError, deleteTool.isSuccess, t]);
-
-  const handleDeleteTool = (toolId: string) => {
-    setToolIdToDelete(toolId);
   };
 
   //create tool
@@ -234,10 +243,7 @@ const SearchToolManagementPage = () => {
           message={t('deleteToolConfirm')}
           confirmText={t('confirm')}
           cancelText={t('cancel')}
-          onDelete={async () => {
-            await deleteToolTrigger(toolIdToDelete);
-            setToolIdToDelete(null);
-          }}
+          onDelete={() => handleDeleteTool(toolIdToDelete)}
         />
       )}
       <Typography variant="h4">{t('searchTools')}</Typography>

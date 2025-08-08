@@ -3,6 +3,7 @@ import { ragFrameworkInstance } from './instance';
 import { axiosBaseQuery } from '../util';
 import { toEntity } from './mapper/mcp-mapper';
 import type { MCPStreamableServer } from '../@types/entities';
+import { DeleteError } from '../util/errors';
 
 const EXTENSION_URL = 'api/v1/mcp';
 export const mcpApi = createApi({
@@ -113,7 +114,16 @@ export const mcpApi = createApi({
         ];
       },
       transformErrorResponse(baseQueryReturnValue) {
-        return baseQueryReturnValue.status;
+        const status = baseQueryReturnValue.status;
+        const { message } = baseQueryReturnValue.data as { message: string };
+        if (
+          status === 406 &&
+          message.includes('Cannot delete MCP configuration with id') &&
+          message.includes('. Agent with id ') &&
+          message.includes('is still using it.')
+        )
+          return DeleteError.BEING_USED;
+        return DeleteError.UNKNOWN_ERROR;
       },
     }),
   }),
