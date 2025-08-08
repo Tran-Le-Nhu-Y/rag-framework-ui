@@ -46,7 +46,7 @@ const AgentCreationGuide: React.FC = () => {
       <Divider />
 
       {/* Bắt buộc phải có */}
-      <Typography paragraph>
+      <Typography>
         ✅ <strong>Bắt buộc phải có:</strong> Để tạo một AI Agent, bạn phải tạo
         trước 2 cấu hình:
       </Typography>
@@ -91,7 +91,7 @@ const AgentCreationGuide: React.FC = () => {
             </ul>
           </>
         }
-        imageSrc="public\images\Create_Chat_Model_Google_Gen_AI.png"
+        imageSrc="/images/Create_Chat_Model_Google_Gen_AI.png"
         imageAlt="Tạo cấu hình Chat Model"
       />
       <Divider />
@@ -124,7 +124,7 @@ const AgentCreationGuide: React.FC = () => {
               </ul>
             </>
           }
-          imageSrc="public\images\Create_CNN_Model.png"
+          imageSrc="/images/Create_CNN_Model.png"
           imageAlt="CNN Model"
         />
 
@@ -143,7 +143,7 @@ const AgentCreationGuide: React.FC = () => {
               </ul>
             </>
           }
-          imageSrc="public\images\Create_MCP.png"
+          imageSrc="/images/Create_MCP.png"
           imageAlt="MCP"
         />
         {/* Embedding Model */}
@@ -163,7 +163,7 @@ const AgentCreationGuide: React.FC = () => {
               </ul>
             </>
           }
-          imageSrc="public\images\Create_Embedding_Model.png"
+          imageSrc="/images/Create_Embedding_Model.png"
           imageAlt="Embedding Model"
         />
         {/* Retriever - Vector Store */}
@@ -183,7 +183,7 @@ const AgentCreationGuide: React.FC = () => {
               </ul>
             </>
           }
-          imageSrc="public\images\Create_Vector_Store_Persistent.png"
+          imageSrc="/images/Create_Vector_Store_Persistent.png"
           imageAlt="Vector Store Retriever"
         />
 
@@ -202,7 +202,7 @@ const AgentCreationGuide: React.FC = () => {
               </ul>
             </>
           }
-          imageSrc="public\images\Create_BM25.png"
+          imageSrc="/images/Create_BM25.png"
           imageAlt="BM25 Retriever"
         />
 
@@ -223,7 +223,7 @@ const AgentCreationGuide: React.FC = () => {
               </ul>
             </>
           }
-          imageSrc="public\images\Create_Search_Tool.png"
+          imageSrc="/images/Create_Search_Tool.png"
           imageAlt="Search Tool"
         />
       </Stack>
@@ -245,7 +245,7 @@ const AgentCreationGuide: React.FC = () => {
             </ul>
           </>
         }
-        imageSrc="public\images\Create_AI_Agent.png"
+        imageSrc="/images/Create_AI_Agent.png"
         imageAlt="Tạo AI Agent"
       />
       <Divider />
