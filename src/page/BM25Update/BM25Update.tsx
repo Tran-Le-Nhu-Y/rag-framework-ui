@@ -124,7 +124,7 @@ export default function BM25UpdatePage() {
     try {
       let updatedFileId = bm25.removal_words_file_id;
       // Step 1: Delete old file (if any)
-      if (isRemoveOldFile) {
+      if (isRemoveOldFile && oldFileIdToDelete) {
         await deleteFileTrigger(oldFileIdToDelete!).unwrap();
         updatedFileId = '';
       }
