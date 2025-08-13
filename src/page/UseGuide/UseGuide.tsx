@@ -51,7 +51,7 @@ export default function UseGuidePage() {
           onChange={handleChange}
           aria-label="basic tabs example"
           centered
-          sx={{ width: '100%' }}
+          variant="fullWidth"
         >
           <Tab
             sx={{ width: '100%' }}
