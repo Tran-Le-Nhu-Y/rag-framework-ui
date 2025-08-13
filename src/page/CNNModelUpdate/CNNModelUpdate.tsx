@@ -115,7 +115,6 @@ export default function CNNModelUpdatePage() {
         type: 'resize',
         target_size: 0,
         interpolation: 'bilinear',
-        max_size: 0,
       },
       {
         type: 'pad',
