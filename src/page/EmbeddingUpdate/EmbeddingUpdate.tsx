@@ -130,6 +130,7 @@ export default function EmbeddingUpdatePage() {
         <Stack spacing={3} width="80%">
           <Stack spacing={3}>
             <TextField
+              required
               size="small"
               helperText={t('hyperTextMedium')}
               label={t('embeddingModelName')}
@@ -146,6 +147,7 @@ export default function EmbeddingUpdatePage() {
 
             <Tooltip title={t('embeddingModelNameTooltip')} placement="top">
               <TextField
+                required
                 type="text"
                 size="small"
                 placeholder={`${t('enter')} ${t('modelName').toLowerCase()}...`}
@@ -160,6 +162,7 @@ export default function EmbeddingUpdatePage() {
               />
             </Tooltip>
             <SelectForm
+              required
               label={t('selectTypeModel')}
               isClearable={false}
               dataList={typeList}

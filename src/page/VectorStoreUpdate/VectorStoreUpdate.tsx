@@ -125,6 +125,12 @@ export default function VectorStoreUpdatePage() {
       setSnackbarOpen(true);
       return;
     }
+    if (vectorStore.weight > 1) {
+      setSnackbarMessage(t('weightInvalid'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const connection =
         vectorStore.mode === 'remote' && vectorStore.connection
@@ -229,6 +235,7 @@ export default function VectorStoreUpdatePage() {
         <Stack spacing={2} width="80%">
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <TextField
+              required
               fullWidth
               size="small"
               helperText={t('hyperTextMedium')}
@@ -406,6 +413,7 @@ export default function VectorStoreUpdatePage() {
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <Tooltip title={t('weightTooltip')}>
               <TextField
+                required
                 fullWidth
                 size="small"
                 label={t('weight')}
@@ -460,6 +468,7 @@ export default function VectorStoreUpdatePage() {
             />
 
             <SelectForm
+              required
               label={t('embeddingModel')}
               dataList={embeddingList}
               value={

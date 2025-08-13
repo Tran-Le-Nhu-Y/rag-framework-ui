@@ -192,6 +192,7 @@ export default function ChatModelUpdatePage() {
             <Stack width="100%" spacing={2}>
               <Stack direction={'row'} spacing={2} width="100%">
                 <TextField
+                  required
                   fullWidth
                   size="small"
                   helperText={t('hyperTextLong')}
@@ -208,6 +209,7 @@ export default function ChatModelUpdatePage() {
                 />
                 <Tooltip title={t('modelNameTooltip')} placement="top">
                   <TextField
+                    required
                     fullWidth
                     size="small"
                     helperText={t('hyperTextMedium')}
@@ -227,6 +229,7 @@ export default function ChatModelUpdatePage() {
 
               <Stack direction={'row'} spacing={2} width="100%">
                 <SelectForm
+                  required
                   isDisable={true}
                   label={t('selectModelType')}
                   dataList={providerList}

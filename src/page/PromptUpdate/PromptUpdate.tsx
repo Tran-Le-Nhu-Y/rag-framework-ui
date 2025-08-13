@@ -94,6 +94,7 @@ export default function PromptUpdatePage() {
         <Stack spacing={2} width="80%">
           <Stack spacing={2}>
             <TextField
+              required
               size="small"
               helperText={t('hyperTextMedium')}
               label={t('promptName')}
@@ -107,6 +108,7 @@ export default function PromptUpdatePage() {
             />
 
             <TextField
+              required
               type="text"
               placeholder={`${t('enter')} ${t(
                 'respond_prompt'

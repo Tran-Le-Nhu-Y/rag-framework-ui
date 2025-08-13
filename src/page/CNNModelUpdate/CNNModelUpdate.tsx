@@ -244,6 +244,12 @@ export default function CNNModelUpdatePage() {
         setSnackbarOpen(true);
         return;
       }
+      if (imageRecognizer.min_probability > 1) {
+        setSnackbarMessage(t('cnnMinProbabilityInvalid'));
+        setSnackbarSeverity(SnackbarSeverity.WARNING);
+        setSnackbarOpen(true);
+        return;
+      }
       if (!output.description.trim()) {
         setSnackbarMessage(t('outputClassDescriptionRequired'));
         setSnackbarSeverity(SnackbarSeverity.WARNING);
@@ -309,6 +315,7 @@ export default function CNNModelUpdatePage() {
       <Stack spacing={1} width="100%">
         <Stack direction={'row'} spacing={1} width="100%" alignItems={'center'}>
           <TextField
+            required
             fullWidth
             size="small"
             //helperText={t('hyperTextMedium')}
@@ -327,6 +334,7 @@ export default function CNNModelUpdatePage() {
             <Stack direction={'row'} spacing={1} width="55%">
               <Tooltip title={t('minProbabilityTooltip')} placement="top">
                 <TextField
+                  required
                   sx={{ width: '50%' }}
                   size="small"
                   label={t('minProbability')}
@@ -511,6 +519,7 @@ export default function CNNModelUpdatePage() {
                 <Stack direction={'row'} spacing={1} sx={{ width: '100%' }}>
                   <Tooltip title={t('classNameTooltip')}>
                     <TextField
+                      required
                       label={t('className')}
                       size="small"
                       value={field.name}
@@ -522,6 +531,7 @@ export default function CNNModelUpdatePage() {
                   </Tooltip>
                   <Tooltip title={t('classDescriptionTooltip')}>
                     <TextField
+                      required
                       label={t('classDescription')}
                       value={field.description}
                       size="small"

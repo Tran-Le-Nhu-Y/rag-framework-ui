@@ -56,6 +56,7 @@ export default function SearchToolUpdateDialog({
       <DialogContent>
         <Stack spacing={3} mt={2}>
           <TextField
+            required
             size="small"
             label={t('searchToolName')}
             value={form.name}

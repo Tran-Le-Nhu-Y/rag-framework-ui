@@ -205,6 +205,7 @@ export default function ChatModelCreationPage() {
             <Stack width="100%" spacing={2}>
               <Stack direction={'row'} spacing={2} width="100%">
                 <TextField
+                  required
                   fullWidth
                   size="small"
                   helperText={t('hyperTextLong')}
@@ -221,6 +222,7 @@ export default function ChatModelCreationPage() {
                 />
                 <Tooltip title={t('modelNameTooltip')} placement="top">
                   <TextField
+                    required
                     fullWidth
                     size="small"
                     helperText={t('hyperTextMedium')}
@@ -240,6 +242,7 @@ export default function ChatModelCreationPage() {
 
               <Stack direction={'row'} spacing={2} width="100%">
                 <SelectForm
+                  required
                   label={t('selectModelType')}
                   dataList={providerList}
                   value={

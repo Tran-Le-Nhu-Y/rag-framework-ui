@@ -75,6 +75,12 @@ export default function VectorStoreCreationPage() {
       setSnackbarOpen(true);
       return;
     }
+    if (vectorStore.weight > 1) {
+      setSnackbarMessage(t('weightInvalid'));
+      setSnackbarSeverity(SnackbarSeverity.WARNING);
+      setSnackbarOpen(true);
+      return;
+    }
     if (!vectorStore.embeddings_id) {
       setSnackbarMessage(t('embeddingRequired'));
       setSnackbarSeverity(SnackbarSeverity.WARNING);
@@ -181,6 +187,7 @@ export default function VectorStoreCreationPage() {
         <Stack spacing={2} width="80%">
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <TextField
+              required
               fullWidth
               size="small"
               helperText={t('hyperTextMedium')}
@@ -356,6 +363,7 @@ export default function VectorStoreCreationPage() {
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <Tooltip title={t('weightTooltip')}>
               <TextField
+                required
                 fullWidth
                 size="small"
                 label={t('weight')}
@@ -410,6 +418,7 @@ export default function VectorStoreCreationPage() {
             />
 
             <SelectForm
+              required
               label={t('embeddingModel')}
               dataList={embeddingList}
               value={

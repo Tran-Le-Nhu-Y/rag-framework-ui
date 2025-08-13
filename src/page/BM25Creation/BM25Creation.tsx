@@ -150,6 +150,7 @@ export default function BM25CreationPage() {
         <Stack spacing={2} width="80%">
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <TextField
+              required
               fullWidth
               size="small"
               helperText={t('hyperTextMedium')}
@@ -167,6 +168,7 @@ export default function BM25CreationPage() {
             />
             <Tooltip title={t('weightTooltip')} placement="top">
               <TextField
+                required
                 fullWidth
                 size="small"
                 label={t('weight')}
@@ -205,6 +207,7 @@ export default function BM25CreationPage() {
             />
 
             <SelectForm
+              required
               label={t('embeddingModel')}
               dataList={embeddingList}
               value={

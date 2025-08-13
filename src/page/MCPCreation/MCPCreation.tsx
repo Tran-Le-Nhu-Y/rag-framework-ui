@@ -140,6 +140,7 @@ export default function MCPCreationPage() {
         <Stack spacing={2} width="80%">
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <TextField
+              required
               fullWidth
               size="small"
               helperText={t('hyperTextMedium')}
@@ -175,6 +176,7 @@ export default function MCPCreationPage() {
           <Stack spacing={2} direction={'row'} width={'100%'}>
             <Tooltip title={t('urlTooltip')} placement="top">
               <TextField
+                required
                 fullWidth
                 size="small"
                 helperText={t('hyperTextMedium')}

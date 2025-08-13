@@ -340,6 +340,7 @@ export default function AgentUpdatePage() {
           <Stack spacing={2} width="100%">
             <Stack width="100%" direction={'row'} spacing={2}>
               <TextField
+                required
                 fullWidth
                 size="small"
                 helperText={t('hyperTextMedium')}
@@ -356,6 +357,7 @@ export default function AgentUpdatePage() {
                 placeholder={`${t('enter')} ${t('agentName').toLowerCase()}...`}
               />
               <SelectForm
+                required
                 label={t('selectLanguage')}
                 dataList={languageList}
                 value={
@@ -391,6 +393,7 @@ export default function AgentUpdatePage() {
             />
             <Stack spacing={2} direction={'row'} width="100%">
               <SelectForm
+                required
                 label={t('selectPrompt')}
                 dataList={promptList}
                 value={
@@ -438,6 +441,7 @@ export default function AgentUpdatePage() {
                 }
               />
               <SelectForm
+                required
                 label={t('selectChatModel')}
                 dataList={chatModelList}
                 value={
