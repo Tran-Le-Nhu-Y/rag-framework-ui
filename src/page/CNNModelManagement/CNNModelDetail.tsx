@@ -152,8 +152,8 @@ export default function CNNModelDetailDialog({
                 case 'resize':
                   return (
                     <Typography key={index}>
-                      • Resize → Target: {config.target_size}, Max:{' '}
-                      {config.max_size}, Interpolation: {config.interpolation}
+                      • Resize → Target: {config.target_size}, Interpolation:{' '}
+                      {config.interpolation}
                     </Typography>
                   );
                 case 'pad':
