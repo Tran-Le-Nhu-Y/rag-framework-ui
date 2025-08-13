@@ -216,7 +216,7 @@ export default function ChatModelCreationPage() {
                       setConfigName(newValue);
                   }}
                   placeholder={`${t('enter')} ${t(
-                    'modelName'
+                    'configName'
                   ).toLowerCase()}...`}
                 />
                 <Tooltip title={t('modelNameTooltip')} placement="top">

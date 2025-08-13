@@ -92,7 +92,7 @@ export default function AgentUpdatePage() {
     if (chatModels.data?.content) {
       const mappedList: Data[] = chatModels.data.content.map(
         (item: ChatModel) => ({
-          label: item.model_name,
+          label: item.name,
           value: item.id,
         })
       );
