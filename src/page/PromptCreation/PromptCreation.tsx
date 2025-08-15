@@ -45,8 +45,9 @@ export default function PromptCreationPage() {
       await createPromptTrigger(newPrompt);
       setName('');
       setRespond('');
-      navigate(RoutePaths.PROMPT);
-
+      setTimeout(() => {
+        navigate(RoutePaths.PROMPT);
+      }, 1000);
       setSnackbarMessage(t('createPromptSuccess'));
       setSnackbarSeverity(SnackbarSeverity.SUCCESS);
       setSnackbarOpen(true);
